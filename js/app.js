@@ -583,8 +583,8 @@ const UI = {
     explainEar:"The tone was {label}: {cents} cents above the open string."
   },
   fa: {
-    metaTitle:"آزمایشگاه تک‌سیم ارموی",
-    eyebrow:"مکتب منتظمیه · آزمایشگاه تعاملی تک‌سیم",
+    metaTitle:"اطلس تک‌سیم ارموی",
+    eyebrow:"مکتب منتظمیه · اطلس تعاملی تک‌سیم",
     title:"دربارهٔ تقسیم دستان‌ها",
     subtitle:"صفی‌الدین ارموی · هندسه، نسبت‌های دقیق، شنیدن، ساخت و تمرین",
     sourceChip:"۱۷ جایگاه + اکتاو · داده‌های کسری دقیق",
