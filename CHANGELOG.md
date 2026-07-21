@@ -1,6 +1,22 @@
 # Changelog
 
-## 4.1.0 — Mobile presentation correction
+## 4.2.0 — interface and mobile navigation repair
+
+- Corrected the header brand-mark alignment.
+- Repaired Combined, Theory, Instrument, and Focus controls by removing stale dependencies on deleted controls.
+- Removed contrast and font-size controls from the header and Settings.
+- Replaced the clipped fullscreen text with an accessible icon-only button.
+- Exposed Learn, Explore, Construct, Listen, Species & Modes, and Train & Data directly in phone navigation.
+- Corrected Persian creator wording to «محقق» and harmonized equivalent researcher wording in the other languages.
+- Audited six-section labels across English, Persian, Arabic, and Turkish.
+- Prevented phone-landscape presentation rules from hiding the learning workspace.
+
+## 4.1.1
+- Critical startup hotfix: repaired non-working buttons caused by a missing validation-panel element.
+- Updated service-worker cache version to force delivery of the corrected scripts.
+
+
+## 4.1.1 — Mobile presentation correction
 - Removed the Continue previous session and Reset progress controls.
 - Removed public built-in validation/test panels while retaining developer-side tests.
 - Replaced Studio/Laboratory terminology with Atlas terminology.
