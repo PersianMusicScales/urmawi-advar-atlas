@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A multilingual atlas for exploring Ṣafī al-Dīn al-Urmawī’s exact fret divisions, intervals, listening models, and modal theory.">
+<title>Al-Urmawī Advar Atlas · Persian Music Scales</title>
+
+<meta name="theme-color" content="#121a2a">
+<meta name="application-name" content="Advar Atlas">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Advar Atlas">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icons/icon-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/icons/icon-180x180.png">
+<link rel="canonical" href="https://persianmusicscales.github.io/urmawi-advar-atlas/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Persian Music Scales">
+<meta property="og:title" content="Al-Urmawī Advar Atlas">
+<meta property="og:description" content="Interactive four-language atlas for exact fret divisions, ratios, listening, construction, and modal theory.">
+<meta property="og:url" content="https://persianmusicscales.github.io/urmawi-advar-atlas/">
+<meta property="og:image" content="https://persianmusicscales.github.io/urmawi-advar-atlas/assets/social/advar-atlas-social.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Al-Urmawī Advar Atlas">
+<meta name="twitter:description" content="A multilingual historical-music-theory PWA by Persian Music Scales.">
+<meta name="twitter:image" content="https://persianmusicscales.github.io/urmawi-advar-atlas/assets/social/advar-atlas-social.png">
+<script type="application/ld+json">{
+ "@context":"https://schema.org","@type":"SoftwareApplication","name":"Al-Urmawī Advar Atlas","applicationCategory":"EducationalApplication","operatingSystem":"Web, Android, iOS, Windows, macOS, Linux","url":"https://persianmusicscales.github.io/urmawi-advar-atlas/","author":{"@type":"Person","name":"Dr. Pouya Hosseini"},"publisher":{"@type":"Organization","name":"Persian Music Scales"},"inLanguage":["en","fa","ar","tr"],"softwareVersion":"4.3.0","isAccessibleForFree":true
+}</script>
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/pwa-responsive.css">
+</head>
+<body>
+
+<div id="networkBanner" class="network-banner" role="status" aria-live="polite"></div>
+<div id="orientationGate" class="orientation-gate" hidden role="dialog" aria-modal="true" aria-labelledby="orientationTitle">
+  <div class="orientation-card">
+    <img src="assets/brand/advar-mark.svg" alt="">
+    <div class="rotate-phone" aria-hidden="true"><span></span></div>
+    <h2 id="orientationTitle">Turn your phone sideways</h2>
+    <p id="orientationCopy">Landscape view is required to display the complete monochord clearly.</p>
+    <button id="orientationLockBtn" type="button">Open in landscape</button>
+  </div>
+</div>
+<section id="welcomeScreen" class="welcome-screen" aria-labelledby="welcomeTitle">
+  <div class="welcome-manuscript" aria-hidden="true">
+    <div class="manuscript-rings"></div><div class="manuscript-arcs"></div>
+  </div>
+  <div class="welcome-card">
+    <div class="welcome-brandline"><img src="assets/brand/advar-mark.svg" alt=""><span id="welcomeFamily">Persian Music Scales · Historical Theory Series</span></div>
+    <p id="welcomeEyebrow" class="welcome-eyebrow">A scholarly interactive edition</p>
+    <h1 id="welcomeTitle">Al-Urmawī Advar Atlas</h1>
+    <p id="welcomeLead">Explore al-Urmawī’s exact fret divisions, intervals, and modal theory.</p>
+    <div class="welcome-actions">
+      <button id="welcomeStart" class="welcome-primary" type="button">Start guided lesson</button>
+      <button id="welcomeAtlas" class="welcome-secondary" type="button">Open Atlas</button>
+    </div>
+    <div class="welcome-links">
+      <button id="welcomeSources" type="button">About the sources</button>
+      <button id="welcomeDismiss" type="button">Do not show this opening next time</button>
+    </div>
+    <div class="welcome-foot"><span>Exact rational model</span><span>4 languages</span><span>Works offline</span></div>
+  </div>
+</section>
+
+<a id="skipLink" class="skip-link" href="#workspaceMain">Skip to learning workspace</a>
+<div id="viewport">
+<div id="app">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark"><img src="assets/brand/advar-mark.svg" alt="Advar Atlas"></div>
+    <div class="brand-copy">
+      <div class="eyebrow"><a class="family-link" href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener">Persian Music Scales</a><span> · Historical Theory Series</span></div>
+      <div class="title-line">
+        <span class="title-ar" lang="ar">في أقسام الدساتين</span>
+        <span class="title-en">On the Divisions of the Frets</span>
+      </div>
+      <div class="brand-meta">
+        <div class="subtitle">Ṣafī al-Dīn al-Urmawī · geometry, exact ratios, listening, construction, and training</div>
+        <div class="brand-facts" aria-label="Project highlights">
+          <span id="editionBadge" class="edition-badge">Scholarly interactive edition</span>
+          <span id="factPositions">18 exact pitch points</span>
+          <span id="factOctave">1200-cent octave</span>
+          <span id="factLanguages">4-language interface</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="source-chip">17 positions + octave · exact rational data</div>
+    <select id="languageSelect" class="language-select" aria-label="Language">
+      <option value="en">English</option>
+      <option value="fa">فارسی</option>
+      <option value="ar">العربية</option>
+      <option value="tr">Türkçe</option>
+    </select>
+    <button id="installAppBtn" class="icon-btn install-btn" type="button" hidden>Install</button>
+    <button id="sourceBtn" class="icon-btn source-btn" title="Sources and editorial policy">Sources</button>
+    <div id="viewSwitch" class="view-switch" role="group" aria-label="Visualization view">
+      <button id="viewBothBtn" class="view-choice active" type="button" data-view="0" aria-pressed="true">Combined</button>
+      <button id="viewTheoryBtn" class="view-choice" type="button" data-view="1" aria-pressed="false">Theory</button>
+      <button id="viewInstrumentBtn" class="view-choice" type="button" data-view="2" aria-pressed="false">Instrument</button>
+    </div>
+    <button id="focusStageBtn" class="icon-btn focus-btn" title="Focus presentation mode" aria-pressed="false">Focus</button>
+    <button id="fullscreenBtn" class="icon-btn fullscreen-compact" type="button" title="Open in fullscreen" aria-label="Open in fullscreen"><span aria-hidden="true">⛶</span></button>
+    <button id="mobileHeaderMenuBtn" class="icon-btn mobile-header-menu" type="button" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<section id="monoPanel" class="mono-panel" aria-label="Persistent interactive monochord">
+  <div id="viewStateLabel" class="view-state-label">Combined theoretical + practical view</div>
+  <aside id="theoryHud" class="theory-hud" aria-live="polite">
+    <div class="hud-primary">
+      <span id="hudNote" class="hud-note">ا</span>
+      <span><b id="hudName">Open string</b><small id="hudActivePitchLabel">Active pitch</small></span>
+    </div>
+    <div class="hud-metric"><span id="hudFrequencyLabel">Frequency ratio</span><b id="hudFrequency">1/1</b></div>
+    <div class="hud-metric"><span id="hudLengthLabel">Sounding length</span><b id="hudLength">1/1</b></div>
+    <div class="hud-metric"><span id="hudCentsLabel">Cents</span><b id="hudCents">0.000¢</b></div>
+    <div class="hud-model"><i></i><span id="hudModelStatus">Exact rational model</span></div>
+  </aside>
+  <div id="stageLegend" class="stage-legend" aria-label="Interval legend">
+    <span><i class="legend-limma"></i><b id="legendLimma">Limma</b></span>
+    <span><i class="legend-comma"></i><b id="legendComma">Comma</b></span>
+  </div>
+  <div id="presentationHint" class="presentation-hint">F: focus · 1/2/3: view · Esc: exit</div>
+  <div class="mono-caption">
+    <span>م — bridge (mashṭ)</span>
+    <span id="monoHint">Select any fret to inspect and hear it</span>
+    <span>ا — nut (anf) · open string</span>
+  </div>
+  <div id="monoScrollShell" class="mono-scroll-shell">
+  <svg id="monoSvg" viewBox="0 0 1244 126" role="img" aria-labelledby="monoTitle monoDesc">
+    <title id="monoTitle">Al-Urmawī monochord</title>
+    <desc id="monoDesc">A horizontal string from bridge to nut with seventeen pitch positions and the octave.</desc>
+    <g id="theoryRulerLayer" aria-hidden="true"></g>
+    <g id="theoryMeasureLayer" aria-hidden="true">
+      <line id="theoryBaseString" x1="193" y1="61" x2="998" y2="61" class="theory-base-string"/>
+      <line id="soundingSegment" x1="193" y1="61" x2="998" y2="61" class="sounding-segment"/>
+      <line id="stoppedSegment" x1="998" y1="61" x2="998" y2="61" class="stopped-segment"/>
+      <line id="selectedProjection" x1="998" y1="43" x2="998" y2="82" class="selected-projection"/>
+      <path id="lengthBracket" d="M193 76 V82 H998 V76" class="length-bracket"/>
+      <text id="lengthBracketText" x="595" y="91" text-anchor="middle" class="length-bracket-text">ℓ = 1/1</text>
+      <path id="octaveArc" d="M193 49 Q394 9 596 49" class="octave-arc"/>
+      <text id="octaveArcLabel" x="394" y="15" text-anchor="middle" class="octave-arc-label">octave · 2:1</text>
+    </g>
+    <g id="intervalLayer"></g>
+    <line x1="193" y1="61" x2="998" y2="61" class="legacy-string-line"/>
+    <rect x="189" y="37" width="7" height="49" fill="#bdb398"/>
+    <rect x="994" y="37" width="7" height="49" fill="#bdb398"/>
+    <g id="guideLayer"></g>
+    <g id="fretLayer"></g>
+  </svg>
+  </div>
+  <div id="mobileStageTools" class="mobile-stage-tools" aria-label="Theory zoom"><button id="mobileZoomOut" type="button" aria-label="Zoom out">−</button><span id="mobileZoomLabel">100%</span><button id="mobileZoomIn" type="button" aria-label="Zoom in">+</button></div>
+  <button id="mobileInstrumentToggle" class="mobile-instrument-toggle" type="button" aria-expanded="false">Show illustrative instrument</button>
+  <div class="instrument-wrap">
+    <svg id="instrumentSvg" viewBox="0 0 1244 136" role="img" aria-label="Practical instrument schematic">
+      <defs>
+        <linearGradient id="instrumentPanelFade" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </linearGradient>
+        <linearGradient id="bodyGrad" x1="0" x2="1">
+          <stop offset="0%" stop-color="#d8a665"/>
+          <stop offset="24%" stop-color="#e8bd7d"/>
+          <stop offset="58%" stop-color="#ddb16e"/>
+          <stop offset="100%" stop-color="#c99252"/>
+        </linearGradient>
+        <linearGradient id="neckGrad" x1="0" x2="1">
+          <stop offset="0%" stop-color="#aa6f4b"/>
+          <stop offset="100%" stop-color="#c38a64"/>
+        </linearGradient>
+        <linearGradient id="pegGrad" x1="0" x2="1">
+          <stop offset="0%" stop-color="#80573f"/>
+          <stop offset="100%" stop-color="#976c50"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="1244" height="136" class="instrument-panel-bg"/>
+      <g id="instrumentArtLayer">
+        <!-- ultra-fine rounded bowl -->
+        <path class="instrument-body-main" d="M503,75 C496,60 477,44 441,31 C391,14 324,4 245,2 C166,0 103,8 60,24 C33,35 18,50 14,67 C10,88 19,105 43,118 C78,136 136,142 218,139 C301,136 383,124 447,106 C481,96 499,85 503,77 C504,76 504,76 503,75 Z"/>
+        <path class="instrument-body-inner" d="M482,75 C470,62 446,48 407,37 C359,23 299,16 233,15 C171,14 121,20 85,32 C60,40 45,51 40,65 C35,80 42,92 63,103 C95,117 146,123 215,122 C287,120 356,109 416,94 C452,85 472,79 482,75 Z"/>
+        <!-- decorative ribs -->
+        <path class="instrument-rib" d="M67,27 C153,42 247,48 347,47 C401,46 444,42 471,38"/>
+        <path class="instrument-rib" d="M48,48 C143,59 250,66 393,65 C430,65 458,62 478,58" opacity=".54"/>
+        <path class="instrument-rib" d="M44,99 C141,91 248,87 391,90 C429,91 458,95 478,100" opacity=".54"/>
+        <path class="instrument-rib" d="M70,121 C147,111 232,108 327,109 C383,111 427,116 459,122"/>
+        <path class="instrument-rib" d="M83,20 C185,63 320,79 479,75" opacity=".11"/>
+        <path class="instrument-rib" d="M79,128 C183,87 318,70 479,73" opacity=".11"/>
+        <!-- rosettes -->
+        <g>
+          <circle class="instrument-soundhole" cx="95" cy="75" r="11.8"/>
+          <circle class="instrument-soundhole-ring" cx="95" cy="75" r="7.4"/>
+          <g stroke="#f0e2c0" stroke-width="0.9" opacity=".72">
+            <line x1="95" y1="69.4" x2="95" y2="80.6"/><line x1="89.4" y1="75" x2="100.6" y2="75"/>
+            <line x1="91.0" y1="71.0" x2="99.0" y2="79.0"/><line x1="99.0" y1="71.0" x2="91.0" y2="79.0"/>
+          </g>
+        </g>
+        <g>
+          <circle class="instrument-soundhole" cx="180" cy="75" r="8.8" opacity=".64"/>
+          <circle class="instrument-soundhole-ring" cx="180" cy="75" r="5.9"/>
+          <g stroke="#f0e2c0" stroke-width="0.78" opacity=".65">
+            <line x1="180" y1="70.6" x2="180" y2="79.4"/><line x1="175.6" y1="75" x2="184.4" y2="75"/>
+            <line x1="176.9" y1="71.9" x2="183.1" y2="78.1"/><line x1="183.1" y1="71.9" x2="176.9" y2="78.1"/>
+          </g>
+        </g>
+        <g>
+          <circle class="instrument-soundhole" cx="259" cy="75" r="8.8" opacity=".64"/>
+          <circle class="instrument-soundhole-ring" cx="259" cy="75" r="5.9"/>
+          <g stroke="#f0e2c0" stroke-width="0.78" opacity=".65">
+            <line x1="259" y1="70.6" x2="259" y2="79.4"/><line x1="254.6" y1="75" x2="263.4" y2="75"/>
+            <line x1="255.9" y1="71.9" x2="262.1" y2="78.1"/><line x1="262.1" y1="71.9" x2="255.9" y2="78.1"/>
+          </g>
+        </g>
+        <!-- tail and bridge -->
+        <rect class="instrument-tail" x="46" y="62.2" width="9" height="25.6" rx="3.1"/>
+        <line class="instrument-bridge" x1="193" y1="60" x2="193" y2="91"/>
+        <line class="instrument-bridge" x1="198" y1="62.1" x2="198" y2="88.9" style="opacity:.24;stroke-width:1.2"/>
+        <!-- neck, nut, and angled pegbox -->
+        <path class="instrument-neck" d="M503,65 L997,65 Q1009,65 1009,75 Q1009,85 997,85 L503,85 Q490,85 490,75 Q490,65 503,65 Z"/>
+        <line x1="503" y1="75" x2="998" y2="75" stroke="rgba(255,255,255,.11)" stroke-width="1"/>
+        <g id="instrumentStaticFrets">
+          <line class="instrument-fret-mark" x1="611" y1="67.7" x2="611" y2="82.3"/>
+          <line class="instrument-fret-mark" x1="724" y1="67.7" x2="724" y2="82.3"/>
+          <line class="instrument-fret-mark" x1="831" y1="67.7" x2="831" y2="82.3"/>
+          <line class="instrument-fret-mark" x1="912" y1="67.7" x2="912" y2="82.3"/>
+        </g>
+        <path class="instrument-pegbox" d="M998,64 L1113,59 Q1126,58 1129,67 L1131,79 Q1133,88 1119,92 L998,86 Z"/>
+        <!-- 4 strings -->
+        <g id="instrumentStrings">
+          <line class="instrument-string" x1="54" y1="69.4" x2="1110" y2="69.4"/>
+          <line class="instrument-string" x1="54" y1="73.2" x2="1110" y2="73.2"/>
+          <line class="instrument-string" x1="54" y1="77.0" x2="1110" y2="77.0"/>
+          <line class="instrument-string" x1="54" y1="80.8" x2="1110" y2="80.8"/>
+        </g>
+        <!-- angled pegs -->
+        <g id="pegs">
+          <ellipse class="instrument-peg" cx="1042" cy="49.5" rx="6.3" ry="8.9"/><ellipse class="instrument-peg" cx="1081" cy="44.8" rx="6.3" ry="8.9"/>
+          <ellipse class="instrument-peg" cx="1045" cy="99.0" rx="6.3" ry="8.9"/><ellipse class="instrument-peg" cx="1084" cy="102.8" rx="6.3" ry="8.9"/>
+          <line x1="1042" y1="57.2" x2="1043" y2="62.2" stroke="#714c37" stroke-width="1.35"/>
+          <line x1="1081" y1="52.5" x2="1083" y2="61.4" stroke="#714c37" stroke-width="1.35"/>
+          <line x1="1045" y1="91.3" x2="1043" y2="86.8" stroke="#714c37" stroke-width="1.35"/>
+          <line x1="1084" y1="95.1" x2="1081" y2="86.0" stroke="#714c37" stroke-width="1.35"/>
+        </g>
+        <line x1="998" y1="64.7" x2="998" y2="85.3" stroke="#eadfc8" stroke-width="2.4" opacity=".95"/>
+      </g>
+      <g id="instrumentOverlayLayer"></g>
+    </svg>
+    <div class="instrument-caption"></div>
+    <div id="instrumentDisclosure" class="instrument-note">Illustrative four-string mapping — not a reconstruction of a specific surviving instrument</div>
+  </div>
+</section>
+
+<nav id="tabsNav" class="tabs" aria-label="Learning modes" role="tablist">
+  <button class="tab active" role="tab" aria-selected="true" data-panel="learn"><span class="tab-number">01</span>Learn</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="explore"><span class="tab-number">02</span>Explore</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="construct"><span class="tab-number">03</span>Construct</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="listen"><span class="tab-number">04</span>Listen</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="modes"><span class="tab-number">05</span>Species &amp; Modes</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="train"><span class="tab-number">06</span>Train &amp; Data</button>
+</nav>
+
+<main id="workspaceMain" class="workspace" tabindex="-1">
+  <div id="workspaceContext" class="workspace-context" aria-live="polite">
+    <span id="workspaceContextMode">Guided curriculum</span>
+    <i></i>
+    <span id="workspaceContextPitch">ا · 1/1 · 0.000¢</span>
+  </div>
+
+  <section id="panel-learn" class="panel active" role="tabpanel" aria-label="Guided lessons">
+    <div class="learn-grid">
+      <aside class="card lesson-list">
+        <div class="card-head"><span id="lessonListTitle" class="card-title">Guided curriculum</span><span id="lessonProgressText" class="card-kicker">1 / 6</span></div>
+        <div id="lessonItems" class="lesson-items"></div>
+      </aside>
+      <article class="card lesson-main">
+        <div class="card-head"><span id="lessonKicker" class="card-kicker">Foundation</span><span id="lessonSourceStatus" class="lesson-status">Source + modern explanation</span></div>
+        <div class="lesson-content">
+          <h2 id="lessonTitle" class="lesson-title">String length and pitch</h2>
+          <div id="lessonObjective" class="lesson-objective">Objective: understand why shorter sounding length produces higher pitch.</div>
+          <div id="lessonCopy" class="lesson-copy"></div>
+          <div id="lessonFormula" class="lesson-formula"></div>
+        </div>
+        <div class="lesson-actions">
+          <button id="lessonPrevious" class="btn">← Previous</button>
+          <button id="lessonDemonstrate" class="btn primary">▶ Demonstrate</button>
+          <button id="lessonNext" class="btn brass">Next →</button>
+        </div>
+      </article>
+      <aside class="card source-card">
+        <div class="card-head"><span id="sourceBasisTitle" class="card-title">Evidence map</span><button id="openSourcesFromLesson" class="btn">Details</button></div>
+        <div class="source-body">
+          <div class="source-row"><strong id="sourcePrimaryTitle">Primary manuscript</strong><span id="sourcePrimaryCopy">Kitāb al-Adwār, Section 2 (fret division), ff. 3v–5r; Section 3 (interval ratios), ff. 5r–8r.</span></div>
+          <div class="source-row"><strong id="sourceModelTitle">Exact model</strong><span id="sourceModelCopy">The pitch table uses the conventional 3-limit/Pythagorean reading of the 17-position parent lattice.</span></div>
+          <div class="source-row"><strong id="sourceEditorialTitle">Editorial distinction</strong><span id="sourceEditorialCopy">The ratios are exact; the lesson order and prose are a modern pedagogical reconstruction.</span></div>
+          <div class="progress-line" aria-hidden="true"><span id="lessonProgressBar"></span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="panel-explore" class="panel" role="tabpanel">
+    <div class="explore-grid">
+      <article class="card note-card">
+        <div class="note-hero">
+          <div id="noteOrb" class="note-orb">ا</div>
+          <div>
+            <div id="noteName" class="note-name">Open string</div>
+            <div id="noteSub" class="note-sub">alif · position 1 of 18</div>
+          </div>
+        </div>
+        <div class="data-list">
+          <div class="data-item"><span class="data-key">String length</span><span id="lengthRatio" class="data-val">1/1</span></div>
+          <div class="data-item"><span class="data-key">Frequency ratio</span><span id="frequencyRatio" class="data-val">1/1</span></div>
+          <div class="data-item"><span class="data-key">Cents</span><span id="centsValue" class="data-val">0.000¢</span></div>
+          <div class="data-item"><span class="data-key">Frequency</span><span id="frequencyValue" class="data-val">220.00 Hz</span></div>
+          <div class="data-item"><span class="data-key">From bridge</span><span id="bridgeValue" class="data-val">100.00 cm</span></div>
+          <div class="data-item"><span class="data-key">From nut</span><span id="nutValue" class="data-val">0.00 cm</span></div>
+          <div class="data-item"><span class="data-key">Previous step</span><span id="previousValue" class="data-val">—</span></div>
+          <div class="data-item"><span class="data-key">Pitch order</span><span id="pitchOrder" class="data-val">1 / 18</span></div>
+        </div>
+        <div class="note-audio">
+          <button id="playSelected" class="btn primary">▶ Selected</button>
+          <button id="playOpen" class="btn">▶ Open tone</button>
+        </div>
+      </article>
+
+      <article class="card concept-card">
+        <div class="card-head">
+          <div><span class="card-kicker">Geometry → acoustics</span></div>
+          <span id="selectedCaption" class="micro mono">ا · 0.000¢</span>
+        </div>
+        <div class="concept-body">
+          <div class="concept-copy">
+            <h3>The governing relationship</h3>
+            <p>The whole sounding string is normalized to 1. If the remaining sounding length is ℓ, the ideal frequency ratio is its reciprocal.</p>
+            <div id="formulaBox" class="formula-box">frequency = 220 × (1/1) = 220.00 Hz</div>
+            <p style="margin-top:8px">The 18 written points represent the open string, 17 pitch positions within the octave, and the octave repetition. They form a parent pitch lattice, not a single mandatory performance scale.</p>
+          </div>
+          <div class="control-stack">
+            <div class="field"><label for="baseFrequency">Open frequency</label><input id="baseFrequency" type="number" min="40" max="1000" step="1" value="220"></div>
+            <div class="field"><label for="stringLength">String length (cm)</label><input id="stringLength" type="number" min="20" max="250" step="1" value="100"></div>
+            <div class="field"><label for="waveform">Waveform</label><select id="waveform"><option value="sine">Sine</option><option value="triangle">Triangle</option><option value="sawtooth">Sawtooth</option></select></div>
+            <div class="field"><label for="labelMode">Monochord labels</label><select id="labelMode"><option value="abjad">Abjad</option><option value="index">Index</option><option value="cents">Cents</option></select></div>
+          </div>
+        </div>
+        <div class="explore-footer">
+          <button id="compareSequential" class="btn">▶ Open → selected</button>
+          <button id="compareTogether" class="btn">▶ Sound together</button>
+        </div>
+      </article>
+
+      <aside class="card interval-card">
+        <div class="card-head">
+          <span class="card-title">Adjacent interval</span>
+          <span class="card-kicker">Exact step</span>
+        </div>
+        <div class="interval-body">
+          <div id="intervalBadge" class="interval-badge">Reference point</div>
+          <div id="intervalRatio" class="big-ratio">1/1</div>
+          <div id="intervalText" class="interval-text">The open string is the reference from which all other positions are calculated.</div>
+          <div id="stepStrip" class="step-strip"></div>
+        </div>
+        <div class="interval-actions">
+          <button id="previousNote" class="btn">← Previous</button>
+          <button id="nextNote" class="btn brass">Next →</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="panel-construct" class="panel" role="tabpanel">
+    <div class="construct-grid">
+      <article class="card step-info">
+        <div class="card-head"><span class="card-title">Source-guided construction</span><span class="card-kicker">Modern wording</span></div>
+        <div class="step-main">
+          <div id="constructionCount" class="step-count">Step 0 of 17</div>
+          <div id="constructionSymbol" class="step-symbol">ا</div>
+          <h3 id="constructionHeading" class="step-heading">Begin with the open string</h3>
+          <p id="constructionCopy" class="step-copy">Normalize the complete sounding length to 1. This is the reference tone.</p>
+          <div id="constructionEquation" class="step-equation">length(ا) = 1/1 → frequency(ا) = 1/1</div>
+          <p class="micro" style="margin:8px 0 0">The ratios are exact. The explanatory English is a cautious pedagogical paraphrase of the supplied diagrams and instructions.</p>
+        </div>
+        <div class="step-controls">
+          <button id="constructionPrev" class="btn">← Previous</button>
+          <button id="constructionPlay" class="btn primary">▶ Hear</button>
+          <button id="constructionNext" class="btn brass">Next →</button>
+        </div>
+      </article>
+
+      <article class="card guide-card">
+        <div class="card-head"><span class="card-title">Geometrical operation</span><button id="autoConstruction" class="btn">▶ Auto</button></div>
+        <div id="guideVisual" class="guide-visual">
+          <div class="guide-line-large"></div>
+          <div class="guide-end left"></div><div class="guide-end right"></div>
+          <div id="guideDivisions"></div>
+          <div id="guideCurrent" class="guide-current" style="left:calc(100% - 28px)"></div>
+          <div id="guideLabel" class="guide-label" style="left:calc(100% - 28px)">ا</div>
+          <div id="guideNote" class="guide-note">Full normalized string: bridge م at left, nut ا at right.</div>
+        </div>
+        <div class="guide-summary">
+          <div class="summary-box"><div class="summary-k">Length</div><div id="guideLength" class="summary-v">1/1</div></div>
+          <div class="summary-box"><div class="summary-k">Frequency</div><div id="guideFrequency" class="summary-v">1/1</div></div>
+          <div class="summary-box"><div class="summary-k">Cents</div><div id="guideCents" class="summary-v">0.000¢</div></div>
+        </div>
+      </article>
+
+      <aside class="card steps-card">
+        <div class="card-head"><span class="card-title">Complete sequence</span><span class="card-kicker">Click any step</span></div>
+        <div id="stepGrid" class="step-grid"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="panel-listen" class="panel" role="tabpanel">
+    <div class="listen-grid">
+      <article class="card sound-controls">
+        <div class="card-head"><span class="card-title">Sound Atlas</span><span class="card-kicker">Web Audio</span></div>
+        <div class="sound-body">
+          <div class="range-line"><label for="frequencyRange">Open pitch</label><input id="frequencyRange" type="range" min="110" max="440" value="220"><span id="frequencyRangeValue" class="range-value">220 Hz</span></div>
+          <div class="field"><label for="toneA">Tone A</label><select id="toneA"></select></div>
+          <div class="field"><label for="toneB">Tone B</label><select id="toneB"></select></div>
+          <div class="field"><label for="listenWaveform">Waveform</label><select id="listenWaveform"><option value="sine">Sine — pure reference</option><option value="triangle">Triangle — softer</option><option value="sawtooth">Sawtooth — bright</option></select></div>
+          <div class="audio-advanced">
+            <div class="audio-mini"><label id="audioModeLabel" for="audioMode">Audio model</label><select id="audioMode"><option value="pure">Pure oscillator</option><option value="pluck">Plucked-string simulation</option></select></div>
+            <div class="audio-mini"><label id="volumeLabel" for="masterVolume">Volume</label><input id="masterVolume" type="range" min="0.03" max="0.30" step="0.01" value="0.14"></div>
+            <div class="audio-mini"><label id="decayLabel" for="pluckDecay">Pluck decay</label><input id="pluckDecay" type="range" min="0.970" max="0.999" step="0.001" value="0.992"></div>
+            <button id="stopAudio" class="btn danger" type="button">■ Stop audio</button>
+          </div>
+          <p class="micro" style="margin:3px 0 0">For theoretical comparison, a sine wave makes beating and interval size easier to hear. The sound is a modern synthesis, not a reconstruction of a medieval instrument timbre.</p>
+        </div>
+        <div class="sound-buttons">
+          <button id="listenOpen" class="btn">▶ Open</button>
+          <button id="listenA" class="btn primary">▶ Tone A</button>
+          <button id="listenB" class="btn primary">▶ Tone B</button>
+          <button id="listenAscent" class="btn brass">▶ Full ascent</button>
+        </div>
+      </article>
+
+      <article class="card compare-card">
+        <div class="card-head"><span class="card-title">Compare two positions</span><span id="comparisonRatio" class="card-kicker">1/1</span></div>
+        <div class="compare-body">
+          <div class="tone-box">
+            <div id="toneALabel" class="tone-label">ا</div>
+            <div id="toneALatin" class="tone-latin">alif</div>
+            <div id="toneAHz" class="tone-hz">220.00 Hz</div>
+            <div id="toneACents" class="tone-cents">0.000¢</div>
+          </div>
+          <div class="vs">A ↔ B<br><span id="comparisonCents">701.955¢</span></div>
+          <div class="tone-box">
+            <div id="toneBLabel" class="tone-label">يا</div>
+            <div id="toneBLatin" class="tone-latin">yā-alif</div>
+            <div id="toneBHz" class="tone-hz">330.00 Hz</div>
+            <div id="toneBCents" class="tone-cents">701.955¢</div>
+          </div>
+        </div>
+        <div class="compare-actions">
+          <button id="playSequenceAB" class="btn">▶ A then B</button>
+          <button id="playTogetherAB" class="btn primary">▶ Together</button>
+          <button id="swapAB" class="btn">⇄ Swap</button>
+        </div>
+      </article>
+
+      <aside class="card pattern-card">
+        <div class="card-head"><span class="card-title">Octave step pattern</span><span class="card-kicker">12L + 5C</span></div>
+        <div class="pattern-body">
+          <div class="pattern-equation">L = 256/243 ≈ 90.225¢<br>C = 531441/524288 ≈ 23.460¢</div>
+          <div class="pattern-copy">Every adjacent step is either a limma or a Pythagorean comma. The unequal sequence demonstrates that this is not 17-tone equal temperament.</div>
+          <div id="listenStepStrip" class="step-strip" style="margin-top:12px"></div>
+        </div>
+        <div class="pattern-actions">
+          <button id="playLimma" class="btn">▶ Hear limma</button>
+          <button id="playComma" class="btn danger">▶ Hear comma</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+
+  <section id="panel-modes" class="panel" role="tabpanel" aria-label="Tetrachords and modal applications">
+    <div class="modes-grid">
+      <aside class="card species-card">
+        <div class="card-head"><span id="speciesTitle" class="card-title">Tetrachord species</span><span id="speciesExactKicker" class="card-kicker">Exact fourth</span></div>
+        <div id="speciesList" class="species-list"></div>
+      </aside>
+      <article class="card mode-builder">
+        <div class="card-head"><span id="builderHead" class="card-title">Species Atlas</span><button id="playSpecies" class="btn primary">▶ Hear</button></div>
+        <div class="builder-body">
+          <div id="builderTitle" class="builder-title"></div>
+          <div id="builderCopy" class="builder-copy"></div>
+          <div id="intervalChain" class="interval-chain"></div>
+          <div id="speciesResult" class="species-result"></div>
+        </div>
+      </article>
+      <aside class="card modal-notes">
+        <div class="card-head"><span id="modalApplicationsTitle" class="card-title">From species to adwār</span><span id="modalInterpretiveKicker" class="card-kicker">Interpretive layer</span></div>
+        <div class="modal-body">
+          <div id="modalApplicationsCopy" class="caution-box">Al-Urmawī combines lower tetrachord and upper pentachord species into octave cycles. This Atlas demonstrates interval categories; it does not claim that one fixed modern tuning exhausts medieval performance practice.</div>
+          <div class="source-row"><strong id="categoricalTitle">Historical categories</strong><span id="categoricalCopy">Ṭanīnī (T), mujannab (J), and baqiyyah (B) are interval categories used in the Systematist literature.</span></div>
+          <div class="source-row"><strong id="isfahanTitle">Iṣfahān example</strong><span id="isfahanCopy">The five-note fourth is described categorically as J–J–J–B in later analytical presentation; exact J sizes can vary by theoretical or practical context.</span></div>
+          <button id="openSourcesFromModes" class="btn">Open source notes</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="panel-train" class="panel" role="tabpanel">
+    <div class="train-grid">
+      <article class="card quiz-card">
+        <div class="card-head"><span class="card-title">Interactive training</span><span id="quizScoreTop" class="card-kicker">0 correct / 0</span></div>
+        <div class="quiz-tabs">
+          <button class="quiz-mode active" data-quiz-mode="theory">Theory &amp; ratios</button>
+          <button class="quiz-mode" data-quiz-mode="ear">Ear training</button>
+        </div>
+        <div class="quiz-body">
+          <h3 id="quizQuestion" class="quiz-question">Loading question…</h3>
+          <div id="quizOptions" class="quiz-options"></div>
+          <div id="quizFeedback" class="feedback">Choose one answer.</div>
+          
+        </div>
+        <div class="quiz-footer">
+          <div id="quizScore" class="score">Score: 0 / 0</div>
+          <button id="newQuestion" class="btn brass">New question</button>
+        </div>
+      </article>
+
+      <article class="card data-card">
+        <div class="card-head">
+          <span class="card-title">Exact pitch lattice · ascending order</span>
+          <span id="tableFrequencyCaption" class="card-kicker">Hz calculated at 220 Hz</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Label</th><th>String length</th><th>Frequency ratio</th><th>Cents</th><th>Hz</th><th>Previous step</th></tr></thead>
+            <tbody id="pitchTableBody"></tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="statusbar">
+  <span id="statusMessage">Explore mode · open string selected</span>
+</footer>
+
+</div>
+</div>
+
+
+
+
+<div id="mobilePitchBar" class="mobile-pitch-bar" hidden aria-live="polite"><div><b id="mobilePitchNote">ا</b><span id="mobilePitchDetails">1/1 · 0.000¢ · 220 Hz</span></div><button id="mobilePitchPlay" type="button">▶ Play</button></div>
+<nav id="mobileNav" class="mobile-nav" aria-label="Primary navigation">
+  <button type="button" data-mobile-panel="learn"><span>◉</span><b id="mobileLearn">Learn</b></button>
+  <button type="button" data-mobile-panel="explore"><span>⌁</span><b id="mobileExplore">Explore</b></button>
+  <button type="button" data-mobile-panel="construct"><span>◇</span><b id="mobileConstruct">Construct</b></button>
+  <button type="button" data-mobile-panel="listen"><span>♪</span><b id="mobileListen">Listen</b></button>
+  <button type="button" data-mobile-panel="modes"><span>◌</span><b id="mobileModes">Species &amp; Modes</b></button>
+  <button type="button" data-mobile-panel="train"><span>✓</span><b id="mobileTrain">Train &amp; Data</b></button>
+</nav>
+
+<div id="mobileMoreSheet" class="app-sheet" aria-hidden="true">
+ <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close"></button>
+ <section class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="moreSheetTitle">
+  <div class="sheet-handle"></div><div class="sheet-head"><h2 id="moreSheetTitle">More</h2><button type="button" data-close-sheet>×</button></div>
+  <div class="sheet-grid">
+   <button type="button" data-more-panel="modes"><span>◌</span><b id="moreModes">Species &amp; Modes</b></button>
+   <button type="button" data-more-panel="train"><span>✓</span><b id="moreTraining">Training &amp; Data</b></button>
+   <button id="moreInstrumentBtn" type="button"><span>𝄞</span><b id="moreInstrument">Instrument view</b></button>
+   <button id="moreSourcesBtn" type="button"><span>⌘</span><b id="moreSources">Sources</b></button>
+   <button id="moreAboutBtn" type="button"><span>i</span><b id="moreAbout">About</b></button>
+   <button id="moreSettingsBtn" type="button"><span>⚙</span><b id="moreSettings">Settings</b></button>
+   <button id="moreInstallBtn" type="button"><span>⇩</span><b id="moreInstall">Install app</b></button>
+   <a href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener"><span>↗</span><b id="moreScales">Persian Music Scales</b></a>
+  </div>
+ </section>
+</div>
+
+<div id="settingsSheet" class="app-sheet" aria-hidden="true">
+ <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close"></button>
+ <section class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="sheet-handle"></div><div class="sheet-head"><h2 id="settingsTitle">Settings</h2><button type="button" data-close-sheet>×</button></div>
+  <div class="settings-list">
+   <label><span id="settingWelcomeLabel">Show opening screen on launch</span><input id="settingWelcome" type="checkbox"></label>
+   <label><span id="settingMotionLabel">Reduce motion</span><input id="settingMotion" type="checkbox"></label>
+  </div>
+ </section>
+</div>
+
+<div id="aboutDialog" class="dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="aboutDialogTitle">
+ <div class="scholar-dialog about-dialog-card">
+  <div class="dialog-head"><h2 id="aboutDialogTitle">About the Atlas</h2><button id="closeAboutDialog" class="btn">Close</button></div>
+  <div class="dialog-content about-content">
+   <div class="about-hero"><img src="assets/brand/advar-mark.svg" alt=""><div><p id="aboutSeries">Persian Music Scales · Historical Theory Series</p><h3>Al-Urmawī Advar Atlas</h3><p id="aboutSummary">A multilingual digital-humanities application for exploring exact string divisions, interval structures, listening models, and modal categories.</p></div></div>
+   <section class="dialog-section"><h3 id="aboutCreatorTitle">Creator and developer</h3><p><strong>Dr. Pouya Hosseini</strong></p><p id="aboutCreatorCopy">Researcher, independent developer, and creator of Persian Music Scales.</p></section>
+   <section class="dialog-section"><h3 id="aboutLinksTitle">Project links</h3><div class="about-links"><a href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener">Persian Music Scales App</a><a href="https://github.com/PersianMusicScales/urmawi-advar-atlas" target="_blank" rel="noopener">GitHub repository</a><a href="https://www.youtube.com/@pouya-hosseini" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/drpouyahosseini" target="_blank" rel="noopener">LinkedIn</a><a href="https://orcid.org/0000-0003-4492-0004" target="_blank" rel="noopener">ORCID</a></div></section>
+   <p class="version-line">Version <span id="appVersion">4.3.0</span> · PWA Edition</p>
+  </div>
+ </div>
+</div>
+
+<div id="installHelpDialog" class="dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="installHelpTitle">
+ <div class="scholar-dialog install-dialog-card"><div class="dialog-head"><h2 id="installHelpTitle">Install Advar Atlas</h2><button id="closeInstallHelp" class="btn">Close</button></div><div class="dialog-content"><p id="installHelpCopy">Use your browser menu and choose “Install app” or “Add to Home Screen”.</p></div></div>
+</div>
+
+<div id="updateToast" class="update-toast" role="status" aria-live="polite" hidden><span id="updateToastText">A new version is available.</span><button id="updateAppBtn" type="button">Update</button><button id="dismissUpdateBtn" type="button" aria-label="Dismiss">×</button></div>
+
+<div id="sourceDialog" class="dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="sourceDialogTitle">
+  <div class="scholar-dialog">
+    <div class="dialog-head"><h2 id="sourceDialogTitle">Sources, verification, and editorial policy</h2><button id="closeSourceDialog" class="btn">Close</button></div>
+    <div class="dialog-content">
+      <section class="dialog-section"><h3 id="sourcePrimaryHeading">Primary manuscript location</h3><p id="sourcePrimaryParagraph">The project anchors fret division in <em>Kitāb al-Adwār</em>, Section Two, ff. 3v–5r, and interval ratios in Section Three, ff. 5r–8r. Modal combinations are treated in Section Six, ff. 11r–18r; lute tuning and derivation occur in Section Eight, ff. 18v–19v.</p><p><a id="sourcePrimaryLink" href="https://www.qdl.qa/en/archive/81055/vdc_100085098732.0x000001" target="_blank" rel="noopener">Qatar Digital Library, British Library Or 136</a></p></section>
+      <section class="dialog-section"><h3 id="sourceVerifiedHeading">What is verified here</h3><ul><li id="sourceVerifiedItem1">All stored fractions reduce correctly and their reciprocals generate the displayed frequency ratios.</li><li id="sourceVerifiedItem2">The 18 displayed points ascend from 1/1 to 2/1.</li><li id="sourceVerifiedItem3">The adjacent pattern contains twelve limmas and five Pythagorean commas and multiplies to the octave.</li><li id="sourceVerifiedItem4">The common T–T–B tetrachord identity equals 4/3 exactly.</li></ul></section>
+      <section class="dialog-section"><h3 id="sourceInterpretiveHeading">What remains interpretive</h3><p id="sourceInterpretiveParagraph">The click-by-click construction sequence, modern prose, synthesized sound, and four-string instrument drawing are pedagogical interpretations. They are not a diplomatic transcription, a claim about one unique historical performance tuning, or a reconstruction of a specific surviving instrument.</p></section>
+      <section class="dialog-section"><h3 id="sourceOrientationHeading">Scholarly orientation</h3><p id="sourceOrientationParagraph">The conventional 3-limit reading is retained as a transparent analytical model. Owen Wright’s work remains a major modern framework for the Systematist tradition. Recent scholarship also stresses that categorical interval names and practical intonation should not be treated as universally fixed cent values.</p></section>
+      <section class="dialog-section"><h3 id="sourceLanguageHeading">Language review</h3><p id="sourceLanguageParagraph">The English, Persian, Arabic, and Turkish interfaces have been harmonized for consistency in this build. Historical terminology still deserves specialist native-speaker and philological review before formal publication.</p></section>
+      
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>
