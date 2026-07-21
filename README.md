@@ -1,84 +1,53 @@
 # Al-Urmawī Advar Atlas
 
-**Al-Urmawī Advar Atlas** is an interactive, multilingual learning environment for exploring Ṣafī al-Dīn al-Urmawī’s monochord, fret divisions, exact pitch ratios, interval structures, listening models, geometrical construction, modal categories, and training activities.
+**Al-Urmawī Advar Atlas** is an installable, offline-capable, multilingual progressive web application for exploring Ṣafī al-Dīn al-Urmawī’s monochord, fret divisions, exact rational pitch data, geometrical construction, listening models, tetrachord species, modal categories, and training activities.
 
-The atlas is part of the broader **Persian Music Scales** project and was conceived, designed, and developed by **Dr. Pouya Hosseini**.
+The Atlas is part of **Persian Music Scales · Historical Theory Series** and was conceived, designed, researched, and developed by **Dr. Pouya Hosseini**.
 
-## Live atlas
+## Live application
 
-**Website:** https://persianmusicscales.github.io/urmawi-advar-atlas/
+https://persianmusicscales.github.io/urmawi-advar-atlas/
 
-## Main features
+## PWA and responsive features
 
-- Interactive monochord with 18 exact pitch points from `1/1` to `2/1`
-- Exact rational string-length and frequency-ratio data
-- Cent and frequency calculations
-- Combined, enlarged-theory, and instrument-focused visualizations
-- Guided lessons and source-aware explanations
-- Step-by-step geometrical construction
-- Listening, comparison, and interval-pattern tools
-- Tetrachord species and modal-category laboratory
-- Training questions and mathematical validation tests
-- English, Persian, Arabic, and Turkish interfaces
-- Fullscreen and presentation-focus modes
-- Self-contained static HTML with no server-side dependency
+- Installable on Android, Windows, macOS, Linux, ChromeOS, and through Add to Home Screen on iOS
+- Offline application shell and cached scholarly Atlas
+- True desktop, tablet, and phone layouts—no miniature scaled desktop interface
+- Theory-first phone layout; the illustrative instrument is hidden by default and can be opened explicitly
+- Mobile bottom navigation and touch-sized controls
+- Long-press fret playback and swipe navigation through lessons
+- Local persistence of lesson, panel, pitch, audio, view, and accessibility settings
+- English, Persian, Arabic, and Turkish interfaces, including PWA and mobile controls
+- Dedicated Google Sites/iframe mode through `?embed=1`
+- Install, update, online/offline, and version-management interface
 
-## About the creator
+## Visual identity
 
-**Dr. Pouya Hosseini** is a scientist and independent developer who creates interactive visual tools for exploring and teaching Persian and historical music theory. His work on **Persian Music Scales** combines music-theory visualization, microtonal listening, multilingual education, and accessible digital presentation.
+The icon and color system are original designs inspired by the manuscript’s parchment ground, dark calligraphic ink, vermilion geometrical circles, and string-division diagrams. The mark combines concentric theoretical rings with a monochord and highlighted fret.
 
-## Persian Music Scales and related links
+## URL options
 
-- **Persian Music Scales interactive platform:** https://persianmusicscales.github.io/Persian-Music-Scales-App/
-- **YouTube channel:** https://www.youtube.com/@pouya-hosseini
-- **Persian Music Scales project video:** https://www.youtube.com/watch?v=hSfm6LHRFmc
-- **GitHub projects:** https://github.com/PersianMusicScales
-- **This repository:** https://github.com/PersianMusicScales/urmawi-advar-atlas
-- **LinkedIn:** https://www.linkedin.com/in/drpouyahosseini
-- **ORCID:** https://orcid.org/0000-0003-4492-0004
+- `?lang=en`, `?lang=fa`, `?lang=ar`, `?lang=tr`
+- `?panel=learn`, `?panel=explore`, `?panel=construct`, `?panel=listen`, `?panel=modes`, `?panel=train`
+- `?view=both`, `?view=theory`, `?view=instrument`
+- `?embed=1` for Google Sites and iframe embedding
+- `?welcome=0` to bypass the opening screen
 
-## Scholarly and editorial scope
-
-The atlas distinguishes between exact mathematical data, historical source orientation, and modern pedagogical interpretation. The click-by-click lesson sequence, synthesized sound, and four-string instrument visualization are educational models. They should not be read as a diplomatic transcription, a claim for one universally fixed historical intonation, or a reconstruction of a specific surviving instrument.
-
-Detailed source notes, verification statements, interpretive limitations, and built-in mathematical tests are available through the **Sources** panel inside the atlas.
-
-## Running locally
-
-Download or clone the repository and open `index.html` in a modern browser. Because the project is self-contained, no build process or package installation is required.
+## Local validation
 
 ```bash
-git clone https://github.com/PersianMusicScales/urmawi-advar-atlas.git
-cd urmawi-advar-atlas
+node tests/validate.mjs
+node tests/pwa-check.mjs
 ```
 
-Then open `index.html`.
+## GitHub Pages
 
-## Publishing with GitHub Pages
+The included workflow publishes the root directory to GitHub Pages after validation. It can also be deployed directly from the `main` branch root.
 
-1. Open the repository **Settings**.
-2. Select **Pages**.
-3. Choose **Deploy from a branch**.
-4. Select the `main` branch and `/(root)` folder.
-5. Save the configuration.
+## Scholarly scope
 
-## Suggested citation
+Exact ratios and mathematical relations are separated from editorial reconstruction. The guided sequence, synthesized audio, four-string illustration, and modern explanatory prose are pedagogical layers rather than claims for a unique historical performance tuning or reconstruction of a surviving instrument.
 
-> Hosseini, Pouya. *Al-Urmawī Advar Atlas: Interactive Monochord Studio*. Persian Music Scales, 2026. https://persianmusicscales.github.io/urmawi-advar-atlas/
+## Copyright
 
-```bibtex
-@software{hosseini_urmawi_advar_atlas_2026,
-  author = {Hosseini, Pouya},
-  title  = {Al-Urmawi Advar Atlas: Interactive Monochord Studio},
-  year   = {2026},
-  url    = {https://persianmusicscales.github.io/urmawi-advar-atlas/}
-}
-```
-
-## Attribution
-
-Concept, research synthesis, interface design, programming, educational presentation, and project development: **Dr. Pouya Hosseini**.
-
-## License
-
-No open-source license has been granted for this repository at present. Unless a license is added later, the project remains protected by standard copyright rules.
+Copyright © 2026 Dr. Pouya Hosseini. All rights reserved. See `LICENSE`.
