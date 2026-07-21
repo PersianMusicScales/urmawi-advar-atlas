@@ -1,5 +1,5 @@
 "use strict";
-const VERSION="4.1.0";const CACHE=`advar-atlas-${VERSION}`;
+const VERSION="4.1.1";const CACHE=`advar-atlas-${VERSION}`;
 const CORE=["./","./index.html","./offline.html","./manifest.webmanifest","./css/app.css","./css/pwa-responsive.css","./js/app.js","./js/pwa.js","./assets/brand/advar-mark.svg","./assets/icons/favicon.svg","./assets/icons/icon-192x192.png","./assets/icons/icon-512x512.png"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE))));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("advar-atlas-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
