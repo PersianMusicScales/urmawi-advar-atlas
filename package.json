@@ -1,0 +1,9 @@
+{
+  "name": "urmawi-advar-atlas",
+  "version": "4.1.0",
+  "private": true,
+  "description": "Official PWA edition of the Al-Urmaw\u012b Advar Atlas",
+  "scripts": {
+    "test": "node tests/validate.mjs && node tests/pwa-check.mjs"
+  }
+}
