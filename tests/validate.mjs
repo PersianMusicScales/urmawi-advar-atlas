@@ -62,9 +62,9 @@ assert.match(css,/\.sounding-segment\{/,"active sounding-length styling missing"
 assert.match(js,/function updatePremiumHud\(\)/,"premium theory HUD update missing");
 const portrait=html.match(/<image id="instrumentPortrait" href="([^"]+)"\s+x="([^"]+)" y="[^"]+" width="([^"]+)"/);
 assert.ok(portrait && fs.existsSync(path.join(root,portrait[1])),"instrument portrait must be bundled");
-const artX=Number(portrait[2]), artScale=Number(portrait[3])/2124;
-assert.ok(Math.abs(artX+196*artScale-193)<0.1,"illustrated bridge aligns with ruler");
-assert.ok(Math.abs(artX+1838*artScale-998)<0.1,"illustrated nut aligns with ruler");
+const artX=Number(portrait[2]), artScale=Number(portrait[3])/2144;
+assert.ok(Math.abs(artX+203*artScale-193)<0.1,"illustrated bridge aligns with ruler");
+assert.ok(Math.abs(artX+1850*artScale-998)<0.1,"illustrated nut aligns with ruler");
 const ids=[...html.matchAll(/id=["']([^"']+)["']/g)].map(m=>m[1]);
 assert.equal(new Set(ids).size,ids.length,"duplicate HTML ids found");
 
