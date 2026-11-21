@@ -135,7 +135,7 @@
     <span>ا — nut (anf) · open string</span>
   </div>
   <div id="monoScrollShell" class="mono-scroll-shell">
-  <svg id="monoSvg" viewBox="0 0 1244 126" role="img" aria-labelledby="monoTitle monoDesc">
+  <svg id="monoSvg" preserveAspectRatio="none" viewBox="0 0 1244 126" role="img" aria-labelledby="monoTitle monoDesc">
     <title id="monoTitle">Al-Urmawī monochord</title>
     <desc id="monoDesc">A horizontal string from bridge to nut with seventeen pitch positions and the octave.</desc>
     <g id="theoryRulerLayer" aria-hidden="true"></g>
@@ -160,96 +160,10 @@
   <div id="mobileStageTools" class="mobile-stage-tools" aria-label="Theory zoom"><button id="mobileZoomOut" type="button" aria-label="Zoom out">−</button><span id="mobileZoomLabel">100%</span><button id="mobileZoomIn" type="button" aria-label="Zoom in">+</button></div>
   <button id="mobileInstrumentToggle" class="mobile-instrument-toggle" type="button" aria-expanded="false">Show illustrative instrument</button>
   <div class="instrument-wrap">
-    <svg id="instrumentSvg" viewBox="0 0 1244 136" role="img" aria-label="Practical instrument schematic">
-      <defs>
-        <linearGradient id="instrumentPanelFade" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
-          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-        </linearGradient>
-        <linearGradient id="bodyGrad" x1="0" x2="1">
-          <stop offset="0%" stop-color="#d8a665"/>
-          <stop offset="24%" stop-color="#e8bd7d"/>
-          <stop offset="58%" stop-color="#ddb16e"/>
-          <stop offset="100%" stop-color="#c99252"/>
-        </linearGradient>
-        <linearGradient id="neckGrad" x1="0" x2="1">
-          <stop offset="0%" stop-color="#aa6f4b"/>
-          <stop offset="100%" stop-color="#c38a64"/>
-        </linearGradient>
-        <linearGradient id="pegGrad" x1="0" x2="1">
-          <stop offset="0%" stop-color="#80573f"/>
-          <stop offset="100%" stop-color="#976c50"/>
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="1244" height="136" class="instrument-panel-bg"/>
-      <g id="instrumentArtLayer">
-        <!-- ultra-fine rounded bowl -->
-        <path class="instrument-body-main" d="M503,75 C496,60 477,44 441,31 C391,14 324,4 245,2 C166,0 103,8 60,24 C33,35 18,50 14,67 C10,88 19,105 43,118 C78,136 136,142 218,139 C301,136 383,124 447,106 C481,96 499,85 503,77 C504,76 504,76 503,75 Z"/>
-        <path class="instrument-body-inner" d="M482,75 C470,62 446,48 407,37 C359,23 299,16 233,15 C171,14 121,20 85,32 C60,40 45,51 40,65 C35,80 42,92 63,103 C95,117 146,123 215,122 C287,120 356,109 416,94 C452,85 472,79 482,75 Z"/>
-        <!-- decorative ribs -->
-        <path class="instrument-rib" d="M67,27 C153,42 247,48 347,47 C401,46 444,42 471,38"/>
-        <path class="instrument-rib" d="M48,48 C143,59 250,66 393,65 C430,65 458,62 478,58" opacity=".54"/>
-        <path class="instrument-rib" d="M44,99 C141,91 248,87 391,90 C429,91 458,95 478,100" opacity=".54"/>
-        <path class="instrument-rib" d="M70,121 C147,111 232,108 327,109 C383,111 427,116 459,122"/>
-        <path class="instrument-rib" d="M83,20 C185,63 320,79 479,75" opacity=".11"/>
-        <path class="instrument-rib" d="M79,128 C183,87 318,70 479,73" opacity=".11"/>
-        <!-- rosettes -->
-        <g>
-          <circle class="instrument-soundhole" cx="95" cy="75" r="11.8"/>
-          <circle class="instrument-soundhole-ring" cx="95" cy="75" r="7.4"/>
-          <g stroke="#f0e2c0" stroke-width="0.9" opacity=".72">
-            <line x1="95" y1="69.4" x2="95" y2="80.6"/><line x1="89.4" y1="75" x2="100.6" y2="75"/>
-            <line x1="91.0" y1="71.0" x2="99.0" y2="79.0"/><line x1="99.0" y1="71.0" x2="91.0" y2="79.0"/>
-          </g>
-        </g>
-        <g>
-          <circle class="instrument-soundhole" cx="180" cy="75" r="8.8" opacity=".64"/>
-          <circle class="instrument-soundhole-ring" cx="180" cy="75" r="5.9"/>
-          <g stroke="#f0e2c0" stroke-width="0.78" opacity=".65">
-            <line x1="180" y1="70.6" x2="180" y2="79.4"/><line x1="175.6" y1="75" x2="184.4" y2="75"/>
-            <line x1="176.9" y1="71.9" x2="183.1" y2="78.1"/><line x1="183.1" y1="71.9" x2="176.9" y2="78.1"/>
-          </g>
-        </g>
-        <g>
-          <circle class="instrument-soundhole" cx="259" cy="75" r="8.8" opacity=".64"/>
-          <circle class="instrument-soundhole-ring" cx="259" cy="75" r="5.9"/>
-          <g stroke="#f0e2c0" stroke-width="0.78" opacity=".65">
-            <line x1="259" y1="70.6" x2="259" y2="79.4"/><line x1="254.6" y1="75" x2="263.4" y2="75"/>
-            <line x1="255.9" y1="71.9" x2="262.1" y2="78.1"/><line x1="262.1" y1="71.9" x2="255.9" y2="78.1"/>
-          </g>
-        </g>
-        <!-- tail and bridge -->
-        <rect class="instrument-tail" x="46" y="62.2" width="9" height="25.6" rx="3.1"/>
-        <line class="instrument-bridge" x1="193" y1="60" x2="193" y2="91"/>
-        <line class="instrument-bridge" x1="198" y1="62.1" x2="198" y2="88.9" style="opacity:.24;stroke-width:1.2"/>
-        <!-- neck, nut, and angled pegbox -->
-        <path class="instrument-neck" d="M503,65 L997,65 Q1009,65 1009,75 Q1009,85 997,85 L503,85 Q490,85 490,75 Q490,65 503,65 Z"/>
-        <line x1="503" y1="75" x2="998" y2="75" stroke="rgba(255,255,255,.11)" stroke-width="1"/>
-        <g id="instrumentStaticFrets">
-          <line class="instrument-fret-mark" x1="611" y1="67.7" x2="611" y2="82.3"/>
-          <line class="instrument-fret-mark" x1="724" y1="67.7" x2="724" y2="82.3"/>
-          <line class="instrument-fret-mark" x1="831" y1="67.7" x2="831" y2="82.3"/>
-          <line class="instrument-fret-mark" x1="912" y1="67.7" x2="912" y2="82.3"/>
-        </g>
-        <path class="instrument-pegbox" d="M998,64 L1113,59 Q1126,58 1129,67 L1131,79 Q1133,88 1119,92 L998,86 Z"/>
-        <!-- 4 strings -->
-        <g id="instrumentStrings">
-          <line class="instrument-string" x1="54" y1="69.4" x2="1110" y2="69.4"/>
-          <line class="instrument-string" x1="54" y1="73.2" x2="1110" y2="73.2"/>
-          <line class="instrument-string" x1="54" y1="77.0" x2="1110" y2="77.0"/>
-          <line class="instrument-string" x1="54" y1="80.8" x2="1110" y2="80.8"/>
-        </g>
-        <!-- angled pegs -->
-        <g id="pegs">
-          <ellipse class="instrument-peg" cx="1042" cy="49.5" rx="6.3" ry="8.9"/><ellipse class="instrument-peg" cx="1081" cy="44.8" rx="6.3" ry="8.9"/>
-          <ellipse class="instrument-peg" cx="1045" cy="99.0" rx="6.3" ry="8.9"/><ellipse class="instrument-peg" cx="1084" cy="102.8" rx="6.3" ry="8.9"/>
-          <line x1="1042" y1="57.2" x2="1043" y2="62.2" stroke="#714c37" stroke-width="1.35"/>
-          <line x1="1081" y1="52.5" x2="1083" y2="61.4" stroke="#714c37" stroke-width="1.35"/>
-          <line x1="1045" y1="91.3" x2="1043" y2="86.8" stroke="#714c37" stroke-width="1.35"/>
-          <line x1="1084" y1="95.1" x2="1081" y2="86.0" stroke="#714c37" stroke-width="1.35"/>
-        </g>
-        <line x1="998" y1="64.7" x2="998" y2="85.3" stroke="#eadfc8" stroke-width="2.4" opacity=".95"/>
-      </g>
+    <svg id="instrumentSvg" viewBox="0 0 1244 232" role="img" aria-label="Practical instrument schematic">
+      <!-- The image is registered at its bridge (193) and nut (998) in ruler units. -->
+      <image id="instrumentPortrait" href="assets/instruments/setar.webp"
+             x="93.7802" y="0.1621" width="1047.9174" height="227.7656" pointer-events="none"/>
       <g id="instrumentOverlayLayer"></g>
     </svg>
     <div class="instrument-caption"></div>
