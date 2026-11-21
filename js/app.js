@@ -83,11 +83,11 @@ let quizCurrent=null;
 let scoreCorrect=0;
 let scoreTotal=0;
 
-/* Fit the complete 1280 × 720 application into the available viewport. */
+/* Fit the active desktop layout into the available viewport. */
 function fitApp(){
   const responsive=window.matchMedia("(max-width:1100px)").matches || new URLSearchParams(location.search).get("embed")==="1" || window.self!==window.top;
   if(responsive){$("app").style.transform="none";return}
-  const scale=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  const scale=Math.min(window.innerWidth/1280,window.innerHeight/$("app").offsetHeight);
   $("app").style.transform=`scale(${scale})`;
 }
 window.addEventListener("resize",fitApp);
@@ -124,8 +124,8 @@ function toneRatio(n,d,delay=0){
 /* Monochord */
 const X0=193,X1=998,Y=61;
 const xFor=n=>X0+lengthValue(n)*(X1-X0);
-const INSTRUMENT = {bridgeX:193,nutX:998,railY:26,stringY:75,top:8,bottom:114};
-const instrumentXFor=n=>INSTRUMENT.bridgeX + lengthValue(n)*(INSTRUMENT.nutX-INSTRUMENT.bridgeX);
+const INSTRUMENT = {bridgeX:X0,nutX:X1,railY:79,stringY:116,top:60,bottom:139};
+const instrumentXFor=xFor;
 function monoLabel(n,i){
   const mode=$("labelMode").value;
   if(mode==="index")return String(i+1);
@@ -201,23 +201,26 @@ function renderInstrument(){
     const visible=activePanel!=="construct" || constructed.has(n.label);
     const dim=activePanel==="construct" && !visible;
     if(i>0 && visible){
-      layer.appendChild(createSvg("line",{x1:x,y1:INSTRUMENT.railY+3,x2:x,y2:62,class:"instrument-fretline",opacity:0.16}));
+      layer.appendChild(createSvg("line",{x1:x,y1:INSTRUMENT.railY+3,x2:x,y2:INSTRUMENT.stringY-9,class:"instrument-fretline"}));
     }
     const dotClass=i===focusIndex?"instrument-dot gold":`instrument-dot ${dim?"dim":""}`;
     layer.appendChild(createSvg("circle",{cx:x,cy:INSTRUMENT.railY,r:i===focusIndex?4.4:3.0,class:dotClass,opacity:dim?0.16:1}));
-    const hit=createSvg("rect",{x:x-11,y:INSTRUMENT.top,width:22,height:INSTRUMENT.bottom-INSTRUMENT.top,class:"instrument-hotzone"});
+    // Adjacent microtonal stops can be closer together than a fixed-width target.
+    const left=i===NOTES.length-1 ? x-12 : (x+instrumentXFor(NOTES[i+1]))/2;
+    const right=i===0 ? x+12 : (x+instrumentXFor(NOTES[i-1]))/2;
+    const hit=createSvg("rect",{x:left,y:INSTRUMENT.top,width:right-left,height:INSTRUMENT.bottom-INSTRUMENT.top,class:"instrument-hotzone"});
     hit.addEventListener("click",()=>{activatePanel("explore");selectNote(i,true)});
     layer.appendChild(hit);
   });
 
-  layer.appendChild(createSvg("line",{x1:INSTRUMENT.bridgeX,y1:INSTRUMENT.railY-2,x2:INSTRUMENT.bridgeX,y2:92,class:"instrument-guide"}));
-  layer.appendChild(createSvg("line",{x1:INSTRUMENT.nutX,y1:INSTRUMENT.railY-2,x2:INSTRUMENT.nutX,y2:92,class:"instrument-guide"}));
+  layer.appendChild(createSvg("line",{x1:INSTRUMENT.bridgeX,y1:INSTRUMENT.railY-2,x2:INSTRUMENT.bridgeX,y2:INSTRUMENT.stringY,class:"instrument-guide"}));
+  layer.appendChild(createSvg("line",{x1:INSTRUMENT.nutX,y1:INSTRUMENT.railY-2,x2:INSTRUMENT.nutX,y2:INSTRUMENT.stringY,class:"instrument-guide"}));
 
   const current=NOTES[focusIndex];
   const x=instrumentXFor(current);
-  layer.appendChild(createSvg("line",{x1:x,y1:INSTRUMENT.railY+1,x2:x,y2:96,class:"instrument-focus-line"}));
-  layer.appendChild(createSvg("circle",{cx:x,cy:96,r:4.0,class:"instrument-dot gold"}));
-  layer.appendChild(createSvg("text",{x:x,y:10,"text-anchor":"middle",class:"instrument-focus-label"},current.label));
+  layer.appendChild(createSvg("line",{x1:x,y1:INSTRUMENT.railY+1,x2:x,y2:INSTRUMENT.stringY,class:"instrument-focus-line"}));
+  layer.appendChild(createSvg("circle",{cx:x,cy:INSTRUMENT.stringY,r:3.5,class:"instrument-dot gold"}));
+  layer.appendChild(createSvg("text",{x:x,y:INSTRUMENT.railY-9,"text-anchor":"middle",class:"instrument-focus-label"},current.label));
   }
 
 /* Explore */

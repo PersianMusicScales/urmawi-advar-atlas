@@ -60,7 +60,11 @@ assert.match(js,/requestedView=new URLSearchParams\(location\.search\)\.get\("vi
 assert.match(css,/body\.stage-focus #app\{grid-template-rows:72px 648px 0 0 0\}/,"presentation focus mode missing");
 assert.match(css,/\.sounding-segment\{/,"active sounding-length styling missing");
 assert.match(js,/function updatePremiumHud\(\)/,"premium theory HUD update missing");
-assert.equal((html.match(/class=["']instrument-string["']/g)||[]).length,4,"instrument must contain exactly four strings");
+const portrait=html.match(/<image id="instrumentPortrait" href="([^"]+)"\s+x="([^"]+)" y="[^"]+" width="([^"]+)"/);
+assert.ok(portrait && fs.existsSync(path.join(root,portrait[1])),"instrument portrait must be bundled");
+const artX=Number(portrait[2]), artScale=Number(portrait[3])/2124;
+assert.ok(Math.abs(artX+196*artScale-193)<0.1,"illustrated bridge aligns with ruler");
+assert.ok(Math.abs(artX+1838*artScale-998)<0.1,"illustrated nut aligns with ruler");
 const ids=[...html.matchAll(/id=["']([^"']+)["']/g)].map(m=>m[1]);
 assert.equal(new Set(ids).size,ids.length,"duplicate HTML ids found");
 
