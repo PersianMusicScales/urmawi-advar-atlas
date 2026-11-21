@@ -99,7 +99,11 @@ function ctx(){
   if(audioContext.state==="suspended") audioContext.resume();
   return audioContext;
 }
-function currentBase(){return Number($("baseFrequency").value)||220}
+function boundedInput(id,fallback){
+  const field=$(id),value=field.valueAsNumber;
+  return Number.isFinite(value)?Math.max(Number(field.min),Math.min(Number(field.max),value)):fallback;
+}
+function currentBase(){return boundedInput("baseFrequency",220)}
 function currentWave(){return activePanel==="listen"?$("listenWaveform").value:$("waveform").value}
 function tone(index,delay=0,duration=.68,volume=.14){
   const c=ctx(),now=c.currentTime+delay;
@@ -136,10 +140,15 @@ function renderIntervals(){
   const layer=$("intervalLayer");layer.innerHTML="";
   for(let i=1;i<NOTES.length;i++){
     const xa=xFor(NOTES[i-1]),xb=xFor(NOTES[i]);
-    layer.appendChild(createSvg("rect",{
+    const interval=intervalBetween(NOTES[i-1],NOTES[i]);
+    const kind=STEP_TYPES[i-1]==="C"?"interval-comma":"interval-limma";
+    const rect=createSvg("rect",{
       x:Math.min(xa,xb),y:113,width:Math.max(2,Math.abs(xa-xb)),height:7,
-      class:STEP_TYPES[i-1]==="C"?"interval-comma":"interval-limma"
-    }));
+      class:`${kind}${i===premiumFocusIndex()?" current":""}`
+    });
+    // Native SVG title: an exact ratio and a computed (rounded) cent value.
+    rect.appendChild(createSvg("title",{},`${NOTES[i-1].label} → ${NOTES[i].label}: ${interval.n}/${interval.d} · ${fixed(interval.cents,3)}¢`));
+    layer.appendChild(rect);
   }
 }
 function renderMonochord(){
@@ -151,20 +160,21 @@ function renderMonochord(){
     const stemEnd=tier<2?labelY+5:labelY-13;
     const group=createSvg("g",{
       class:`fret ${i===0||i===17?"endpoint ":""}${i===selected&&activePanel!=="construct"?"active ":""}${activePanel==="construct"&&CONSTRUCTION[constructionStep].note===n.label?"active ":""}${constructed.has(n.label)?"constructed":""}`,
-      tabindex:"0",role:"button","aria-label":`${n.label}, ${fixed(cents(n))} cents`
+      tabindex:"0",role:"button","aria-pressed":String(i===premiumFocusIndex()),"aria-label":`${n.label}, ${fixed(cents(n))} cents`
     });
     let opacity=1;
     if(activePanel==="construct"&&!constructed.has(n.label))opacity=.12;
     group.setAttribute("opacity",opacity);
     group.appendChild(createSvg("line",{x1:x,y1:Y-6,x2:x,y2:stemEnd,class:"stem"}));
     group.appendChild(createSvg("circle",{cx:x,cy:Y,r:13,class:"fret-hit",fill:"transparent"}));
-    group.appendChild(createSvg("circle",{cx:x,cy:Y,r:(i===selected&&activePanel!=="construct")||CONSTRUCTION[constructionStep].note===n.label?6.3:4.5,class:"dot"}));
+    group.appendChild(createSvg("circle",{cx:x,cy:Y,r:i===premiumFocusIndex()?6.3:4.5,class:"dot"}));
     group.appendChild(createSvg("text",{x,y:labelY,"text-anchor":"middle",class:"label"},monoLabel(n,i)));
     group.appendChild(createSvg("text",{x,y:tier<2?labelY+10:labelY+9,"text-anchor":"middle",class:"small-label"},i+1));
     group.addEventListener("click",()=>{activatePanel("explore");selectNote(i,true)});
     group.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activatePanel("explore");selectNote(i,true)}});
     layer.appendChild(group);
   });
+  renderIntervals();
   renderConstructionGuide();
   renderInstrument();
 }
@@ -235,7 +245,7 @@ function selectNote(index,play=false){
   if(play)tone(selected);
 }
 function updateExplore(){
-  const n=NOTES[selected],base=currentBase(),cm=Number($("stringLength").value)||100;
+  const n=NOTES[selected],base=currentBase(),cm=boundedInput("stringLength",100);
   const hz=base*frequencyRatio(n),bridge=cm*lengthValue(n),nut=cm-bridge;
   const prev=previousStepInfo(selected);
   $("noteOrb").textContent=n.label;
@@ -305,17 +315,17 @@ function setConstruction(index){
   renderGuideVisual(s,n);renderStepGrid();renderMonochord();
   $("statusMessage").textContent=`Construction step ${constructionStep} · ${s.note} · ${s.heading}`;
 }
+function guidePosition(fraction){return `calc(${100*fraction}% + ${28-56*fraction}px)`}
 function renderGuideVisual(s,n){
-  const left=25,right=25,width=310;
   const pct=lengthValue(n);
-  $("guideCurrent").style.left=`${left+pct*width}px`;
-  $("guideLabel").style.left=`${left+pct*width}px`;
+  $("guideCurrent").style.left=guidePosition(pct);
+  $("guideLabel").style.left=guidePosition(pct);
   $("guideLabel").textContent=n.label;
   const divs=$("guideDivisions");divs.innerHTML="";
   if(s.divisions){
     for(let i=1;i<s.divisions;i++){
       const line=document.createElement("span");line.className="guide-division";
-      line.style.left=`${left+(i/s.divisions)*width}px`;divs.appendChild(line);
+      line.style.left=guidePosition(i/s.divisions);divs.appendChild(line);
     }
     $("guideNote").textContent=`Divide the complete length into ${s.divisions} equal part${s.divisions===1?"":"s"}; the marked sounding length is ${s.active}/${s.divisions}.`;
   }else{
@@ -349,7 +359,7 @@ function populateSelect(id,defaultIndex){
 function updateListen(){
   const a=Number($("toneA").value||0),b=Number($("toneB").value||10);
   const na=NOTES[a],nb=NOTES[b],base=currentBase();
-  $("frequencyRange").value=Math.max(110,Math.min(440,base));
+  $("frequencyRange").value=base;
   $("frequencyRangeValue").textContent=`${fixed(base,0)} Hz`;
   $("toneALabel").textContent=na.label;$("toneALatin").textContent=na.translit;
   $("toneAHz").textContent=`${fixed(base*frequencyRatio(na),2)} Hz`;
@@ -357,15 +367,16 @@ function updateListen(){
   $("toneBLabel").textContent=nb.label;$("toneBLatin").textContent=nb.translit;
   $("toneBHz").textContent=`${fixed(base*frequencyRatio(nb),2)} Hz`;
   $("toneBCents").textContent=`${fixed(cents(nb))}¢`;
-  const ratio=intervalBetween(na,nb),absC=Math.abs(cents(nb)-cents(na));
+  const ratio=intervalBetween(na,nb);
   $("comparisonRatio").textContent=`B/A = ${ratio.n}/${ratio.d}`;
-  $("comparisonCents").textContent=`${fixed(absC)}¢`;
+  $("comparisonCents").textContent=`${fixed(ratio.cents)}¢`;
 }
 function setBase(value){
   const v=Math.max(40,Math.min(1000,Number(value)||220));
-  $("baseFrequency").value=v;$("frequencyRange").value=Math.max(110,Math.min(440,v));
+  $("baseFrequency").value=v;$("frequencyRange").value=v;
   $("frequencyRangeValue").textContent=`${fixed(v,0)} Hz`;
-  updateExplore();updateListen();renderTable();
+  updateExplore();renderTable();updatePremiumHud();
+  if(typeof updateMobilePitchBar==="function")updateMobilePitchBar();
 }
 
 /* Table */
@@ -375,7 +386,7 @@ function renderTable(){
     const tr=document.createElement("tr");
     if(i===selected)tr.className="selected-row";
     const prev=previousStepInfo(i);
-    tr.innerHTML=`<td>${i+1}</td><td>${n.label}</td><td>${n.lenN}/${n.lenD}</td><td>${n.lenD}/${n.lenN}</td><td>${fixed(cents(n))}</td><td>${fixed(base*frequencyRatio(n),2)}</td><td>${prev?prev.type:"—"}</td>`;
+    tr.innerHTML=`<td>${i+1}</td><td><button type="button" class="pitch-table-note" aria-label="${n.translit} · ${n.lenD}/${n.lenN}">${n.label}</button></td><td>${n.lenN}/${n.lenD}</td><td>${n.lenD}/${n.lenN}</td><td>${fixed(cents(n))}</td><td>${fixed(base*frequencyRatio(n),2)}</td><td>${prev?prev.type:"—"}</td>`;
     tr.addEventListener("click",()=>{selectNote(i,false);activatePanel("explore")});
     body.appendChild(tr);
   });
@@ -398,16 +409,17 @@ function newTheoryQuestion(){
     const j=Math.max(1,i),prev=previousStepInfo(j);
     quizCurrent={answer:prev.type,prompt:`What is the adjacent step from ${NOTES[j-1].label} to ${NOTES[j].label}?`,options:shuffled(["Limma","Comma","Whole tone","Perfect fourth"]),explain:`It is a ${prev.type.toLowerCase()}: ${prev.n}/${prev.d} ≈ ${fixed(prev.cents)} cents.`};
   }else{
-    quizCurrent={answer:`${fixed(cents(n),1)}¢`,prompt:`Approximately how high is ${n.label} above the open string?`,options:shuffled([`${fixed(cents(n),1)}¢`,`${fixed(Math.max(0,cents(n)+90.225),1)}¢`,`${fixed(Math.max(0,cents(n)-90.225),1)}¢`,`${fixed(Math.max(0,cents(n)+23.46),1)}¢`]),explain:`${n.label} is ${fixed(cents(n))} cents above the open string.`};
+    quizCurrent={answer:`${fixed(cents(n),1)}¢`,prompt:`Approximately how high is ${n.label} above the open string?`,options:optionIndices(i).map(j=>`${fixed(cents(NOTES[j]),1)}¢`),explain:`${n.label} is ${fixed(cents(n))} cents above the open string.`};
   }
   renderQuestion();
 }
 function newEarQuestion(){
-  const i=randomIndex();quizCurrent={earIndex:i,answer:NOTES[i].label,prompt:"Listen to the mystery tone, then identify its Abjad position.",options:optionIndices(i).map(j=>NOTES[j].label),explain:`The tone was ${NOTES[i].label}: ${fixed(cents(NOTES[i]))} cents above the open string.`};
+  const i=randomIndex();quizCurrent={earIndex:i,answer:NOTES[i].label,prompt:"Hear the open string, then identify the second tone’s Abjad position.",options:optionIndices(i).map(j=>NOTES[j].label),explain:`The tone was ${NOTES[i].label}: ${fixed(cents(NOTES[i]))} cents above the open string.`};
   renderQuestion();
   const play=document.createElement("button");play.className="btn primary";play.textContent="▶ Play mystery tone";play.style.marginBottom="8px";
-  play.addEventListener("click",()=>tone(i));$("quizOptions").before(play);quizCurrent.playButton=play;
-  setTimeout(()=>tone(i),120);
+  const playPair=()=>{stopAllAudio();tone(0,0,.4);tone(i,.58,.58)};
+  play.addEventListener("click",playPair);$("quizOptions").before(play);quizCurrent.playButton=play;
+  playPair();
 }
 function renderQuestion(){
   $("quizQuestion").textContent=quizCurrent.prompt;$("quizFeedback").textContent="Choose one answer.";
@@ -462,7 +474,9 @@ document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>acti
 $("fullscreenBtn")?.addEventListener("click",async()=>{
   try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}
 });
-$("baseFrequency").addEventListener("input",e=>setBase(e.target.value));
+$("baseFrequency").addEventListener("input",e=>{if(e.target.value && e.target.validity.valid)setBase(e.target.value)});
+$("baseFrequency").addEventListener("change",()=>setBase(currentBase()));
+$("stringLength").addEventListener("change",()=>{$("stringLength").value=boundedInput("stringLength",100);updateExplore()});
 $("frequencyRange").addEventListener("input",e=>setBase(e.target.value));
 $("stringLength").addEventListener("input",updateExplore);
 $("labelMode").addEventListener("change",renderMonochord);
@@ -518,13 +532,13 @@ const UI = {
     eyebrow:"Systematist School · Interactive Monochord Atlas",
     title:"On the Divisions of the Frets",
     subtitle:"Ṣafī al-Dīn al-Urmawī · geometry, exact ratios, listening, construction, and training",
-    sourceChip:"17 positions + octave · exact rational data",
+    sourceChip:"17 distinct positions · octave repeated · 3-limit model",
     fullscreen:"⛶ Fullscreen", fullscreenTitle:"Open in fullscreen",
     autoLanguage:"Auto · Browser",
     bridge:"م — bridge (mashṭ)",
     nut:"ا — nut (anf) · open string",
     hintExplore:"Select any fret to inspect and hear it",
-    hintConstruct:"Construction positions are revealed in source order",
+    hintConstruct:"Construction positions are revealed in a modern pedagogical sequence",
     tabLearn:"Learn", tabExplore:"Explore", tabConstruct:"Construct", tabListen:"Listen", tabModes:"Species & Modes", tabTrain:"Train & Data",
     openString:"Open string", position:"position {current} of {total}",
     stringLength:"String length", frequencyRatio:"Frequency ratio", cents:"Cents",
@@ -533,7 +547,7 @@ const UI = {
     playSelected:"▶ Selected", playOpen:"▶ Open tone",
     geometryKicker:"Geometry → acoustics", governing:"The governing relationship",
     governingP1:"The whole sounding string is normalized to 1. If the remaining sounding length is ℓ, the ideal frequency ratio is its reciprocal.",
-    governingP2:"The 18 written points represent the open string, 17 pitch positions within the octave, and the octave repetition. They form a parent pitch lattice, not a single mandatory performance scale.",
+    governingP2:"The Atlas draws 18 markers: the open-string unison, 16 other pitches below the octave, and the octave repetition. These are 17 distinct pitch classes in this model, not one obligatory performance scale.",
     openFrequency:"Open frequency", stringLengthCm:"String length (cm)", waveform:"Waveform",
     monochordLabels:"Monochord labels", sine:"Sine", triangle:"Triangle", sawtooth:"Sawtooth",
     abjad:"Abjad", index:"Index", centsOption:"Cents",
@@ -575,7 +589,7 @@ const UI = {
     qFrequency:"Which frequency ratio belongs to {label}?",
     qStep:"What is the adjacent step from {from} to {to}?",
     qCents:"Approximately how high is {label} above the open string?",
-    qEar:"Listen to the mystery tone, then identify its Abjad position.",
+    qEar:"Hear the open string, then identify the second tone’s Abjad position.",
     playMystery:"▶ Play mystery tone",
     correct:"Correct.", notYet:"Not yet.",
     wholeTone:"Whole tone", perfectFourth:"Perfect fourth",
@@ -590,13 +604,13 @@ const UI = {
     eyebrow:"مکتب منتظمیه · اطلس تعاملی تک‌سیم",
     title:"دربارهٔ تقسیم دستان‌ها",
     subtitle:"صفی‌الدین ارموی · هندسه، نسبت‌های دقیق، شنیدن، ساخت و تمرین",
-    sourceChip:"۱۷ جایگاه + اکتاو · داده‌های کسری دقیق",
+    sourceChip:"۱۷ جایگاه · تکرار اکتاو · نسبت‌های مبتنی بر ۲ و ۳",
     fullscreen:"⛶ تمام‌صفحه", fullscreenTitle:"نمایش تمام‌صفحه",
     autoLanguage:"خودکار · زبان مرورگر",
     bridge:"م — خرک",
     nut:"ا — شیطانک · سیمِ باز",
     hintExplore:"برای بررسی و شنیدن، یکی از دستان‌ها را انتخاب کنید",
-    hintConstruct:"جایگاه‌ها به ترتیب ساخت در منبع آشکار می‌شوند",
+    hintConstruct:"جایگاه‌ها در توالیِ آموزشیِ امروزی آشکار می‌شوند",
     tabLearn:"آموزش", tabExplore:"کاوش", tabConstruct:"ساخت", tabListen:"شنیدن", tabModes:"اجناس و ادوار", tabTrain:"تمرین و داده‌ها",
     openString:"سیمِ باز", position:"جایگاه {current} از {total}",
     stringLength:"طول سیم", frequencyRatio:"نسبت بسامد", cents:"سِنت",
@@ -605,7 +619,7 @@ const UI = {
     playSelected:"▶ صدای انتخاب‌شده", playOpen:"▶ سیمِ باز",
     geometryKicker:"هندسه ← آکوستیک", governing:"رابطهٔ بنیادی",
     governingP1:"طول کامل بخش مرتعش سیم برابر ۱ در نظر گرفته می‌شود. اگر طول باقی‌مانده ℓ باشد، نسبت بسامد ایده‌آل معکوس آن است.",
-    governingP2:"این ۱۸ نشانه شامل سیمِ باز، ۱۷ جایگاه صوتی در محدودهٔ اکتاو و تکرار اکتاو است. این مجموعه یک شبکهٔ مادرِ صوتی است، نه یک گام اجرایی اجباری.",
+    governingP2:"اطلس ۱۸ نشان را ترسیم می‌کند: سیمِ باز، ۱۶ جایگاه صوتی دیگر پیش از اکتاو و تکرار اکتاو. بنابراین در این مدل ۱۷ جایگاه متمایز داریم، نه یک گام اجرایی الزامی.",
     openFrequency:"بسامد سیمِ باز", stringLengthCm:"طول سیم (سانتی‌متر)", waveform:"شکل موج",
     monochordLabels:"برچسب‌های تک‌سیم", sine:"سینوسی", triangle:"مثلثی", sawtooth:"دندانه‌اره‌ای",
     abjad:"حروف ابجد", index:"شماره", centsOption:"سِنت",
@@ -647,7 +661,7 @@ const UI = {
     qFrequency:"نسبت بسامدِ مربوط به {label} کدام است؟",
     qStep:"فاصلهٔ مجاور از {from} تا {to} چیست؟",
     qCents:"{label} تقریباً چند سنت بالاتر از سیمِ باز است؟",
-    qEar:"صدای ناشناس را بشنوید و جایگاه ابجد آن را تشخیص دهید.",
+    qEar:"سیمِ باز و سپس نغمهٔ دوم را بشنوید و جایگاه ابجدِ نغمهٔ دوم را مشخص کنید.",
     playMystery:"▶ پخش صدای ناشناس",
     correct:"درست است.", notYet:"درست نیست.",
     wholeTone:"پردهٔ کامل", perfectFourth:"چهارم درست",
@@ -662,13 +676,13 @@ const UI = {
     eyebrow:"المدرسة النظامية · أطلس مونوكورد تفاعلي",
     title:"في أقسام الدساتين",
     subtitle:"صفيّ الدين الأرموي · الهندسة والنِّسَب الدقيقة والاستماع والبناء والتدريب",
-    sourceChip:"١٧ موضعًا + الأوكتاف · نِسَب كسرية دقيقة",
+    sourceChip:"١٧ موضعًا مميزًا · تكرار الأوكتاف · نموذج ثلاثي الحدود",
     fullscreen:"⛶ ملء الشاشة", fullscreenTitle:"عرض بملء الشاشة",
     autoLanguage:"تلقائي · لغة المتصفح",
     bridge:"م — المشط",
     nut:"ا — الأنف · الوتر المطلق",
     hintExplore:"اختر أي دستان لفحصه وسماعه",
-    hintConstruct:"تظهر المواضع وفق ترتيب إنشائها في المصدر",
+    hintConstruct:"تُكشف المواضع وفق تسلسل تعليمي حديث",
     tabLearn:"تعلّم", tabExplore:"استكشاف", tabConstruct:"البناء", tabListen:"الاستماع", tabModes:"الأجناس والأدوار", tabTrain:"التدريب والبيانات",
     openString:"الوتر المطلق", position:"الموضع {current} من {total}",
     stringLength:"طول الوتر", frequencyRatio:"نسبة التردد", cents:"سِنت",
@@ -677,7 +691,7 @@ const UI = {
     playSelected:"▶ النغمة المختارة", playOpen:"▶ الوتر المطلق",
     geometryKicker:"الهندسة ← الصوتيات", governing:"العلاقة الأساسية",
     governingP1:"يُطبَّع طول الوتر المصوِّت الكامل إلى ١. فإذا كان الطول المتبقي ℓ، كانت نسبة التردد المثالية مقلوب هذا الطول.",
-    governingP2:"تمثل العلامات الثماني عشرة الوتر المطلق، وسبعة عشر موضعًا نغميًا داخل الأوكتاف، ثم تكرار الأوكتاف. وهي شبكة نغمية أم، وليست سلّمًا أدائيًا إلزاميًا.",
+    governingP2:"يرسم الأطلس ١٨ علامة: الوتر المطلق و١٦ موضعًا آخر تحت الأوكتاف ثم تكرار الأوكتاف. فهذه ١٧ درجة مميزة في النموذج، لا سلّم أداء إلزاميًا واحدًا.",
     openFrequency:"تردد الوتر المطلق", stringLengthCm:"طول الوتر (سم)", waveform:"شكل الموجة",
     monochordLabels:"تسميات المونوكورد", sine:"جيبية", triangle:"مثلثية", sawtooth:"سنّ منشار",
     abjad:"حروف أبجد", index:"الرقم", centsOption:"السنت",
@@ -719,7 +733,7 @@ const UI = {
     qFrequency:"ما نسبة التردد الخاصة بالعلامة {label}؟",
     qStep:"ما الخطوة المجاورة من {from} إلى {to}؟",
     qCents:"كم سنتًا تقريبًا تعلو {label} الوتر المطلق؟",
-    qEar:"استمع إلى النغمة المجهولة ثم حدّد موضعها الأبجدي.",
+    qEar:"استمع إلى الوتر المطلق ثم حدّد الموضع الأبجدي للنغمة الثانية.",
     playMystery:"▶ تشغيل النغمة المجهولة",
     correct:"صحيح.", notYet:"ليست صحيحة.",
     wholeTone:"طنيني كامل", perfectFourth:"رابعة تامة",
@@ -734,13 +748,13 @@ const UI = {
     eyebrow:"Sistemci Okul · Etkileşimli Monokord Atlası",
     title:"Perdelerin Bölünmesi Üzerine",
     subtitle:"Safiyyüddin el-Urmevî · geometri, kesin oranlar, dinleme, kurulum ve alıştırma",
-    sourceChip:"17 konum + oktav · kesin kesirli veriler",
+    sourceChip:"17 ayrı konum · oktav tekrarı · 3-limit modeli",
     fullscreen:"⛶ Tam ekran", fullscreenTitle:"Tam ekranda aç",
     autoLanguage:"Otomatik · Tarayıcı",
     bridge:"م — köprü (meşt)",
     nut:"ا — üst eşik (enf) · açık tel",
     hintExplore:"İncelemek ve dinlemek için bir perde seçin",
-    hintConstruct:"Konumlar kaynakta verilen yapım sırasıyla gösterilir",
+    hintConstruct:"Konumlar modern bir öğretim sırasıyla gösterilir",
     tabLearn:"Öğren", tabExplore:"Keşfet", tabConstruct:"Kur", tabListen:"Dinle", tabModes:"Cinsler ve Makamlar", tabTrain:"Alıştırma ve Veri",
     openString:"Açık tel", position:"{total} konumun {current}.si",
     stringLength:"Tel uzunluğu", frequencyRatio:"Frekans oranı", cents:"Sent",
@@ -749,7 +763,7 @@ const UI = {
     playSelected:"▶ Seçili ses", playOpen:"▶ Açık tel",
     geometryKicker:"Geometri → akustik", governing:"Temel ilişki",
     governingP1:"Titreşen telin tam uzunluğu 1 olarak normalize edilir. Kalan uzunluk ℓ ise ideal frekans oranı bu uzunluğun tersidir.",
-    governingP2:"Yazılı 18 nokta; açık teli, oktav içindeki 17 ses konumunu ve oktav tekrarını gösterir. Bunlar zorunlu bir icra dizisi değil, ana bir ses örgüsüdür.",
+    governingP2:"Atlas 18 işaret gösterir: açık tel, oktavın altındaki diğer 16 konum ve oktav tekrarı. Böylece modelde 17 ayrı perde vardır; tek zorunlu icra dizisi değildir.",
     openFrequency:"Açık tel frekansı", stringLengthCm:"Tel uzunluğu (cm)", waveform:"Dalga biçimi",
     monochordLabels:"Monokord etiketleri", sine:"Sinüs", triangle:"Üçgen", sawtooth:"Testere dişi",
     abjad:"Ebced", index:"Numara", centsOption:"Sent",
@@ -791,7 +805,7 @@ const UI = {
     qFrequency:"{label} işaretinin frekans oranı hangisidir?",
     qStep:"{from} ile {to} arasındaki komşu adım nedir?",
     qCents:"{label}, açık telin yaklaşık kaç sent üzerindedir?",
-    qEar:"Gizemli sesi dinleyin ve Ebced konumunu belirleyin.",
+    qEar:"Önce açık teli dinleyin, ardından ikinci sesin ebced konumunu belirleyin.",
     playMystery:"▶ Gizemli sesi çal",
     correct:"Doğru.", notYet:"Henüz değil.",
     wholeTone:"Tam ton", perfectFourth:"Tam dörtlü",
@@ -1013,15 +1027,15 @@ renderStepGrid=function(){
 };
 
 renderGuideVisual=function(s,n){
-  const left=25,width=310,pct=lengthValue(n);
-  $("guideCurrent").style.left=`${left+pct*width}px`;
-  $("guideLabel").style.left=`${left+pct*width}px`;
+  const pct=lengthValue(n);
+  $("guideCurrent").style.left=guidePosition(pct);
+  $("guideLabel").style.left=guidePosition(pct);
   $("guideLabel").textContent=n.label;
   const divs=$("guideDivisions");divs.innerHTML="";
   if(s.divisions){
     for(let i=1;i<s.divisions;i++){
       const line=document.createElement("span");line.className="guide-division";
-      line.style.left=`${left+(i/s.divisions)*width}px`;divs.appendChild(line);
+      line.style.left=guidePosition(i/s.divisions);divs.appendChild(line);
     }
     $("guideNote").textContent=s.divisions===1?t("fullGuide"):t("divideGuide",{divisions:s.divisions,active:s.active});
   }else{
@@ -1067,7 +1081,7 @@ renderTable=function(){
     const tr=document.createElement("tr");
     if(i===selected)tr.className="selected-row";
     const prev=previousStepInfo(i);
-    tr.innerHTML=`<td>${i+1}</td><td>${n.label}</td><td>${n.lenN}/${n.lenD}</td><td>${n.lenD}/${n.lenN}</td><td>${fixed(cents(n))}</td><td>${fixed(base*frequencyRatio(n),2)}</td><td>${prev?localizedStepType(prev.type):"—"}</td>`;
+    tr.innerHTML=`<td>${i+1}</td><td><button type="button" class="pitch-table-note" aria-label="${n.translit} · ${n.lenD}/${n.lenN}">${n.label}</button></td><td>${n.lenN}/${n.lenD}</td><td>${n.lenD}/${n.lenN}</td><td>${fixed(cents(n))}</td><td>${fixed(base*frequencyRatio(n),2)}</td><td>${prev?localizedStepType(prev.type):"—"}</td>`;
     tr.addEventListener("click",()=>{selectNote(i,false);activatePanel("explore")});
     body.appendChild(tr);
   });
@@ -1085,7 +1099,7 @@ newTheoryQuestion=function(){
     const answer=localizedStepType(prev.type);
     quizCurrent={answer,prompt:t("qStep",{from:NOTES[j-1].label,to:NOTES[j].label}),options:shuffled([t("limma"),t("comma"),t("wholeTone"),t("perfectFourth")]),explain:t("explainStep",{type:answer.toLocaleLowerCase(uiLanguage),ratio:`${prev.n}/${prev.d}`,cents:fixed(prev.cents)})};
   }else{
-    quizCurrent={answer:`${fixed(cents(n),1)}¢`,prompt:t("qCents",{label:n.label}),options:shuffled([`${fixed(cents(n),1)}¢`,`${fixed(Math.max(0,cents(n)+90.225),1)}¢`,`${fixed(Math.max(0,cents(n)-90.225),1)}¢`,`${fixed(Math.max(0,cents(n)+23.46),1)}¢`]),explain:t("explainCents",{label:n.label,cents:fixed(cents(n))})};
+    quizCurrent={answer:`${fixed(cents(n),1)}¢`,prompt:t("qCents",{label:n.label}),options:optionIndices(i).map(j=>`${fixed(cents(NOTES[j]),1)}¢`),explain:t("explainCents",{label:n.label,cents:fixed(cents(n))})};
   }
   renderQuestion();
 };
@@ -1095,8 +1109,9 @@ newEarQuestion=function(){
   quizCurrent={earIndex:i,answer:NOTES[i].label,prompt:t("qEar"),options:optionIndices(i).map(j=>NOTES[j].label),explain:t("explainEar",{label:NOTES[i].label,cents:fixed(cents(NOTES[i]))})};
   renderQuestion();
   const play=document.createElement("button");play.className="btn primary";play.textContent=t("playMystery");play.style.marginBottom="8px";
-  play.addEventListener("click",()=>tone(i));$("quizOptions").before(play);quizCurrent.playButton=play;
-  setTimeout(()=>tone(i),120);
+  const playPair=()=>{stopAllAudio();tone(0,0,.4);tone(i,.58,.58)};
+  play.addEventListener("click",playPair);$("quizOptions").before(play);quizCurrent.playButton=play;
+  playPair();
 };
 
 renderQuestion=function(){
@@ -1182,10 +1197,10 @@ applyLanguage(initialChoice);
    accessibility and exact-model integrity checks.
    ========================================================================== */
 const EXT_UI={
- en:{learn:"Learn",explore:"Explore",construct:"Construct",listen:"Listen",modes:"Species & Modes",train:"Train & Data",sources:"Sources",both:"View: both",theory:"View: theory",practical:"View: instrument",instrumentDisclosure:"Illustrative four-string mapping — not a reconstruction of a specific surviving instrument",guided:"Guided curriculum",evidence:"Evidence map",details:"Details",audioModel:"Audio model",pure:"Pure oscillator",pluck:"Plucked-string simulation",volume:"Volume",decay:"Pluck decay",stopAudio:"■ Stop audio",species:"Tetrachord species",lab:"Species Atlas",fromSpecies:"From species to adwār",hear:"▶ Hear",openSource:"Open source notes",validation:"Mathematical validation",testsPassed:"{n}/{total} tests passed",dialogTitle:"Sources, verification, and editorial policy",close:"Close"},
- fa:{learn:"آموزش",explore:"کاوش",construct:"ساخت",listen:"شنیدن",modes:"اجناس و ادوار",train:"تمرین و داده",sources:"منابع",both:"نما: ترکیبی",theory:"نما: نظری",practical:"نما: ساز",instrumentDisclosure:"نگاشت تصویریِ چهار سیم — نه بازسازی یک ساز تاریخی مشخص",guided:"مسیر آموزشی",evidence:"نقشهٔ شواهد",details:"جزئیات",audioModel:"مدل صوتی",pure:"نوسان‌ساز خالص",pluck:"شبیه‌سازی سیم زخمه‌ای",volume:"بلندی صدا",decay:"میرایی زخمه",stopAudio:"■ توقف صدا",species:"اجناسِ چهارگان",lab:"اطلس جنس",fromSpecies:"از جنس تا ادوار",hear:"▶ بشنوید",openSource:"یادداشت‌های منبع",validation:"اعتبارسنجی ریاضی",testsPassed:"{n} از {total} آزمون موفق",dialogTitle:"منابع، اعتبارسنجی و سیاست ویرایشی",close:"بستن"},
- ar:{learn:"التعلّم",explore:"الاستكشاف",construct:"البناء",listen:"الاستماع",modes:"الأجناس والأدوار",train:"التدريب والبيانات",sources:"المصادر",both:"العرض: مشترك",theory:"العرض: نظري",practical:"العرض: الآلة",instrumentDisclosure:"تمثيل توضيحي لأربع أوتار — وليس إعادة بناء لآلة تاريخية بعينها",guided:"منهج موجّه",evidence:"خريطة الأدلة",details:"تفاصيل",audioModel:"نموذج الصوت",pure:"مذبذب نقي",pluck:"محاكاة وتر منقور",volume:"شدة الصوت",decay:"اضمحلال النقر",stopAudio:"■ إيقاف الصوت",species:"أجناس الأرباع",lab:"أطلس الأجناس",fromSpecies:"من الجنس إلى الأدوار",hear:"▶ استمع",openSource:"ملاحظات المصدر",validation:"التحقق الرياضي",testsPassed:"نجح {n} من {total}",dialogTitle:"المصادر والتحقق والسياسة التحريرية",close:"إغلاق"},
- tr:{learn:"Öğren",explore:"Keşfet",construct:"Kur",listen:"Dinle",modes:"Cinsler ve Devirler",train:"Alıştırma ve Veri",sources:"Kaynaklar",both:"Görünüm: birlikte",theory:"Görünüm: kuram",practical:"Görünüm: çalgı",instrumentDisclosure:"Dört telli açıklayıcı eşleme — belirli bir tarihî çalgının rekonstrüksiyonu değildir",guided:"Yönlendirilmiş müfredat",evidence:"Kanıt haritası",details:"Ayrıntılar",audioModel:"Ses modeli",pure:"Saf osilatör",pluck:"Telli çalgı benzetimi",volume:"Ses düzeyi",decay:"Tını sönümü",stopAudio:"■ Sesi durdur",species:"Dörtlü cinsleri",lab:"Cins Atlası",fromSpecies:"Cinsten devirlere",hear:"▶ Dinle",openSource:"Kaynak notları",validation:"Matematiksel doğrulama",testsPassed:"{total} testten {n} geçti",dialogTitle:"Kaynaklar, doğrulama ve editoryal politika",close:"Kapat"}
+ en:{learn:"Learn",explore:"Explore",construct:"Construct",listen:"Listen",modes:"Species & Modes",train:"Train & Data",sources:"Sources",both:"View: both",theory:"View: theory",practical:"View: instrument",instrumentDisclosure:"Modern setar illustration · fret positions follow the Atlas model",guided:"Guided curriculum",evidence:"Evidence map",details:"Details",audioModel:"Audio model",pure:"Pure oscillator",pluck:"Plucked-string simulation",volume:"Volume",decay:"Pluck decay",stopAudio:"■ Stop audio",species:"Tetrachord species",lab:"Species Atlas",fromSpecies:"From species to adwār",hear:"▶ Hear",openSource:"Open source notes",validation:"Mathematical validation",testsPassed:"{n}/{total} tests passed",dialogTitle:"Sources, verification, and editorial policy",close:"Close"},
+ fa:{learn:"آموزش",explore:"کاوش",construct:"ساخت",listen:"شنیدن",modes:"اجناس و ادوار",train:"تمرین و داده",sources:"منابع",both:"نما: ترکیبی",theory:"نما: نظری",practical:"نما: ساز",instrumentDisclosure:"تصویر سه‌تار امروزی · جای پرده‌ها بر پایهٔ مدل اطلس است",guided:"مسیر آموزشی",evidence:"نقشهٔ شواهد",details:"جزئیات",audioModel:"مدل صوتی",pure:"نوسان‌ساز خالص",pluck:"شبیه‌سازی سیم زخمه‌ای",volume:"بلندی صدا",decay:"میرایی زخمه",stopAudio:"■ توقف صدا",species:"اجناسِ چهارگان",lab:"اطلس جنس",fromSpecies:"از جنس تا ادوار",hear:"▶ بشنوید",openSource:"یادداشت‌های منبع",validation:"اعتبارسنجی ریاضی",testsPassed:"{n} از {total} آزمون موفق",dialogTitle:"منابع، اعتبارسنجی و سیاست ویرایشی",close:"بستن"},
+ ar:{learn:"التعلّم",explore:"الاستكشاف",construct:"البناء",listen:"الاستماع",modes:"الأجناس والأدوار",train:"التدريب والبيانات",sources:"المصادر",both:"العرض: مشترك",theory:"العرض: نظري",practical:"العرض: الآلة",instrumentDisclosure:"رسم لآلة السيتار المعاصرة · مواضع الدساتين وفق نموذج الأطلس",guided:"منهج موجّه",evidence:"خريطة الأدلة",details:"تفاصيل",audioModel:"نموذج الصوت",pure:"مذبذب نقي",pluck:"محاكاة وتر منقور",volume:"شدة الصوت",decay:"اضمحلال النقر",stopAudio:"■ إيقاف الصوت",species:"أجناس الأرباع",lab:"أطلس الأجناس",fromSpecies:"من الجنس إلى الأدوار",hear:"▶ استمع",openSource:"ملاحظات المصدر",validation:"التحقق الرياضي",testsPassed:"نجح {n} من {total}",dialogTitle:"المصادر والتحقق والسياسة التحريرية",close:"إغلاق"},
+ tr:{learn:"Öğren",explore:"Keşfet",construct:"Kur",listen:"Dinle",modes:"Cinsler ve Devirler",train:"Alıştırma ve Veri",sources:"Kaynaklar",both:"Görünüm: birlikte",theory:"Görünüm: kuram",practical:"Görünüm: çalgı",instrumentDisclosure:"Modern setar çizimi · perde konumları Atlas modeline göredir",guided:"Yönlendirilmiş müfredat",evidence:"Kanıt haritası",details:"Ayrıntılar",audioModel:"Ses modeli",pure:"Saf osilatör",pluck:"Telli çalgı benzetimi",volume:"Ses düzeyi",decay:"Tını sönümü",stopAudio:"■ Sesi durdur",species:"Dörtlü cinsleri",lab:"Cins Atlası",fromSpecies:"Cinsten devirlere",hear:"▶ Dinle",openSource:"Kaynak notları",validation:"Matematiksel doğrulama",testsPassed:"{total} testten {n} geçti",dialogTitle:"Kaynaklar, doğrulama ve editoryal politika",close:"Kapat"}
 };
 function et(key,vars={}){let s=(EXT_UI[uiLanguage]||EXT_UI.en)[key]||EXT_UI.en[key]||key;Object.entries(vars).forEach(([k,v])=>s=s.replaceAll(`{${k}}`,v));return s}
 
@@ -1193,9 +1208,9 @@ const LESSONS=[
  {kicker:"Foundation",status:"Source concept + modern acoustics",title:"String length and pitch",objective:"Understand the reciprocal relation between sounding length and ideal frequency.",copy:"Al-Urmawī begins from the properties of notes and fret division. In this Atlas the whole sounding string is normalized to 1. Stopping the string leaves a shorter sounding segment; under the ideal monochord model, frequency changes as the reciprocal of that remaining length.",formula:"f / f₀ = 1 / ℓ",note:0,demo:[0,17]},
  {kicker:"Primary consonances",status:"Exact ratios",title:"Octave, fifth, and fourth",objective:"Construct the principal consonances geometrically and hear them.",copy:"Halving the string gives the octave. Retaining two of three equal parts gives the fifth. Retaining three of four equal parts gives the fourth. These are the clearest bridge between geometry and sound.",formula:"1/2 ↔ 2/1   ·   2/3 ↔ 3/2   ·   3/4 ↔ 4/3",note:10,demo:[0,17,10,7]},
  {kicker:"Derived positions",status:"Modern pedagogical reconstruction",title:"Generate positions by exact multiplication",objective:"See how established ratios can generate further positions without decimal approximation.",copy:"The interface derives later positions by multiplying known sounding lengths by exact fractions such as 3/4, 8/9, 9/8, or 2/3. This click-by-click order is a teaching reconstruction: the resulting fractions are exact, but the sequence is not presented as a diplomatic transcription of one manuscript passage.",formula:"ℓ₂ = ℓ₁ × p/q",note:4,demo:[7,14,4,1]},
- {kicker:"Parent lattice",status:"Conventional 3-limit reading",title:"The 17-position octave lattice",objective:"Distinguish a parent pitch lattice from a single compulsory performance scale.",copy:"The displayed sequence contains seventeen positions inside the octave plus its endpoint. It provides a common theoretical grid from which interval species and cycles can be described. It should not be confused with 17-tone equal temperament or with a claim that every mode uses every position.",formula:"18 written points: 1/1 … 2/1",note:8,demo:[0,3,7,10,14,17]},
- {kicker:"Unequal small steps",status:"Mathematically verified",title:"Limma and Pythagorean comma",objective:"Hear and calculate the two adjacent step sizes.",copy:"Adjacent positions are separated by either a limma or a Pythagorean comma. The pattern has twelve limmas and five commas; their product closes the octave. The unequal sizes are a defining feature of this conventional reconstruction.",formula:"L = 256/243   ·   C = 531441/524288   ·   L¹²C⁵ = 2",note:1,demo:[0,1,2]},
- {kicker:"Modal application",status:"Source-grounded framework + cautious interpretation",title:"From interval species to adwār",objective:"Understand how tetrachord and pentachord species support octave cycles.",copy:"The treatise presents modal cycles through combinations of interval species. This Atlas begins with exact tetrachord identities and then shows categorical labels such as Ṭanīnī, mujannab, and baqiyyah. Exact practical intonation of a categorical mujannab should not be treated as universally fixed.",formula:"lower species + upper species → octave cycle",note:7,demo:[0,3,7]}
+ {kicker:"Parent lattice",status:"Conventional 3-limit reading",title:"The 17-position octave lattice",objective:"Distinguish a parent pitch lattice from a single compulsory performance scale.",copy:"The open string and sixteen higher pitches precede the repeated octave endpoint. It provides a common theoretical grid from which interval species and cycles can be described. It should not be confused with 17-tone equal temperament or with a claim that every mode uses every position.",formula:"1/1 → … → 2/1   ·   17 + 1",note:8,demo:[0,3,7,10,14,17]},
+ {kicker:"Unequal small steps",status:"Mathematically verified",title:"Limma and Pythagorean comma",objective:"Hear and calculate the two adjacent step sizes.",copy:"Adjacent positions are separated by either a limma or a Pythagorean comma. The pattern has twelve limmas and five commas; their product closes the octave. The unequal sizes are a defining feature of this conventional reconstruction.",formula:"L = 256/243   ·   C = 531441/524288   ·   L¹²C⁵ = 2",note:1,demo:[0,1,2,3]},
+ {kicker:"Modal application",status:"Source-grounded framework + cautious interpretation",title:"From interval species to adwār",objective:"Understand how tetrachord and pentachord species support octave cycles.",copy:"The treatise presents modal cycles through combinations of interval species. This Atlas begins with exact tetrachord identities and then shows categorical labels such as Ṭanīnī, mujannab, and baqiyyah. Exact practical intonation of a categorical mujannab should not be treated as universally fixed.",formula:"4/3 × 3/2 = 2/1",note:7,demo:[0,3,7]}
 ];
 let lessonIndex=0;
 function renderLessons(){
@@ -1206,6 +1221,7 @@ function renderLessons(){
 function setLesson(i){lessonIndex=Math.max(0,Math.min(LESSONS.length-1,i));selected=LESSONS[lessonIndex].note;renderLessons();renderMonochord();updateExplore()}
 function demonstrateLesson(){stopAllAudio();const seq=LESSONS[lessonIndex].demo;seq.forEach((n,i)=>tone(n,i*.56,.52,.12))}
 
+const CATEGORY_AUDIO_MESSAGE={en:"No audio: the mujannab intervals have no single defined ratio in this illustration.",fa:"پخش غیرفعال است؛ نسبت یگانه‌ای برای فواصل مجنّب در این نمونه تعیین نشده است.",ar:"الصوت غير متاح؛ لم تُعيَّن نسبة وحيدة للفواصل المجنّبة في هذا المثال.",tr:"Ses yok: bu örnekte mücenneb aralıklar için tek bir oran belirlenmemiştir."};
 const SPECIES=[
  {title:"Diatonic order I",code:"T–T–B",steps:[{n:9,d:8,name:"T"},{n:9,d:8,name:"T"},{n:256,d:243,name:"B"}],copy:"Two whole tones followed by the remainder (baqiyyah). The exact product is a perfect fourth."},
  {title:"Diatonic order II",code:"T–B–T",steps:[{n:9,d:8,name:"T"},{n:256,d:243,name:"B"},{n:9,d:8,name:"T"}],copy:"The same exact interval inventory in a different order."},
@@ -1220,7 +1236,7 @@ function renderSpecies(){
  if(s.steps){s.steps.forEach(x=>{const d=document.createElement("div");d.className="interval-block";d.innerHTML=`<b>${x.name}</b><span>${x.n}/${x.d} · ${fixed(1200*Math.log2(x.n/x.d),2)}¢</span>`;chain.appendChild(d)});const r=multiplyRatios(s.steps);$("speciesResult").textContent=`Product = ${r.n}/${r.d} = ${fixed(1200*Math.log2(r.n/r.d),3)}¢`;}
  else{["J","J","J","B"].forEach(x=>{const d=document.createElement("div");d.className="interval-block";d.innerHTML=`<b>${x}</b><span>${x==="B"?"baqiyyah":"mujannab category"}</span>`;chain.appendChild(d)});$("speciesResult").textContent="Categorical model: exact J sizes are deliberately not fixed here."}
 }
-function playCurrentSpecies(){stopAllAudio();const s=SPECIES[speciesIndex];if(!s.steps){[0,1,3,5,7].forEach((n,i)=>tone(n,i*.48,.46,.11));return}let ratio=1;const freqs=[1];s.steps.forEach(x=>{ratio*=x.n/x.d;freqs.push(ratio)});freqs.forEach((r,i)=>playFrequency(currentBase()*r,i*.52,.46,.11))}
+function playCurrentSpecies(){stopAllAudio();const s=SPECIES[speciesIndex];if(!s.steps)return;let ratio=1;const freqs=[1];s.steps.forEach(x=>{ratio*=x.n/x.d;freqs.push(ratio)});freqs.forEach((r,i)=>playFrequency(currentBase()*r,i*.52,.46,.11))}
 
 let activeAudioNodes=new Set();
 function registerNode(node){activeAudioNodes.add(node);node.addEventListener?.("ended",()=>activeAudioNodes.delete(node));return node}
@@ -1232,7 +1248,9 @@ function playFrequency(freq,delay=0,duration=.68,volume=.14){
    const sr=c.sampleRate,N=Math.max(2,Math.round(sr/freq)),len=Math.max(N+2,Math.round(sr*Math.max(duration,1.4))),buf=c.createBuffer(1,len,sr),data=buf.getChannelData(0),decay=Number($("pluckDecay")?.value||.992);
    for(let i=0;i<N;i++)data[i]=(Math.random()*2-1)*.72;
    for(let i=N;i<len;i++)data[i]=decay*.5*(data[i-N]+data[i-N+1]);
-   const src=registerNode(c.createBufferSource()),gain=c.createGain();src.buffer=buf;gain.gain.setValueAtTime(vol,now);gain.gain.exponentialRampToValueAtTime(.0001,now+Math.max(duration,1.15));src.connect(gain).connect(c.destination);src.start(now);src.stop(now+Math.max(duration,1.2));return;
+   const src=registerNode(c.createBufferSource()),gain=c.createGain();src.buffer=buf;
+   // Averaging the two delay taps gives an effective period of N minus half a sample.
+   src.playbackRate.value=freq*(N-.5)/sr;gain.gain.setValueAtTime(vol,now);gain.gain.exponentialRampToValueAtTime(.0001,now+Math.max(duration,1.15));src.connect(gain).connect(c.destination);src.start(now);src.stop(now+Math.max(duration,1.2));return;
  }
  const osc=registerNode(c.createOscillator()),gain=c.createGain();osc.type=currentWave();osc.frequency.setValueAtTime(freq,now);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(vol,now+.018);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);osc.connect(gain).connect(c.destination);osc.start(now);osc.stop(now+duration+.04);
 }
@@ -1302,12 +1320,12 @@ renderLessons();renderSpecies();runValidationTests();applyStaticLanguage();activ
 const FULL_I18N={
  en:{
   ui:{
-   skip:"Skip to learning workspace",tabsLabel:"Learning modes",monoPanelAria:"Persistent interactive monochord",monoTitle:"Al-Urmawī theoretical monochord",monoDesc:"A horizontal theoretical string from bridge to nut with seventeen pitch positions and the octave.",instrumentAria:"Illustrative four-string long-neck instrument mapping",sourceTitle:"Open sources and editorial policy",viewTitle:"Cycle through combined, theoretical, and instrument views",contrastTitle:"Toggle high contrast",textTitle:"Toggle larger text",combinedViewLabel:"Combined theoretical + practical view",theoryViewLabel:"Theoretical monochord — enlarged",practicalViewLabel:"Illustrative instrument view",learnPanelAria:"Guided lessons",modesPanelAria:"Tetrachord species and modal applications",previous:"← Previous",demonstrate:"▶ Demonstrate",next:"Next →",objective:"Objective",primaryManuscript:"Primary manuscript",exactModel:"Exact analytical model",editorialDistinction:"Editorial distinction",exactFourth:"Exact fourth",interpretiveLayer:"Interpretive layer",historicalCategories:"Historical categories",isfahanExample:"Iṣfahān example",testsNotRun:"Tests have not run.",product:"Product",categoricalModel:"Categorical model",mujannabCategory:"mujannab category",baqiyyah:"baqiyyah",exactJNotFixed:"exact J sizes are deliberately not fixed here",hintLearn:"Follow the guided lesson, then use the same positions in Explore.",hintModes:"Interval species are mapped onto the same parent lattice.",pass:"PASS",fail:"FAIL",found:"found {n}",sourceLink:"Qatar Digital Library · British Library Or 136",coverage:"Four-language content coverage is complete",viewCoverage:"Theory, combined, and instrument views are available"},
+   skip:"Skip to learning workspace",tabsLabel:"Learning modes",monoPanelAria:"Persistent interactive monochord",monoTitle:"Al-Urmawī theoretical monochord",monoDesc:"A horizontal theoretical string with seventeen distinct pitch positions plus the repeated octave endpoint.",instrumentAria:"Illustrative four-string long-neck instrument mapping",sourceTitle:"Open sources and editorial policy",viewTitle:"Cycle through combined, theoretical, and instrument views",contrastTitle:"Toggle high contrast",textTitle:"Toggle larger text",combinedViewLabel:"Combined theoretical + practical view",theoryViewLabel:"Theoretical monochord — enlarged",practicalViewLabel:"Illustrative instrument view",learnPanelAria:"Guided lessons",modesPanelAria:"Tetrachord species and modal applications",previous:"← Previous",demonstrate:"▶ Demonstrate",next:"Next →",objective:"Objective",primaryManuscript:"Primary manuscript",exactModel:"Exact analytical model",editorialDistinction:"Editorial distinction",exactFourth:"Exact fourth",interpretiveLayer:"Interpretive layer",historicalCategories:"Historical categories",isfahanExample:"Iṣfahān example",testsNotRun:"Tests have not run.",product:"Product",categoricalModel:"Categorical model",mujannabCategory:"mujannab category",baqiyyah:"baqiyyah",exactJNotFixed:"exact J sizes are deliberately not fixed here",hintLearn:"Follow the guided lesson, then use the same positions in Explore.",hintModes:"Interval species are mapped onto the same parent lattice.",pass:"PASS",fail:"FAIL",found:"found {n}",sourceLink:"Qatar Digital Library · British Library Or 136",coverage:"Four-language content coverage is complete",viewCoverage:"Theory, combined, and instrument views are available"},
   lessons:[
-   {kicker:"Foundation",status:"Source concept + modern acoustics",title:"String length and pitch",objective:"Understand the reciprocal relation between sounding length and ideal frequency.",copy:"Al-Urmawī begins from the properties of notes and fret division. In this Atlas the whole sounding string is normalized to 1. Stopping the string leaves a shorter sounding segment; under the ideal monochord model, frequency changes as the reciprocal of that remaining length."},
+   {kicker:"Foundation",status:"Source concept + modern acoustics",title:"String length and pitch",objective:"Understand the reciprocal relation between sounding length and ideal frequency.",copy:"Al-Urmawī begins from the properties of notes and fret division. In this Atlas the whole sounding string is normalized to 1. Stopping the string leaves a shorter sounding segment; under the ideal monochord model, frequency changes as the reciprocal of that remaining length. The model assumes constant string tension and mass per unit length."},
    {kicker:"Primary consonances",status:"Exact ratios",title:"Octave, fifth, and fourth",objective:"Construct the principal consonances geometrically and hear them.",copy:"Halving the string gives the octave. Retaining two of three equal parts gives the fifth. Retaining three of four equal parts gives the fourth. These are the clearest bridge between geometry and sound."},
    {kicker:"Derived positions",status:"Modern pedagogical reconstruction",title:"Generate positions by exact multiplication",objective:"See how established ratios can generate further positions without decimal approximation.",copy:"The interface derives later positions by multiplying known sounding lengths by exact fractions such as 3/4, 8/9, 9/8, or 2/3. This click-by-click order is a teaching reconstruction: the resulting fractions are exact, but the sequence is not presented as a diplomatic transcription of one manuscript passage."},
-   {kicker:"Parent lattice",status:"Conventional 3-limit reading",title:"The 17-position octave lattice",objective:"Distinguish a parent pitch lattice from a single compulsory performance scale.",copy:"The displayed sequence contains seventeen positions inside the octave plus its endpoint. It provides a common theoretical grid from which interval species and cycles can be described. It should not be confused with 17-tone equal temperament or with a claim that every mode uses every position."},
+   {kicker:"Parent lattice",status:"Conventional 3-limit reading",title:"The 17-position octave lattice",objective:"Distinguish a parent pitch lattice from a single compulsory performance scale.",copy:"The open string and sixteen higher pitches precede the repeated octave endpoint. It provides a common theoretical grid from which interval species and cycles can be described. It should not be confused with 17-tone equal temperament or with a claim that every mode uses every position."},
    {kicker:"Unequal small steps",status:"Mathematically verified",title:"Limma and Pythagorean comma",objective:"Hear and calculate the two adjacent step sizes.",copy:"Adjacent positions are separated by either a limma or a Pythagorean comma. The pattern has twelve limmas and five commas; their product closes the octave. The unequal sizes are a defining feature of this conventional reconstruction."},
    {kicker:"Modal application",status:"Source-grounded framework + cautious interpretation",title:"From interval species to adwār",objective:"Understand how tetrachord and pentachord species support octave cycles.",copy:"The treatise presents modal cycles through combinations of interval species. This Atlas begins with exact tetrachord identities and then shows categorical labels such as Ṭanīnī, mujannab, and baqiyyah. Exact practical intonation of a categorical mujannab should not be treated as universally fixed."}
   ],
@@ -1318,14 +1336,14 @@ const FULL_I18N={
    {title:"Iṣfahān category",copy:"A five-note fourth described categorically. The three mujannab intervals are intentionally left without one imposed cent value in this interface."}
   ],
   sourceMap:{primaryCopy:"Kitāb al-Adwār, Section 2 (fret division), ff. 3v–5r; Section 3 (interval ratios), ff. 5r–8r.",modelCopy:"The pitch table uses the conventional 3-limit/Pythagorean reading of the 17-position parent lattice.",editorialCopy:"The ratios are exact; the lesson order and prose are a modern pedagogical reconstruction."},
-  modal:{applications:"Al-Urmawī combines lower tetrachord and upper pentachord species into octave cycles. This Atlas demonstrates interval categories; it does not claim that one fixed modern tuning exhausts medieval performance practice.",categories:"Ṭanīnī (T), mujannab (J), and baqiyyah (B) are interval categories used in the Systematist literature.",isfahan:"The five-note fourth is described categorically as J–J–J–B in later analytical presentation; exact J sizes can vary by theoretical or practical context."},
+  modal:{applications:"The manuscript presents 84 theoretical tetrachord–pentachord combinations, twelve principal modes, and six secondary modes. These four examples teach interval categories; they are not a complete historical catalogue or one fixed performance tuning.",categories:"Ṭanīnī (T), mujannab (J), and baqiyyah (B) are interval categories used in the Systematist literature.",isfahan:"The five-note fourth is described categorically as J–J–J–B in later analytical presentation; exact J sizes can vary by theoretical or practical context."},
   dialog:{primaryHeading:"Primary manuscript location",primaryParagraph:"The project anchors fret division in Kitāb al-Adwār, Section Two, ff. 3v–5r, and interval ratios in Section Three, ff. 5r–8r. Modal combinations are treated in Section Six, ff. 11r–18r; lute tuning and derivation occur in Section Eight, ff. 18v–19v.",verifiedHeading:"What is verified here",verified:["All stored fractions reduce correctly and their reciprocals generate the displayed frequency ratios.","The 18 displayed points ascend from 1/1 to 2/1.","The adjacent pattern contains twelve limmas and five Pythagorean commas and multiplies to the octave.","The common T–T–B tetrachord identity equals 4/3 exactly."],interpretiveHeading:"What remains interpretive",interpretiveParagraph:"The click-by-click construction sequence, modern prose, synthesized sound, and four-string instrument drawing are pedagogical interpretations. They are not a diplomatic transcription, a claim about one unique historical performance tuning, or a reconstruction of a specific surviving instrument.",orientationHeading:"Scholarly orientation",orientationParagraph:"The conventional 3-limit reading is retained as a transparent analytical model. Owen Wright’s work remains a major modern framework for the Systematist tradition. Recent scholarship also stresses that categorical interval names and practical intonation should not be treated as universally fixed cent values.",languageHeading:"Language review",languageParagraph:"All interface content in this build is available in English, Persian, Arabic, and Turkish. Historical terminology should nevertheless receive specialist native-speaker and philological review before formal publication."},
   tests:["18 written points","Open string is 1/1","Octave endpoint is 1/2 length and 2/1 frequency","Pitch order strictly ascends","Every fraction is reduced","Reciprocal length/frequency identity","Adjacent pattern has 12 limmas and 5 commas","Twelve limmas plus five commas close the octave","T–T–B equals the perfect fourth","Monochord and instrument bridge/nut coordinates align","Four-language content structure is complete"]
  },
  fa:{
-  ui:{skip:"رفتن به فضای آموزشی",tabsLabel:"حالت‌های آموزشی",monoPanelAria:"تک‌سیم تعاملیِ نظری",monoTitle:"تک‌سیم نظریِ ارموی",monoDesc:"سیمی افقی از خرک تا شیطانک، با هفده جایگاه صوتی و نقطهٔ اکتاو.",instrumentAria:"نگاشت تصویریِ یک ساز دسته‌بلند چهار سیم",sourceTitle:"گشودن منابع و سیاست ویرایشی",viewTitle:"گردش میان نمای ترکیبی، نظری و ساز",contrastTitle:"روشن یا خاموش کردن کنتراست بالا",textTitle:"روشن یا خاموش کردن متن درشت",combinedViewLabel:"نمای ترکیبیِ نظری و عملی",theoryViewLabel:"تک‌سیم نظری — بزرگ‌نمایی‌شده",practicalViewLabel:"نمای تصویریِ ساز",learnPanelAria:"درس‌های هدایت‌شده",modesPanelAria:"اجناس چهارگان و کاربردهای مقامی",previous:"← قبلی",demonstrate:"▶ نمایش و شنیدن",next:"بعدی →",objective:"هدف",primaryManuscript:"نسخهٔ خطی اصلی",exactModel:"مدل تحلیلیِ دقیق",editorialDistinction:"تمایز ویرایشی",exactFourth:"چهارمِ دقیق",interpretiveLayer:"لایهٔ تفسیری",historicalCategories:"رده‌های تاریخی",isfahanExample:"نمونهٔ اصفهان",testsNotRun:"آزمون‌ها هنوز اجرا نشده‌اند.",product:"حاصل‌ضرب",categoricalModel:"مدل رده‌ای",mujannabCategory:"ردهٔ مجنّب",baqiyyah:"بقیّه",exactJNotFixed:"اندازهٔ دقیقِ J در اینجا عمداً ثابت نشده است",hintLearn:"درس هدایت‌شده را دنبال کنید و سپس همان جایگاه‌ها را در بخش کاوش بررسی کنید.",hintModes:"اجناس فاصله‌ای بر همان شبکهٔ مادر نگاشت می‌شوند.",pass:"موفق",fail:"ناموفق",found:"{n} مورد یافت شد",sourceLink:"کتابخانهٔ دیجیتال قطر · نسخهٔ Or 136 کتابخانهٔ بریتانیا",coverage:"پوشش محتواییِ چهار زبان کامل است",viewCoverage:"نماهای نظری، ترکیبی و ساز در دسترس‌اند"},
+  ui:{skip:"رفتن به فضای آموزشی",tabsLabel:"حالت‌های آموزشی",monoPanelAria:"تک‌سیم تعاملیِ نظری",monoTitle:"تک‌سیم نظریِ ارموی",monoDesc:"سیمی نظری و افقی با هفده جایگاهِ صوتیِ متمایز به‌همراه تکرارِ نقطهٔ اکتاو.",instrumentAria:"نگاشت تصویریِ یک ساز دسته‌بلند چهار سیم",sourceTitle:"گشودن منابع و سیاست ویرایشی",viewTitle:"گردش میان نمای ترکیبی، نظری و ساز",contrastTitle:"روشن یا خاموش کردن کنتراست بالا",textTitle:"روشن یا خاموش کردن متن درشت",combinedViewLabel:"نمای ترکیبیِ نظری و عملی",theoryViewLabel:"تک‌سیم نظری — بزرگ‌نمایی‌شده",practicalViewLabel:"نمای تصویریِ ساز",learnPanelAria:"درس‌های هدایت‌شده",modesPanelAria:"اجناس چهارگان و کاربردهای مقامی",previous:"← قبلی",demonstrate:"▶ نمایش و شنیدن",next:"بعدی →",objective:"هدف",primaryManuscript:"نسخهٔ خطی اصلی",exactModel:"مدل تحلیلیِ دقیق",editorialDistinction:"تمایز ویرایشی",exactFourth:"چهارمِ دقیق",interpretiveLayer:"لایهٔ تفسیری",historicalCategories:"رده‌های تاریخی",isfahanExample:"نمونهٔ اصفهان",testsNotRun:"آزمون‌ها هنوز اجرا نشده‌اند.",product:"حاصل‌ضرب",categoricalModel:"مدل رده‌ای",mujannabCategory:"ردهٔ مجنّب",baqiyyah:"بقیّه",exactJNotFixed:"اندازهٔ دقیقِ J در اینجا عمداً ثابت نشده است",hintLearn:"درس هدایت‌شده را دنبال کنید و سپس همان جایگاه‌ها را در بخش کاوش بررسی کنید.",hintModes:"اجناس فاصله‌ای بر همان شبکهٔ مادر نگاشت می‌شوند.",pass:"موفق",fail:"ناموفق",found:"{n} مورد یافت شد",sourceLink:"کتابخانهٔ دیجیتال قطر · نسخهٔ Or 136 کتابخانهٔ بریتانیا",coverage:"پوشش محتواییِ چهار زبان کامل است",viewCoverage:"نماهای نظری، ترکیبی و ساز در دسترس‌اند"},
   lessons:[
-   {kicker:"بنیاد",status:"مفهوم منبع + آکوستیک جدید",title:"طول سیم و زیرایی",objective:"رابطهٔ معکوس میان طول مرتعش و بسامد ایده‌آل را درک کنید.",copy:"ارموی بحث را از ویژگی‌های نغمه‌ها و تقسیم دستان‌ها آغاز می‌کند. در این محیط، طول کامل بخش مرتعش برابر ۱ در نظر گرفته می‌شود. با گرفتن سیم، بخش مرتعش کوتاه‌تر می‌شود و در مدل ایده‌آل تک‌سیم، بسامد با معکوس طول باقی‌مانده تغییر می‌کند."},
+   {kicker:"بنیاد",status:"مفهوم منبع + آکوستیک جدید",title:"طول سیم و زیرایی",objective:"رابطهٔ معکوس میان طول مرتعش و بسامد ایده‌آل را درک کنید.",copy:"ارموی بحث را از ویژگی‌های نغمه‌ها و تقسیم دستان‌ها آغاز می‌کند. در این محیط، طول کامل بخش مرتعش برابر ۱ در نظر گرفته می‌شود. با گرفتن سیم، بخش مرتعش کوتاه‌تر می‌شود و در مدل ایده‌آل تک‌سیم، بسامد با معکوس طول باقی‌مانده تغییر می‌کند. در این مدل، کشش سیم و جرمِ واحد طول آن ثابت‌اند."},
    {kicker:"هم‌آوایی‌های اصلی",status:"نسبت‌های دقیق",title:"اکتاو، پنجم و چهارم",objective:"هم‌آوایی‌های اصلی را هندسی بسازید و بشنوید.",copy:"نصف‌کردن طول سیم اکتاو را می‌سازد. نگه‌داشتن دو بخش از سه بخش مساوی پنجم درست را می‌دهد و نگه‌داشتن سه بخش از چهار بخش مساوی چهارم درست را. این نسبت‌ها روشن‌ترین پیوند میان هندسه و صدا هستند."},
    {kicker:"جایگاه‌های مشتق",status:"بازسازی آموزشیِ جدید",title:"ساخت جایگاه‌ها با ضرب دقیق",objective:"ببینید نسبت‌های ساخته‌شده چگونه بدون تقریب اعشاری جایگاه‌های بعدی را تولید می‌کنند.",copy:"رابط کاربری، جایگاه‌های بعدی را با ضرب طول‌های شناخته‌شده در کسرهای دقیقی مانند ۳/۴، ۸/۹، ۹/۸ یا ۲/۳ به‌دست می‌آورد. ترتیب گام‌به‌گام یک بازسازی آموزشی است: کسرها دقیق‌اند، اما این توالی به‌عنوان رونویسی دیپلماتیکِ یک عبارت نسخهٔ خطی عرضه نمی‌شود."},
    {kicker:"شبکهٔ مادر",status:"خوانش متعارفِ حدّ سوم",title:"شبکهٔ هفده جایگاه در اکتاو",objective:"شبکهٔ مادرِ صوتی را از یک گام اجراییِ اجباری متمایز کنید.",copy:"توالی نمایش‌داده‌شده هفده جایگاه درون اکتاو و نقطهٔ پایانی اکتاو را دربرمی‌گیرد. این شبکه، زمینه‌ای مشترک برای توصیف اجناس فاصله‌ای و ادوار فراهم می‌کند. نباید آن را با تقسیم مساوی هفده‌گانه یا با ادعای استفادهٔ همهٔ مقام‌ها از همهٔ جایگاه‌ها یکی دانست."},
@@ -1339,14 +1357,14 @@ const FULL_I18N={
    {title:"ردهٔ اصفهان",copy:"چهارمِ پنج‌نغمه‌ای با توصیف رده‌ای. سه فاصلهٔ مجنّب در این رابط عمداً به یک مقدار ثابتِ سنت محدود نشده‌اند."}
   ],
   sourceMap:{primaryCopy:"کتاب الادوار، فصل دوم دربارهٔ تقسیم دستان‌ها، برگ‌های ۳پ–۵ر؛ فصل سوم دربارهٔ نسبت فاصله‌ها، برگ‌های ۵ر–۸ر.",modelCopy:"جدول صوتی از خوانش متعارفِ فیثاغوری/حدّ سوم برای شبکهٔ مادرِ هفده جایگاه استفاده می‌کند.",editorialCopy:"نسبت‌ها دقیق‌اند؛ ترتیب درس‌ها و نثر توضیحی، بازسازی آموزشیِ جدید است."},
-  modal:{applications:"ارموی اجناس چهارگانِ پایین و پنجگانِ بالا را در چرخه‌های اکتاو ترکیب می‌کند. این اطلس رده‌های فاصله‌ای را نشان می‌دهد و ادعا نمی‌کند که یک کوک ثابتِ امروزی همهٔ شیوه‌های اجراییِ سده‌های میانه را توضیح می‌دهد.",categories:"طنینی (T)، مجنّب (J) و بقیّه (B) رده‌های فاصله‌ای در ادبیات مکتب نظام‌گرا هستند.",isfahan:"چهارمِ پنج‌نغمه‌ای در تحلیل‌های بعدی به‌صورت J–J–J–B توصیف شده است؛ اندازهٔ دقیق J می‌تواند با زمینهٔ نظری یا عملی تغییر کند."},
+  modal:{applications:"در نسخهٔ خطی، ۸۴ ترکیب نظریِ چهارگان و پنجگان، دوازده مقامِ اصلی و شش آوازِ فرعی آمده است. چهار نمونهٔ این بخش صرفاً برای آموزش رده‌های فواصل‌اند، نه فهرست کامل تاریخی یا کوکِ اجراییِ یگانه.",categories:"طنینی (T)، مجنّب (J) و بقیّه (B) رده‌های فاصله‌ای در ادبیات مکتب نظام‌گرا هستند.",isfahan:"چهارمِ پنج‌نغمه‌ای در تحلیل‌های بعدی به‌صورت J–J–J–B توصیف شده است؛ اندازهٔ دقیق J می‌تواند با زمینهٔ نظری یا عملی تغییر کند."},
   dialog:{primaryHeading:"جایگاه نسخهٔ خطی اصلی",primaryParagraph:"این پروژه تقسیم دستان‌ها را به فصل دوم کتاب الادوار، برگ‌های ۳پ–۵ر، و نسبت فاصله‌ها را به فصل سوم، برگ‌های ۵ر–۸ر، پیوند می‌دهد. ترکیب‌های مقامی در فصل ششم، برگ‌های ۱۱ر–۱۸ر، و کوک عود و استخراج ادوار در فصل هشتم، برگ‌های ۱۸پ–۱۹پ، مطرح شده‌اند.",verifiedHeading:"موارد اعتبارسنجی‌شده",verified:["همهٔ کسرهای ذخیره‌شده در ساده‌ترین صورت‌اند و معکوس آن‌ها نسبت بسامد نمایش‌داده‌شده را تولید می‌کند.","هجده نقطهٔ نمایش‌داده‌شده از ۱/۱ تا ۲/۱ به‌طور صعودی مرتب‌اند.","الگوی مجاور شامل دوازده لیما و پنج کمای فیثاغوری است و حاصل‌ضرب آن به اکتاو می‌رسد.","همانی متداول چهارگان T–T–B دقیقاً برابر ۴/۳ است."],interpretiveHeading:"موارد تفسیری",interpretiveParagraph:"توالی ساخت گام‌به‌گام، نثر جدید، صدای ترکیبی و تصویر ساز چهار سیم، تفسیرهای آموزشی‌اند. آن‌ها رونویسی دیپلماتیک، ادعای یک کوک اجراییِ تاریخیِ یگانه یا بازسازی یک ساز باقی‌ماندهٔ مشخص نیستند.",orientationHeading:"جهت‌گیری پژوهشی",orientationParagraph:"خوانش متعارفِ حدّ سوم به‌عنوان مدلی تحلیلی و شفاف حفظ شده است. پژوهش اوون رایت همچنان یکی از چارچوب‌های مهم جدید برای سنت نظام‌گراست. پژوهش‌های جدید نیز تأکید می‌کنند که نام‌های رده‌ایِ فاصله و کوک عملی را نباید همواره به مقادیر ثابتِ سنت فروکاست.",languageHeading:"بازبینی زبان",languageParagraph:"تمام محتوای رابط در این نسخه به انگلیسی، فارسی، عربی و ترکی در دسترس است. بااین‌حال، اصطلاحات تاریخی پیش از انتشار رسمی باید به‌دست متخصصان بومی و زبان‌شناسان تاریخی بازبینی شوند."},
   tests:["هجده نقطهٔ نوشته‌شده","سیم باز برابر ۱/۱ است","پایان اکتاو طول ۱/۲ و نسبت بسامد ۲/۱ دارد","ترتیب زیرایی کاملاً صعودی است","همهٔ کسرها ساده شده‌اند","همانیِ معکوس طول و بسامد برقرار است","الگوی مجاور ۱۲ لیما و ۵ کما دارد","دوازده لیما و پنج کما اکتاو را کامل می‌کنند","T–T–B برابر چهارم درست است","مختصات خرک و شیطانک در تک‌سیم و ساز هم‌راستا هستند","ساختار محتوای چهار زبان کامل است"]
  },
  ar:{
-  ui:{skip:"الانتقال إلى مساحة التعلّم",tabsLabel:"أنماط التعلّم",monoPanelAria:"مونوكورد نظري تفاعلي دائم",monoTitle:"المونوكورد النظري للأرموي",monoDesc:"وتر نظري أفقي من المشط إلى الأنف، عليه سبعة عشر موضعًا نغميًا ونقطة الأوكتاف.",instrumentAria:"تمثيل توضيحي لآلة طويلة العنق ذات أربعة أوتار",sourceTitle:"فتح المصادر والسياسة التحريرية",viewTitle:"التنقل بين العرض المشترك والنظري وعرض الآلة",contrastTitle:"تفعيل أو تعطيل التباين العالي",textTitle:"تفعيل أو تعطيل تكبير النص",combinedViewLabel:"عرض نظري وعملي مشترك",theoryViewLabel:"المونوكورد النظري — عرض مكبّر",practicalViewLabel:"عرض الآلة التوضيحي",learnPanelAria:"دروس موجّهة",modesPanelAria:"أجناس الأرباع والتطبيقات المقامية",previous:"← السابق",demonstrate:"▶ عرض وسماع",next:"التالي →",objective:"الهدف",primaryManuscript:"المخطوط الأساسي",exactModel:"النموذج التحليلي الدقيق",editorialDistinction:"التمييز التحريري",exactFourth:"رابعة دقيقة",interpretiveLayer:"طبقة تفسيرية",historicalCategories:"الفئات التاريخية",isfahanExample:"مثال إصفهان",testsNotRun:"لم تُجرَ الاختبارات بعد.",product:"حاصل الضرب",categoricalModel:"نموذج فئوي",mujannabCategory:"فئة المجنّب",baqiyyah:"البقية",exactJNotFixed:"أحجام J الدقيقة متروكة عمدًا بلا تثبيت هنا",hintLearn:"اتبع الدرس الموجّه ثم افحص المواضع نفسها في قسم الاستكشاف.",hintModes:"تُسقط أجناس الأبعاد على شبكة المواضع الأم نفسها.",pass:"نجاح",fail:"فشل",found:"عُثر على {n}",sourceLink:"مكتبة قطر الرقمية · المخطوط Or 136 في المكتبة البريطانية",coverage:"اكتمل توفر المحتوى باللغات الأربع",viewCoverage:"العروض النظري والمشترك وعرض الآلة متاحة"},
+  ui:{skip:"الانتقال إلى مساحة التعلّم",tabsLabel:"أنماط التعلّم",monoPanelAria:"مونوكورد نظري تفاعلي دائم",monoTitle:"المونوكورد النظري للأرموي",monoDesc:"وتر نظري أفقي يضم سبعة عشر موضعًا نغميًا مميزًا ونقطة تكرار الأوكتاف.",instrumentAria:"تمثيل توضيحي لآلة طويلة العنق ذات أربعة أوتار",sourceTitle:"فتح المصادر والسياسة التحريرية",viewTitle:"التنقل بين العرض المشترك والنظري وعرض الآلة",contrastTitle:"تفعيل أو تعطيل التباين العالي",textTitle:"تفعيل أو تعطيل تكبير النص",combinedViewLabel:"عرض نظري وعملي مشترك",theoryViewLabel:"المونوكورد النظري — عرض مكبّر",practicalViewLabel:"عرض الآلة التوضيحي",learnPanelAria:"دروس موجّهة",modesPanelAria:"أجناس الأرباع والتطبيقات المقامية",previous:"← السابق",demonstrate:"▶ عرض وسماع",next:"التالي →",objective:"الهدف",primaryManuscript:"المخطوط الأساسي",exactModel:"النموذج التحليلي الدقيق",editorialDistinction:"التمييز التحريري",exactFourth:"رابعة دقيقة",interpretiveLayer:"طبقة تفسيرية",historicalCategories:"الفئات التاريخية",isfahanExample:"مثال إصفهان",testsNotRun:"لم تُجرَ الاختبارات بعد.",product:"حاصل الضرب",categoricalModel:"نموذج فئوي",mujannabCategory:"فئة المجنّب",baqiyyah:"البقية",exactJNotFixed:"أحجام J الدقيقة متروكة عمدًا بلا تثبيت هنا",hintLearn:"اتبع الدرس الموجّه ثم افحص المواضع نفسها في قسم الاستكشاف.",hintModes:"تُسقط أجناس الأبعاد على شبكة المواضع الأم نفسها.",pass:"نجاح",fail:"فشل",found:"عُثر على {n}",sourceLink:"مكتبة قطر الرقمية · المخطوط Or 136 في المكتبة البريطانية",coverage:"اكتمل توفر المحتوى باللغات الأربع",viewCoverage:"العروض النظري والمشترك وعرض الآلة متاحة"},
   lessons:[
-   {kicker:"الأساس",status:"مفهوم من المصدر + صوتيات حديثة",title:"طول الوتر وارتفاع النغمة",objective:"فهم العلاقة العكسية بين طول الجزء المصوّت والتردد المثالي.",copy:"يبدأ الأرموي من خواص النغم وتقسيم الدساتين. في هذا الأطلس يُطبّع طول الوتر المصوّت الكامل إلى ١. وعند إيقاف الوتر يبقى جزء أقصر مصوّت، وفي نموذج المونوكورد المثالي يتغير التردد بحسب مقلوب ذلك الطول."},
+   {kicker:"الأساس",status:"مفهوم من المصدر + صوتيات حديثة",title:"طول الوتر وارتفاع النغمة",objective:"فهم العلاقة العكسية بين طول الجزء المصوّت والتردد المثالي.",copy:"يبدأ الأرموي من خواص النغم وتقسيم الدساتين. في هذا الأطلس يُطبّع طول الوتر المصوّت الكامل إلى ١. وعند إيقاف الوتر يبقى جزء أقصر مصوّت، وفي نموذج المونوكورد المثالي يتغير التردد بحسب مقلوب ذلك الطول. يفترض النموذج ثبات شدّ الوتر وكتلته لكل وحدة طول."},
    {kicker:"التآلفات الأساسية",status:"نِسَب دقيقة",title:"الأوكتاف والخامسة والرابعة",objective:"بناء التآلفات الأساسية هندسيًا وسماعها.",copy:"تنصيف الوتر يعطي الأوكتاف، والاحتفاظ بقسمين من ثلاثة أقسام متساوية يعطي الخامسة التامة، والاحتفاظ بثلاثة أقسام من أربعة يعطي الرابعة التامة. وهذه أوضح صلة بين الهندسة والصوت."},
    {kicker:"المواضع المشتقة",status:"إعادة بناء تعليمية حديثة",title:"توليد المواضع بالضرب الدقيق",objective:"رؤية كيف تولّد النِّسَب المنشأة مواضع أخرى بلا تقريب عشري.",copy:"تشتق الواجهة المواضع اللاحقة بضرب الأطوال المصوّتة المعروفة في كسور دقيقة مثل ٣/٤ أو ٨/٩ أو ٩/٨ أو ٢/٣. ترتيب النقر خطوة خطوة إعادة بناء تعليمية: الكسور الناتجة دقيقة، لكن التسلسل لا يُعرض بوصفه نقلًا دبلوماسيًا لعبارة واحدة في المخطوط."},
    {kicker:"الشبكة الأم",status:"قراءة تقليدية ثلاثية الحدود",title:"شبكة المواضع السبعة عشر في الأوكتاف",objective:"تمييز شبكة النغم الأم من سلّم أدائي إلزامي واحد.",copy:"يضم التسلسل المعروض سبعة عشر موضعًا داخل الأوكتاف مع نقطة نهايته. ويوفر شبكة نظرية مشتركة لوصف أجناس الأبعاد والأدوار. ولا ينبغي الخلط بينه وبين تقسيم متساوٍ من سبع عشرة درجة أو الزعم بأن كل مقام يستخدم كل المواضع."},
@@ -1360,14 +1378,14 @@ const FULL_I18N={
    {title:"فئة إصفهان",copy:"رابعة من خمس نغمات موصوفة فئويًا. تُترك الأبعاد الثلاثة المجنّبة عمدًا دون فرض قيمة سنتية واحدة في هذه الواجهة."}
   ],
   sourceMap:{primaryCopy:"كتاب الأدوار، الفصل الثاني في تقسيم الدساتين، الأوراق ٣ظ–٥و؛ والفصل الثالث في نسب الأبعاد، الأوراق ٥و–٨و.",modelCopy:"يستخدم جدول النغم القراءة التقليدية الفيثاغورية/ثلاثية الحدود لشبكة المواضع السبعة عشر الأم.",editorialCopy:"النِّسَب دقيقة؛ أما ترتيب الدروس والنثر فإعادة بناء تعليمية حديثة."},
-  modal:{applications:"يجمع الأرموي أجناس الأرباع السفلى وأجناس الأخماس العليا في أدوار أوكتافية. يوضح هذا الأطلس فئات الأبعاد، ولا يدّعي أن ضبطًا حديثًا ثابتًا يستنفد ممارسات الأداء في العصور الوسطى.",categories:"الطنيني (T) والمجنّب (J) والبقية (B) فئات للأبعاد في أدبيات المدرسة النظامية.",isfahan:"تُعرض الرابعة ذات النغمات الخمس في التحليل اللاحق بوصفها J–J–J–B؛ وقد تختلف أحجام J الدقيقة باختلاف السياق النظري أو العملي."},
+  modal:{applications:"تعرض المخطوطة ٨٤ تركيبًا نظريًا من أجناس الرباعيات والخماسيات، واثني عشر مقامًا رئيسيًا وستة مقامات ثانوية. هذه الأمثلة الأربعة تعليمية وليست فهرسًا تاريخيًا كاملًا أو ضبطًا أدائيًا واحدًا.",categories:"الطنيني (T) والمجنّب (J) والبقية (B) فئات للأبعاد في أدبيات المدرسة النظامية.",isfahan:"تُعرض الرابعة ذات النغمات الخمس في التحليل اللاحق بوصفها J–J–J–B؛ وقد تختلف أحجام J الدقيقة باختلاف السياق النظري أو العملي."},
   dialog:{primaryHeading:"موضع المخطوط الأساسي",primaryParagraph:"يربط المشروع تقسيم الدساتين بالفصل الثاني من كتاب الأدوار، الأوراق ٣ظ–٥و، ونِسَب الأبعاد بالفصل الثالث، الأوراق ٥و–٨و. وتعالج التركيبات المقامية في الفصل السادس، الأوراق ١١و–١٨و، بينما يرد ضبط العود واشتقاق الأدوار في الفصل الثامن، الأوراق ١٨ظ–١٩ظ.",verifiedHeading:"ما تم التحقق منه",verified:["جميع الكسور المخزنة في أبسط صورة، ومقلوباتها تولّد نسب التردد المعروضة.","تصعد النقاط الثماني عشرة المعروضة من ١/١ إلى ٢/١.","يضم نمط الخطوات المتجاورة اثنتي عشرة ليما وخمس فواصل فيثاغورية، ويضرب إلى الأوكتاف.","هوية الجنس الشائعة T–T–B تساوي ٤/٣ تمامًا."],interpretiveHeading:"ما يبقى تفسيريًا",interpretiveParagraph:"تسلسل البناء خطوة بخطوة، والنثر الحديث، والصوت المركب، ورسم الآلة ذات الأوتار الأربعة تفسيرات تعليمية. وهي ليست نقلًا دبلوماسيًا ولا ادعاءً بضبط تاريخي أدائي وحيد ولا إعادة بناء لآلة باقية بعينها.",orientationHeading:"التوجيه العلمي",orientationParagraph:"تُحفظ القراءة التقليدية ثلاثية الحدود بوصفها نموذجًا تحليليًا شفافًا. ويظل عمل أوين رايت إطارًا حديثًا مهمًا لدراسة المدرسة النظامية. كما تؤكد الدراسات الحديثة أن أسماء فئات الأبعاد والضبط العملي لا ينبغي اختزالها دائمًا في قيم سنتية ثابتة.",languageHeading:"مراجعة اللغة",languageParagraph:"جميع محتويات الواجهة في هذا الإصدار متاحة بالإنجليزية والفارسية والعربية والتركية. ومع ذلك ينبغي أن يراجع المختصون الناطقون بهذه اللغات والمحققون اللغويون المصطلحات التاريخية قبل النشر الرسمي."},
   tests:["ثماني عشرة نقطة مكتوبة","الوتر المطلق يساوي ١/١","نهاية الأوكتاف طولها ١/٢ ونسبة ترددها ٢/١","ترتيب النغم صاعد تمامًا","جميع الكسور مختزلة","هوية مقلوب الطول والتردد صحيحة","النمط المجاور يضم ١٢ ليما و٥ فواصل","اثنتا عشرة ليما وخمس فواصل تغلق الأوكتاف","T–T–B يساوي الرابعة التامة","إحداثيا المشط والأنف متطابقان في المونوكورد والآلة","بنية المحتوى باللغات الأربع مكتملة"]
  },
  tr:{
-  ui:{skip:"Öğrenme alanına geç",tabsLabel:"Öğrenme modları",monoPanelAria:"Kalıcı etkileşimli kuramsal monokord",monoTitle:"Urmevî’nin kuramsal monokordu",monoDesc:"Köprüden üst eşiğe uzanan, on yedi ses konumu ve oktav noktası bulunan yatay kuramsal tel.",instrumentAria:"Dört telli uzun saplı çalgının açıklayıcı eşlemesi",sourceTitle:"Kaynakları ve editoryal politikayı aç",viewTitle:"Birleşik, kuramsal ve çalgı görünümleri arasında geçiş yap",contrastTitle:"Yüksek karşıtlığı aç veya kapat",textTitle:"Büyük metni aç veya kapat",combinedViewLabel:"Birleşik kuramsal + uygulamalı görünüm",theoryViewLabel:"Kuramsal monokord — büyütülmüş",practicalViewLabel:"Açıklayıcı çalgı görünümü",learnPanelAria:"Yönlendirilmiş dersler",modesPanelAria:"Dörtlü cinsleri ve makam uygulamaları",previous:"← Önceki",demonstrate:"▶ Göster ve dinlet",next:"Sonraki →",objective:"Amaç",primaryManuscript:"Birincil yazma",exactModel:"Kesin analitik model",editorialDistinction:"Editoryal ayrım",exactFourth:"Kesin dörtlü",interpretiveLayer:"Yorum katmanı",historicalCategories:"Tarihî kategoriler",isfahanExample:"İsfahan örneği",testsNotRun:"Testler henüz çalıştırılmadı.",product:"Çarpım",categoricalModel:"Kategorik model",mujannabCategory:"mücenneb kategorisi",baqiyyah:"bakiyye",exactJNotFixed:"J büyüklükleri burada bilinçli olarak tek değere sabitlenmemiştir",hintLearn:"Yönlendirilmiş dersi izleyin, ardından aynı konumları Keşfet bölümünde inceleyin.",hintModes:"Aralık cinsleri aynı ana ses örgüsüne eşlenir.",pass:"GEÇTİ",fail:"KALDI",found:"{n} bulundu",sourceLink:"Katar Dijital Kütüphanesi · British Library Or 136",coverage:"Dört dilde içerik kapsamı tamamlandı",viewCoverage:"Kuramsal, birleşik ve çalgı görünümleri kullanılabilir"},
+  ui:{skip:"Öğrenme alanına geç",tabsLabel:"Öğrenme modları",monoPanelAria:"Kalıcı etkileşimli kuramsal monokord",monoTitle:"Urmevî’nin kuramsal monokordu",monoDesc:"On yedi ayrı perde konumunu ve tekrarlanan oktav sınırını gösteren yatay kuramsal tel.",instrumentAria:"Dört telli uzun saplı çalgının açıklayıcı eşlemesi",sourceTitle:"Kaynakları ve editoryal politikayı aç",viewTitle:"Birleşik, kuramsal ve çalgı görünümleri arasında geçiş yap",contrastTitle:"Yüksek karşıtlığı aç veya kapat",textTitle:"Büyük metni aç veya kapat",combinedViewLabel:"Birleşik kuramsal + uygulamalı görünüm",theoryViewLabel:"Kuramsal monokord — büyütülmüş",practicalViewLabel:"Açıklayıcı çalgı görünümü",learnPanelAria:"Yönlendirilmiş dersler",modesPanelAria:"Dörtlü cinsleri ve makam uygulamaları",previous:"← Önceki",demonstrate:"▶ Göster ve dinlet",next:"Sonraki →",objective:"Amaç",primaryManuscript:"Birincil yazma",exactModel:"Kesin analitik model",editorialDistinction:"Editoryal ayrım",exactFourth:"Kesin dörtlü",interpretiveLayer:"Yorum katmanı",historicalCategories:"Tarihî kategoriler",isfahanExample:"İsfahan örneği",testsNotRun:"Testler henüz çalıştırılmadı.",product:"Çarpım",categoricalModel:"Kategorik model",mujannabCategory:"mücenneb kategorisi",baqiyyah:"bakiyye",exactJNotFixed:"J büyüklükleri burada bilinçli olarak tek değere sabitlenmemiştir",hintLearn:"Yönlendirilmiş dersi izleyin, ardından aynı konumları Keşfet bölümünde inceleyin.",hintModes:"Aralık cinsleri aynı ana ses örgüsüne eşlenir.",pass:"GEÇTİ",fail:"KALDI",found:"{n} bulundu",sourceLink:"Katar Dijital Kütüphanesi · British Library Or 136",coverage:"Dört dilde içerik kapsamı tamamlandı",viewCoverage:"Kuramsal, birleşik ve çalgı görünümleri kullanılabilir"},
   lessons:[
-   {kicker:"Temel",status:"Kaynak kavramı + modern akustik",title:"Tel uzunluğu ve ses yüksekliği",objective:"Titreşen uzunluk ile ideal frekans arasındaki ters ilişkiyi anlayın.",copy:"Urmevî, seslerin özelliklerinden ve perdelerin bölünmesinden hareket eder. Bu Atlas’ta titreşen tam tel 1 olarak normalize edilir. Tele basıldığında daha kısa bir bölüm titreşir; ideal monokord modelinde frekans, kalan uzunluğun tersiyle değişir."},
+   {kicker:"Temel",status:"Kaynak kavramı + modern akustik",title:"Tel uzunluğu ve ses yüksekliği",objective:"Titreşen uzunluk ile ideal frekans arasındaki ters ilişkiyi anlayın.",copy:"Urmevî, seslerin özelliklerinden ve perdelerin bölünmesinden hareket eder. Bu Atlas’ta titreşen tam tel 1 olarak normalize edilir. Tele basıldığında daha kısa bir bölüm titreşir; ideal monokord modelinde frekans, kalan uzunluğun tersiyle değişir. Modelde tel gerilimi ve birim uzunluk başına kütle sabittir."},
    {kicker:"Temel uyumlar",status:"Kesin oranlar",title:"Oktav, beşli ve dörtlü",objective:"Temel uyumları geometrik olarak kurun ve dinleyin.",copy:"Teli ikiye bölmek oktavı verir. Üç eşit parçanın ikisini korumak tam beşliyi, dört eşit parçanın üçünü korumak tam dörtlüyü verir. Bunlar geometri ile ses arasındaki en açık köprüdür."},
    {kicker:"Türetilmiş konumlar",status:"Modern öğretimsel yeniden kurma",title:"Konumları kesin çarpımla üretme",objective:"Kurulmuş oranların ondalık yaklaşıma gerek olmadan yeni konumlar üretmesini görün.",copy:"Arayüz daha sonraki konumları, bilinen titreşen uzunlukları 3/4, 8/9, 9/8 veya 2/3 gibi kesin kesirlerle çarparak türetir. Tıklama sırası öğretim amaçlı bir yeniden kurmadır: sonuç kesirleri kesindir, fakat sıra tek bir yazma pasajının diplomatik aktarımı olarak sunulmaz."},
    {kicker:"Ana örgü",status:"Geleneksel 3-limit okuma",title:"Oktavın 17 konumlu ses örgüsü",objective:"Ana ses örgüsünü tek ve zorunlu bir icra dizisinden ayırın.",copy:"Gösterilen sıra, oktav içindeki on yedi konumu ve oktav son noktasını içerir. Aralık cinsleri ile devirlerin tanımlanabileceği ortak bir kuramsal zemin sağlar. On yedi eşit bölümlü sistemle veya her makamın her konumu kullandığı iddiasıyla karıştırılmamalıdır."},
@@ -1381,7 +1399,7 @@ const FULL_I18N={
    {title:"İsfahan kategorisi",copy:"Kategorik olarak tanımlanmış beş sesli bir dörtlü. Üç mücenneb aralık bu arayüzde bilinçli olarak tek bir sent değerine sabitlenmez."}
   ],
   sourceMap:{primaryCopy:"Kitâbü’l-Edvâr, perde bölünmesine ayrılan İkinci Bölüm, vr. 3b–5a; aralık oranlarına ayrılan Üçüncü Bölüm, vr. 5a–8a.",modelCopy:"Ses tablosu, 17 konumlu ana örgünün geleneksel 3-limit/Pisagorcu okumasını kullanır.",editorialCopy:"Oranlar kesindir; ders sırası ve açıklama metni modern bir öğretimsel yeniden kurmadır."},
-  modal:{applications:"Urmevî alt dörtlü ve üst beşli cinslerini oktav devirlerinde birleştirir. Bu Atlas aralık kategorilerini gösterir; tek bir sabit modern akordun Orta Çağ icra pratiğini tükettiğini iddia etmez.",categories:"Tanînî (T), mücenneb (J) ve bakiyye (B), Sistemci literatürde kullanılan aralık kategorileridir.",isfahan:"Beş sesli dörtlü, sonraki analitik sunumlarda J–J–J–B olarak tanımlanır; kesin J büyüklükleri kuramsal veya uygulamalı bağlama göre değişebilir."},
+  modal:{applications:"Yazma, 84 kuramsal dörtlü–beşli birleşimini, on iki ana ve altı ikincil makamı içerir. Buradaki dört örnek öğretim amaçlıdır; tarihsel kataloğun tamamı ya da tek bir icra akordu değildir.",categories:"Tanînî (T), mücenneb (J) ve bakiyye (B), Sistemci literatürde kullanılan aralık kategorileridir.",isfahan:"Beş sesli dörtlü, sonraki analitik sunumlarda J–J–J–B olarak tanımlanır; kesin J büyüklükleri kuramsal veya uygulamalı bağlama göre değişebilir."},
   dialog:{primaryHeading:"Birincil yazma konumu",primaryParagraph:"Proje, perde bölünmesini Kitâbü’l-Edvâr’ın İkinci Bölümü, vr. 3b–5a ile; aralık oranlarını Üçüncü Bölüm, vr. 5a–8a ile ilişkilendirir. Makam birleşimleri Altıncı Bölüm, vr. 11a–18a’da; ud akordu ve devirlerin türetilmesi Sekizinci Bölüm, vr. 18b–19b’de ele alınır.",verifiedHeading:"Burada doğrulananlar",verified:["Saklanan bütün kesirler sadeleştirilmiştir ve tersleri gösterilen frekans oranlarını üretir.","Gösterilen 18 nokta 1/1’den 2/1’e doğru yükselir.","Komşu adım örüntüsü on iki limma ile beş Pisagor koması içerir ve çarpımı oktava eşittir.","Yaygın T–T–B dörtlü özdeşliği tam olarak 4/3’tür."],interpretiveHeading:"Yorum olarak kalanlar",interpretiveParagraph:"Adım adım kurulum sırası, modern metin, sentezlenmiş ses ve dört telli çalgı çizimi öğretimsel yorumlardır. Bunlar diplomatik aktarım, tek bir tarihî icra akordu iddiası veya belirli bir günümüze ulaşmış çalgının rekonstrüksiyonu değildir.",orientationHeading:"Bilimsel yönelim",orientationParagraph:"Geleneksel 3-limit okuma şeffaf bir analitik model olarak korunur. Owen Wright’ın çalışması Sistemci gelenek için önemli bir modern çerçeve olmaya devam eder. Yeni araştırmalar da kategorik aralık adları ile pratik intonasyonun her zaman sabit sent değerleri olarak ele alınmaması gerektiğini vurgular.",languageHeading:"Dil incelemesi",languageParagraph:"Bu sürümdeki tüm arayüz içeriği İngilizce, Farsça, Arapça ve Türkçe olarak mevcuttur. Bununla birlikte tarihî terminoloji, resmî yayından önce ana dili uzmanları ve filologlar tarafından incelenmelidir."},
   tests:["On sekiz yazılı nokta","Açık tel 1/1’dir","Oktav uç noktası 1/2 uzunluk ve 2/1 frekanstır","Ses sırası kesin olarak yükselir","Bütün kesirler sadeleştirilmiştir","Uzunluk/frekans tersliği doğrudur","Komşu örüntü 12 limma ve 5 koma içerir","On iki limma ile beş koma oktavı kapatır","T–T–B tam dörtlüye eşittir","Monokord ile çalgının köprü/üst eşik koordinatları hizalıdır","Dört dilde içerik yapısı tamamdır"]
  }
@@ -1416,9 +1434,12 @@ renderLessons=function(){
 renderSpecies=function(){
  const pack=fullPack(),list=$("speciesList");if(!list)return;list.innerHTML="";
  SPECIES.forEach((s,i)=>{const loc=pack.species[i],b=document.createElement("button");b.className=`species-btn ${i===speciesIndex?"active":""}`;b.innerHTML=`${loc.title}<span class="species-code">${s.code}</span>`;b.addEventListener("click",()=>{speciesIndex=i;renderSpecies()});list.appendChild(b)});
- const s=SPECIES[speciesIndex],loc=pack.species[speciesIndex];setIdText("builderTitle",loc.title);setIdText("builderCopy",loc.copy);const chain=$("intervalChain");chain.innerHTML="";
- if(s.steps){s.steps.forEach(x=>{const d=document.createElement("div");d.className="interval-block";d.innerHTML=`<b>${x.name}</b><span>${x.n}/${x.d} · ${fixed(1200*Math.log2(x.n/x.d),2)}¢</span>`;chain.appendChild(d)});const r=multiplyRatios(s.steps);setIdText("speciesResult",`${fullText("product")} = ${r.n}/${r.d} = ${fixed(1200*Math.log2(r.n/r.d),3)}¢`);}
- else{["J","J","J","B"].forEach(x=>{const d=document.createElement("div");d.className="interval-block";d.innerHTML=`<b>${x}</b><span>${x==="B"?fullText("baqiyyah"):fullText("mujannabCategory")}</span>`;chain.appendChild(d)});setIdText("speciesResult",`${fullText("categoricalModel")}: ${fullText("exactJNotFixed")}.`)}
+ const s=SPECIES[speciesIndex],loc=pack.species[speciesIndex];setIdText("builderTitle",loc.title);setIdText("builderCopy",loc.copy);
+  const audio=$("playSpecies");
+  if(audio){audio.disabled=!s.steps;audio.title=s.steps?"":(CATEGORY_AUDIO_MESSAGE[uiLanguage]||CATEGORY_AUDIO_MESSAGE.en);audio.setAttribute("aria-disabled",String(!s.steps))}
+  const chain=$("intervalChain");chain.innerHTML="";
+ if(s.steps){s.steps.forEach(x=>{const d=document.createElement("div");d.className="interval-block";d.innerHTML=`<b>${x.name}</b><span>${x.n}/${x.d} · ${fixed(1200*Math.log2(x.n/x.d),2)}¢</span>`;chain.appendChild(d)});const r=multiplyRatios(s.steps);setIdText("speciesResult",`${fullText("product")} = ${r.n}/${r.d} ≈ ${fixed(1200*Math.log2(r.n/r.d),3)}¢`);}
+ else{["J","J","J","B"].forEach(x=>{const d=document.createElement("div");d.className="interval-block";d.innerHTML=`<b>${x}</b><span>${x==="B"?fullText("baqiyyah"):fullText("mujannabCategory")}</span>`;chain.appendChild(d)});setIdText("speciesResult",CATEGORY_AUDIO_MESSAGE[uiLanguage])}
 };
 
 runValidationTests=function(){
