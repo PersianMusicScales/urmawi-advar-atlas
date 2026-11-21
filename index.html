@@ -29,7 +29,7 @@
 <meta name="twitter:description" content="A multilingual historical-music-theory PWA by Persian Music Scales.">
 <meta name="twitter:image" content="https://persianmusicscales.github.io/urmawi-advar-atlas/assets/social/advar-atlas-social.png">
 <script type="application/ld+json">{
- "@context":"https://schema.org","@type":"SoftwareApplication","name":"Al-Urmawī Advar Atlas","applicationCategory":"EducationalApplication","operatingSystem":"Web, Android, iOS, Windows, macOS, Linux","url":"https://persianmusicscales.github.io/urmawi-advar-atlas/","author":{"@type":"Person","name":"Dr. Pouya Hosseini"},"publisher":{"@type":"Organization","name":"Persian Music Scales"},"inLanguage":["en","fa","ar","tr"],"softwareVersion":"4.3.0","isAccessibleForFree":true
+ "@context":"https://schema.org","@type":"SoftwareApplication","name":"Al-Urmawī Advar Atlas","applicationCategory":"EducationalApplication","operatingSystem":"Web, Android, iOS, Windows, macOS, Linux","url":"https://persianmusicscales.github.io/urmawi-advar-atlas/","author":{"@type":"Person","name":"Dr. Pouya Hosseini"},"publisher":{"@type":"Organization","name":"Persian Music Scales"},"inLanguage":["en","fa","ar","tr"],"softwareVersion":"4.4.0","isAccessibleForFree":true
 }</script>
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/pwa-responsive.css">
@@ -167,7 +167,7 @@
       <g id="instrumentOverlayLayer"></g>
     </svg>
     <div class="instrument-caption"></div>
-    <div id="instrumentDisclosure" class="instrument-note">Illustrative four-string mapping — not a reconstruction of a specific surviving instrument</div>
+    <div id="instrumentDisclosure" class="instrument-note">Modern setar illustration · fret positions follow the Atlas model</div>
   </div>
 </section>
 
@@ -337,7 +337,7 @@
       <article class="card sound-controls">
         <div class="card-head"><span class="card-title">Sound Atlas</span><span class="card-kicker">Web Audio</span></div>
         <div class="sound-body">
-          <div class="range-line"><label for="frequencyRange">Open pitch</label><input id="frequencyRange" type="range" min="110" max="440" value="220"><span id="frequencyRangeValue" class="range-value">220 Hz</span></div>
+          <div class="range-line"><label for="frequencyRange">Open pitch</label><input id="frequencyRange" type="range" min="40" max="1000" value="220"><span id="frequencyRangeValue" class="range-value">220 Hz</span></div>
           <div class="field"><label for="toneA">Tone A</label><select id="toneA"></select></div>
           <div class="field"><label for="toneB">Tone B</label><select id="toneB"></select></div>
           <div class="field"><label for="listenWaveform">Waveform</label><select id="listenWaveform"><option value="sine">Sine — pure reference</option><option value="triangle">Triangle — softer</option><option value="sawtooth">Sawtooth — bright</option></select></div>
@@ -515,7 +515,7 @@
    <div class="about-hero"><img src="assets/brand/advar-mark.svg" alt=""><div><p id="aboutSeries">Persian Music Scales · Historical Theory Series</p><h3>Al-Urmawī Advar Atlas</h3><p id="aboutSummary">A multilingual digital-humanities application for exploring exact string divisions, interval structures, listening models, and modal categories.</p></div></div>
    <section class="dialog-section"><h3 id="aboutCreatorTitle">Creator and developer</h3><p><strong>Dr. Pouya Hosseini</strong></p><p id="aboutCreatorCopy">Researcher, independent developer, and creator of Persian Music Scales.</p></section>
    <section class="dialog-section"><h3 id="aboutLinksTitle">Project links</h3><div class="about-links"><a href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener">Persian Music Scales App</a><a href="https://github.com/PersianMusicScales/urmawi-advar-atlas" target="_blank" rel="noopener">GitHub repository</a><a href="https://www.youtube.com/@pouya-hosseini" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/drpouyahosseini" target="_blank" rel="noopener">LinkedIn</a><a href="https://orcid.org/0000-0003-4492-0004" target="_blank" rel="noopener">ORCID</a></div></section>
-   <p class="version-line">Version <span id="appVersion">4.3.0</span> · PWA Edition</p>
+   <p class="version-line">Version <span id="appVersion">4.4.0</span> · PWA Edition</p>
   </div>
  </div>
 </div>
@@ -533,7 +533,7 @@
       <section class="dialog-section"><h3 id="sourcePrimaryHeading">Primary manuscript location</h3><p id="sourcePrimaryParagraph">The project anchors fret division in <em>Kitāb al-Adwār</em>, Section Two, ff. 3v–5r, and interval ratios in Section Three, ff. 5r–8r. Modal combinations are treated in Section Six, ff. 11r–18r; lute tuning and derivation occur in Section Eight, ff. 18v–19v.</p><p><a id="sourcePrimaryLink" href="https://www.qdl.qa/en/archive/81055/vdc_100085098732.0x000001" target="_blank" rel="noopener">Qatar Digital Library, British Library Or 136</a></p></section>
       <section class="dialog-section"><h3 id="sourceVerifiedHeading">What is verified here</h3><ul><li id="sourceVerifiedItem1">All stored fractions reduce correctly and their reciprocals generate the displayed frequency ratios.</li><li id="sourceVerifiedItem2">The 18 displayed points ascend from 1/1 to 2/1.</li><li id="sourceVerifiedItem3">The adjacent pattern contains twelve limmas and five Pythagorean commas and multiplies to the octave.</li><li id="sourceVerifiedItem4">The common T–T–B tetrachord identity equals 4/3 exactly.</li></ul></section>
       <section class="dialog-section"><h3 id="sourceInterpretiveHeading">What remains interpretive</h3><p id="sourceInterpretiveParagraph">The click-by-click construction sequence, modern prose, synthesized sound, and four-string instrument drawing are pedagogical interpretations. They are not a diplomatic transcription, a claim about one unique historical performance tuning, or a reconstruction of a specific surviving instrument.</p></section>
-      <section class="dialog-section"><h3 id="sourceOrientationHeading">Scholarly orientation</h3><p id="sourceOrientationParagraph">The conventional 3-limit reading is retained as a transparent analytical model. Owen Wright’s work remains a major modern framework for the Systematist tradition. Recent scholarship also stresses that categorical interval names and practical intonation should not be treated as universally fixed cent values.</p></section>
+      <section class="dialog-section"><h3 id="sourceOrientationHeading">Scholarly orientation</h3><p id="sourceOrientationParagraph">The conventional 3-limit reading is retained as a transparent analytical model. Owen Wright’s work remains a major modern framework for the Systematist tradition. Recent scholarship also stresses that categorical interval names and practical intonation should not be treated as universally fixed cent values.</p><p><a href="https://www.mtosmt.org/issues/mto.25.31.2/mto.25.31.2.poorhaydari.php" target="_blank" rel="noopener">Poorhaydari (2025) · <i>Maqām Iṣfahān</i>, §§1.3–1.5</a></p></section>
       <section class="dialog-section"><h3 id="sourceLanguageHeading">Language review</h3><p id="sourceLanguageParagraph">The English, Persian, Arabic, and Turkish interfaces have been harmonized for consistency in this build. Historical terminology still deserves specialist native-speaker and philological review before formal publication.</p></section>
       
     </div>

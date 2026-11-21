@@ -10,7 +10,23 @@ const js=fs.readFileSync(path.join(root,"js","app.js"),"utf8");
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"css","app.css"),"utf8");
 
-const notes=[[1,1],[243,256],[59049,65536],[8,9],[27,32],[6561,8192],[64,81],[3,4],[729,1024],[177147,262144],[2,3],[81,128],[19683,32768],[16,27],[9,16],[2187,4096],[531441,1048576],[1,2]];
+const model=extractConst("NOTES","const STEP_TYPES");
+const notes=Array.from(model,n=>[n.lenN,n.lenD]);
+const steps=extractConst("STEP_TYPES","const LIMMA");
+const construction=extractConst("CONSTRUCTION","const $");
+const byLabel=new Map(Array.from(model,n=>[n.label,n]));
+assert.equal(new Set(construction.map(s=>s.note)).size,18);
+for(const step of construction){
+  const dest=byLabel.get(step.note);
+  const src=step.from?byLabel.get(step.from):{lenN:1,lenD:1};
+  const [n,d]=step.from?step.multiplier.split("/").map(Number):[step.active,step.divisions];
+  assert.equal(src.lenN*n*dest.lenD,src.lenD*d*dest.lenN,step.heading);
+}
+for(let i=1;i<notes.length;i++){
+  const [a,b]=notes[i-1], [c,d]=notes[i];
+  const [n,den]=steps[i-1]==="L"?[256n,243n]:[531441n,524288n];
+  assert.equal(BigInt(a)*BigInt(d)*den,BigInt(b)*BigInt(c)*n,`interval ${i}`);
+}
 const freq=([n,d])=>d/n;
 const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
 assert.equal(notes.length,18);
@@ -31,6 +47,12 @@ function extractConst(name,endMarker){
   const source=js.slice(start,end).replace(`const ${name}`,`var ${name}`);
   const ctx={};vm.createContext(ctx);vm.runInContext(source,ctx);
   return ctx[name];
+}
+const species=extractConst("SPECIES","let speciesIndex");
+for(const example of species.filter(example=>example.steps)){
+  const numerator=example.steps.reduce((product,step)=>product*BigInt(step.n),1n);
+  const denominator=example.steps.reduce((product,step)=>product*BigInt(step.d),1n);
+  assert.equal(3n*numerator,4n*denominator,example.title);
 }
 const UI=extractConst("UI","const CONSTRUCTION_I18N");
 const EXT_UI=extractConst("EXT_UI","function et");

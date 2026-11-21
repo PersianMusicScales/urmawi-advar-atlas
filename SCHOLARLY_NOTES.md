@@ -18,4 +18,4 @@
 ## Sources consulted
 - British Library Or 136 record and folio structure in Qatar Digital Library.
 - Owen Wright, *The Modal System of Arab and Persian Music, A.D. 1250–1300*.
-- Recent discussions of Systematist tetrachord categories and the variability of exact interval sizes.
+- [Poorhaydari, “Historical Examination and Theoretical Analysis of Maqām Iṣfahān in Persian Art Music” (2025), §§1.3–1.5](https://www.mtosmt.org/issues/mto.25.31.2/mto.25.31.2.poorhaydari.php). The J–J–J–B label and its possible ratio realizations require separate interpretation. The Atlas therefore displays the categories without assigning audio.

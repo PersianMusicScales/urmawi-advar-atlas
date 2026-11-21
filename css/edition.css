@@ -139,3 +139,40 @@ body.stage-focus #instrumentSvg, body.stage-focus.view-practical #instrumentSvg 
   body:not(.view-theory) #monoSvg { height: auto !important; }
   .instrument-note { font-size: 7px; bottom: 0; }
 }
+
+/* Reading and comparing values across the six learning panels. */
+.lesson-content, .builder-body, .modal-body, .table-wrap, .step-grid, .quiz-body {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #647b6d transparent;
+}
+.lesson-copy, .step-copy, .pattern-copy, .caution-box {
+  line-height: 1.48;
+  color: #d5d9c9;
+}
+.data-card th { position: sticky; top: 0; background: #253b34; z-index: 1; }
+.data-card tbody tr:nth-child(even):not(.selected-row) { background: #ffffff05; }
+.data-card tbody tr:hover { background: #344a40; }
+.data-card td, .formula-box, .guide-summary, .tone-box { font-variant-numeric: tabular-nums; }
+#comparisonRatio, #comparisonCents, #lengthRatio, #frequencyRatio, #guideLength,
+#guideFrequency, #guideCents, #speciesResult, .data-card td { unicode-bidi: isolate; }
+#comparisonCents, #comparisonRatio { direction: ltr; display: inline-block; }
+.interval-limma.current { fill: #9ee4cb; stroke: #e3f5e9; }
+.interval-comma.current { fill: #f4a997; stroke: #ffe9d4; }
+.fret:focus-visible .label { text-decoration: underline; }
+#playSpecies:disabled { opacity: .48; cursor: default; }
+.dialog-section a { text-underline-offset: 3px; }
+.pitch-table-note {
+  font: inherit;
+  color: var(--paper);
+  background: transparent;
+  border: 0;
+  padding: 0 5px;
+}
+.pitch-table-note:hover, .pitch-table-note:focus-visible { color: var(--gold); text-decoration: underline; }
+.data-card td, .data-card th { font-variant-numeric: tabular-nums; }
+@media (min-width: 1101px) {
+  .workspace { padding-top: 16px; }
+  .workspace-context { top: 3px; color: #b3c1b3; font-size: 8px; }
+}
