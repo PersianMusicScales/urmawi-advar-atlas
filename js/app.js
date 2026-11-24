@@ -133,7 +133,7 @@ function renderIntervals(){
     const interval=intervalBetween(NOTES[i-1],NOTES[i]);
     const kind=STEP_TYPES[i-1]==="C"?"interval-comma":"interval-limma";
     const rect=createSvg("rect",{
-      x:Math.min(xa,xb),y:113,width:Math.max(2,Math.abs(xa-xb)),height:7,
+      x:Math.min(xa,xb),y:158,width:Math.max(2,Math.abs(xa-xb)),height:7,
       class:`${kind}${i===premiumFocusIndex()?" current":""}`
     });
     // Native SVG title: an exact ratio and a computed (rounded) cent value.
@@ -153,13 +153,13 @@ function renderMonochord(){
       tabindex:"0",role:"button","aria-pressed":String(i===premiumFocusIndex()),"aria-label":`${n.label}, ${fixed(cents(n))} cents`
     });
     let opacity=1;
-    if(activePanel==="construct"&&!constructed.has(n.label))opacity=.12;
+    if(activePanel==="construct"&&!constructed.has(n.label))opacity=.62;
     group.setAttribute("opacity",opacity);
     group.appendChild(createSvg("line",{x1:x,y1:Y-6,x2:x,y2:stemEnd,class:"stem"}));
     group.appendChild(createSvg("circle",{cx:x,cy:Y,r:13,class:"fret-hit",fill:"transparent"}));
     group.appendChild(createSvg("circle",{cx:x,cy:Y,r:i===premiumFocusIndex()?6.3:4.5,class:"dot"}));
     group.appendChild(createSvg("text",{x,y:labelY,"text-anchor":"middle",class:"label"},monoLabel(n,i)));
-    group.appendChild(createSvg("text",{x,y:tier<2?labelY+10:labelY+9,"text-anchor":"middle",class:"small-label"},i+1));
+    if($("labelMode").value!=="index")group.appendChild(createSvg("text",{x,y:tier<2?labelY+10:labelY+9,"text-anchor":"middle",class:"small-label"},i+1));
     group.addEventListener("click",()=>{activatePanel("explore");selectNote(i,true)});
     group.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activatePanel("explore");selectNote(i,true)}});
     layer.appendChild(group);
@@ -204,7 +204,7 @@ function renderInstrument(){
       layer.appendChild(createSvg("line",{x1:x,y1:INSTRUMENT.railY+3,x2:x,y2:INSTRUMENT.stringY-9,class:"instrument-fretline"}));
     }
     const dotClass=i===focusIndex?"instrument-dot gold":`instrument-dot ${dim?"dim":""}`;
-    layer.appendChild(createSvg("circle",{cx:x,cy:INSTRUMENT.railY,r:i===focusIndex?4.4:3.0,class:dotClass,opacity:dim?0.16:1}));
+    layer.appendChild(createSvg("circle",{cx:x,cy:INSTRUMENT.railY,r:i===focusIndex?4.4:3.0,class:dotClass,opacity:dim?0.60:1}));
     // Adjacent microtonal stops can be closer together than a fixed-width target.
     const left=i===NOTES.length-1 ? x-12 : (x+instrumentXFor(NOTES[i+1]))/2;
     const right=i===0 ? x+12 : (x+instrumentXFor(NOTES[i-1]))/2;
@@ -1264,7 +1264,7 @@ function closeSourceDialog(){$("sourceDialog").classList.remove("open");$("sourc
 let viewMode=0;
 function applyViewMode(mode=viewMode){
  viewMode=Number(mode)===1?1:0;
- $("monoSvg").setAttribute("viewBox",viewMode===1?"165 -8 860 146":"0 0 1244 126");
+ $("monoSvg").setAttribute("viewBox",viewMode===1?"165 -10 860 182":"0 -10 1244 182");
  document.body.classList.toggle("view-theory",viewMode===1);
  document.body.classList.toggle("view-practical",viewMode===2);
  const btn=$("viewModeBtn");
@@ -1518,13 +1518,13 @@ let stageFocus=false;
 
 function renderTheoryRuler(){
  const layer=$("theoryRulerLayer");if(!layer)return;layer.innerHTML="";
- layer.appendChild(createSvg("line",{x1:X0,y1:101,x2:X1,y2:101,class:"ruler-line"}));
+ layer.appendChild(createSvg("line",{x1:X0,y1:135,x2:X1,y2:135,class:"ruler-line"}));
  for(let i=0;i<=8;i++){
   const fraction=i/8,x=X0+fraction*(X1-X0),major=i%2===0;
-  layer.appendChild(createSvg("line",{x1:x,y1:major?97:99,x2:x,y2:105,class:"ruler-tick",opacity:major?.85:.45}));
+  layer.appendChild(createSvg("line",{x1:x,y1:major?131:133,x2:x,y2:139,class:"ruler-tick",opacity:major?.85:.45}));
   if(major){
    const labels=["0","1/4","1/2","3/4","1"];
-   layer.appendChild(createSvg("text",{x,y:111,"text-anchor":"middle",class:"ruler-label"},labels[i/2]));
+   layer.appendChild(createSvg("text",{x,y:152,"text-anchor":"middle",class:"ruler-label"},labels[i/2]));
   }
  }
 }

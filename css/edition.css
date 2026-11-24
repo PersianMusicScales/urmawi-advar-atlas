@@ -366,7 +366,7 @@ body.view-practical .mono-panel .theory-hud { opacity:1; transform:none; }
 #viewport #app { width:100%; max-width:none; }
 .header-actions #viewSwitch { width:auto; display:inline-flex; }
 #viewSwitch .view-choice { width:auto; padding-inline:12px; }
-body.view-theory #monoPanel #monoSvg { height:auto!important; width:100%!important; min-width:0!important; aspect-ratio:860/146; }
+body.view-theory #monoPanel #monoSvg { height:auto!important; width:100%!important; min-width:0!important; aspect-ratio:860/182; }
 body.view-theory #monoPanel #monoScrollShell { width:min(100%,92rem); height:auto; min-height:0; align-self:center; }
 #monoPanel .hud-metric { display:flex; align-items:baseline; gap:.5em; flex-wrap:wrap; }
 #monoSvg text { font-family:Vazirmatn,system-ui,sans-serif; }
@@ -462,4 +462,37 @@ body.view-theory #monoPanel #monoScrollShell { width:min(100%,92rem); height:aut
 @media(prefers-color-scheme:dark) {
   .workspace :is(.btn:not(.primary):not(.danger),.field select,.field input:not([type=range]),.audio-mini select) { background:#243d35; color:var(--text-main); border-color:var(--rule); }
   .workspace .btn.danger { background:var(--comma-bg); color:var(--comma-ink); }
+}
+
+/* The ruler, ratio bracket and interval band have dedicated SVG lanes. */
+body:not(.view-theory) #monoPanel #monoSvg {
+  width:100%; height:auto!important; aspect-ratio:1244/182;
+}
+#monoPanel #monoSvg .ruler-label,
+#monoPanel #monoSvg .small-label,
+#monoPanel #monoSvg .length-bracket-text {
+  fill:#d8e6da; font:600 10px Vazirmatn,system-ui,sans-serif;
+}
+#monoPanel .hud-metric b { direction:ltr; unicode-bidi:isolate; }
+.workspace .step-equation { direction:ltr; unicode-bidi:isolate; text-align:start; }
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  /* Normal document flow lets the browser chrome change height independently. */
+  #app #monoPanel {
+    display:flex!important; flex-direction:column; align-items:stretch;
+    height:auto!important; max-height:none; gap:4px;
+  }
+  #monoPanel #monoScrollShell { order:0; align-self:stretch; width:100%; }
+  #monoPanel .instrument-wrap { order:1; width:100%; margin:0; }
+  #monoPanel #stageLegend { order:2; align-self:center; margin:0; }
+  #monoPanel .pitch-controls {
+    order:3; align-items:center; justify-content:center; gap:6px 12px;
+    padding:6px 0; border-top:1px solid #4d685e;
+  }
+  #monoPanel .pitch-controls :is(label,output) { width:auto; }
+  #app .topbar { position:relative!important; top:auto!important; }
+}
+#app .header-actions #viewSwitch { height:auto; align-items:center; }
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  #monoPanel #stageLegend { display:flex!important; }
+  #monoPanel #monoSvg .small-label,#monoPanel #monoSvg .ruler-label { font-size:12px; }
 }
