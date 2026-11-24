@@ -83,16 +83,6 @@ let quizCurrent=null;
 let scoreCorrect=0;
 let scoreTotal=0;
 
-/* Fit the active desktop layout into the available viewport. */
-function fitApp(){
-  const responsive=window.matchMedia("(max-width:1100px)").matches || new URLSearchParams(location.search).get("embed")==="1" || window.self!==window.top;
-  if(responsive){$("app").style.transform="none";return}
-  const scale=Math.min(window.innerWidth/1280,document.getElementById("viewport").clientHeight/$("app").offsetHeight);
-  $("app").style.transform=`scale(${scale})`;
-}
-window.addEventListener("resize",fitApp);
-fitApp();
-
 /* Audio */
 function ctx(){
   if(!audioContext) audioContext=new (window.AudioContext||window.webkitAudioContext)();
@@ -518,7 +508,7 @@ window.addEventListener("keydown",e=>{
 /* Initial render */
 populateSelect("toneA",0);populateSelect("toneB",10);
 renderIntervals();renderStepStrips();renderStepGrid();renderMonochord();
-updateExplore();setConstruction(0);updateListen();renderTable();newQuestion();activatePanel("explore");fitApp();
+updateExplore();setConstruction(0);updateListen();renderTable();newQuestion();activatePanel("explore");
 
 /* ==========================================================================
    Multilingual interface layer
@@ -1574,7 +1564,7 @@ function updateFocusButton(){
 }
 function toggleStageFocus(force){
  stageFocus=typeof force==="boolean"?force:!stageFocus;
- document.body.classList.toggle("stage-focus",stageFocus);updateFocusButton();fitApp();
+ document.body.classList.toggle("stage-focus",stageFocus);updateFocusButton();
 }
 function applyPremiumLanguage(){
  setPremiumText("editionBadge","edition");setPremiumText("factPositions","positions");setPremiumText("factOctave","octaveFact");setPremiumText("factLanguages","languages");

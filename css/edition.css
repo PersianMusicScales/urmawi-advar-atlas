@@ -265,3 +265,94 @@ body.stage-focus #instrumentSvg, body.stage-focus.view-practical #instrumentSvg 
   .workspace .quiz-option.correct { color:#215b41; }
   .workspace .field select,.workspace .field input,.workspace .audio-mini select { background:#fffaf0; color:#203d31; }
 }
+
+/* A scrolling reading desk: all type is measured in CSS pixels at normal zoom. */
+@font-face {
+  font-family: Vazirmatn;
+  src: url("../assets/fonts/vazirmatn-arabic-wght-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+body { --reading-font: system-ui, sans-serif; }
+body.rtl-ui { --reading-font: Vazirmatn, Tahoma, sans-serif; --ui:var(--reading-font); }
+html,body { height:auto; min-height:100%; overflow-x:clip; overflow-y:visible; }
+#viewport { position:relative; display:block; overflow:visible; }
+body #app,body:not(.stage-focus) #app {
+  width:min(100%, 94rem); height:auto; margin:auto; overflow:visible;
+  display:flex; flex-direction:column;
+}
+.topbar { height:auto; padding-block:12px; }
+.brand-facts,.brand-meta,.tab-number,.workspace-context,.view-state-label { display:none; }
+.creator-line { margin-top:4px; font:500 14px/1.55 var(--reading-font); }
+.header-actions :is(.icon-btn,.view-choice,.language-select),.tab {
+  font:600 14px/1.4 var(--reading-font); min-height:44px;
+}
+#viewport .workspace { padding:16px clamp(10px,2vw,28px) 28px; overflow:visible; }
+.workspace .panel,.panel > :is(.learn-grid,.explore-grid,.listen-grid,.construct-grid,.modes-grid,.train-grid) { height:auto; min-height:0; align-items:start; }
+.workspace .card { display:flex; flex-direction:column; height:auto; min-width:0; }
+.workspace .card-head { height:auto; min-height:46px; gap:8px; flex-wrap:wrap; padding:8px 14px; }
+.workspace .card-title,.workspace .builder-title { font:650 19px/1.55 var(--reading-font); }
+.workspace :is(.card-kicker,.lesson-status,.data-key,.summary-k,.lesson-num,.micro,.field label,.step-code,.quiz-mode,.source-row span) {
+  font:500 14px/1.6 var(--reading-font); letter-spacing:normal;
+}
+.workspace :is(.lesson-btn,.btn,.step-tile,.species-btn,.quiz-option,select,input,th,td,.source-row strong,.data-val,.summary-v,.feedback,.note-sub,.interval-text,.tone-latin,.tone-cents) {
+  font:550 15px/1.55 var(--reading-font); letter-spacing:normal;
+}
+.workspace :is(.btn,.lesson-btn,.quiz-option,.species-btn,.field select) { min-height:44px; height:auto; white-space:normal; }
+.workspace :is(.lesson-content,.builder-body,.step-main,.quiz-body) { overflow:visible; height:auto; padding:16px; }
+.workspace :is(.lesson-copy,.step-copy,.lesson-objective,.concept-copy p,.pattern-copy,.quiz-question,.caution-box,.modal-body p) {
+  font:400 17px/1.75 var(--reading-font); max-width:70ch;
+}
+.workspace .lesson-title { font:700 clamp(24px,2vw,34px)/1.5 var(--reading-font); margin:0 0 8px; }
+.workspace .lesson-formula { font-size:18px; direction:ltr; text-align:center; }
+.workspace .lesson-actions { padding:10px 14px; }
+.workspace .learn-grid { grid-template-columns:minmax(210px,1fr) minmax(0,2.5fr); }
+.workspace .learn-grid > .source-card { grid-column:2; }
+.workspace .table-wrap { max-height:32rem; overflow:auto; }
+#theoryToggle { display:none; }
+body.view-practical .mono-panel .mono-scroll-shell,body.view-practical .mono-caption,body.view-theory .mono-panel .instrument-wrap { display:none!important; }
+body.view-practical .mono-panel .theory-hud { opacity:1; transform:none; }
+.instrument-note { font:500 12px/1.5 var(--reading-font); color:#e7e7d9; }
+@media(min-width:1101px) {
+  .tabs { min-height:52px; }
+  body:not(.stage-focus) .mono-panel { display:flex; flex-direction:column; padding:12px 20px; }
+  body:not(.stage-focus) .instrument-wrap { width:min(100%,72rem); align-self:center; }
+  body:not(.stage-focus) .mono-panel .theory-hud { position:static; display:flex; align-items:center; justify-content:center; gap:18px; width:fit-content; max-width:100%; margin:auto; padding:6px 14px; }
+  .theory-hud .hud-metric span,.theory-hud .hud-primary small,.mono-caption { font:500 12px/1.4 var(--reading-font); }
+  .theory-hud .hud-metric b,.theory-hud .hud-primary b { font-size:15px; }
+  .hud-model { display:none; }
+}
+@media(max-width:1100px) {
+  .workspace .learn-grid { display:flex; flex-direction:column; }
+  .workspace .learn-grid > * { width:100%; }
+  .workspace .learn-grid > .lesson-main { order:-1; }
+}
+@media(max-width:700px), (pointer:coarse) and (max-height:600px) {
+  .topbar { position:relative!important; top:auto; padding-block:8px; }
+  .creator-line { font-size:12px; }
+  .mono-panel .theory-hud,.mono-panel .stage-legend,.mono-panel .mono-caption { display:none; }
+  #theoryToggle { display:block; align-self:center; order:-1; color:#f3e7c9; background:#213e36; border:1px solid #83988a; border-radius:7px; padding:8px 16px; min-height:44px; font:600 15px/1.5 var(--reading-font); }
+  #theoryToggle::after { content:" ▾"; }
+  #theoryToggle[aria-expanded=true]::after { content:" ▴"; }
+  body:not(.view-theory) .mono-panel:not(.diagram-open) :is(.mono-scroll-shell,.mobile-stage-tools),body.view-theory #theoryToggle,body.view-practical #theoryToggle { display:none!important; }
+  .pitch-controls,.pitch-controls select,.pitch-controls button { font:550 15px/1.5 var(--reading-font); }
+  #app .mobile-nav { position:sticky!important; top:0; bottom:auto!important; z-index:70!important; padding:5px!important; }
+  #app .mobile-nav button b { font:600 14px/1.4 var(--reading-font)!important; }
+  #app .mobile-nav button span { display:none!important; }
+  .panel { scroll-margin-top:110px; }
+  #app .workspace { padding-bottom:calc(18px + var(--safe-bottom))!important; }
+  .workspace .concept-body { grid-template-columns:1fr; }
+}
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .panel { scroll-margin-top:70px; }
+}
+@media(prefers-color-scheme:light) {
+  .header-actions :is(button,select),.header-actions .view-switch { background:#edf0e6; color:#234435!important; border-color:#819285!important; }
+  .header-actions .view-choice.active { background:#294a3c; color:#fff7e8!important; }
+  .workspace .card-kicker,.workspace .source-row span { color:#43584d; }
+}
+@media(min-width:1101px) {
+  body:not(.stage-focus) .mono-scroll-shell { width:min(100%,72rem); align-self:center; }
+  .mono-scroll-shell #monoSvg { width:100%; }
+}

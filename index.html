@@ -129,6 +129,7 @@
     <span id="monoHint">Select any fret to inspect and hear it</span>
     <span>ا — nut (anf) · open string</span>
   </div>
+  <button type="button" id="theoryToggle" aria-controls="monoScrollShell mobileStageTools" aria-expanded="false">String diagram</button>
   <div id="monoScrollShell" class="mono-scroll-shell">
   <svg id="monoSvg" preserveAspectRatio="none" viewBox="0 0 1244 126" role="img" aria-labelledby="monoTitle monoDesc">
     <title id="monoTitle">Al-Urmawī monochord</title>
@@ -173,6 +174,14 @@
   <aside id="rotateHint" hidden><span id="rotateMessage"></span><button type="button" id="dismissRotate">×</button></aside>
 </section>
 
+<nav id="mobileNav" class="mobile-nav" aria-label="Primary navigation">
+  <button type="button" data-mobile-panel="learn"><span>◉</span><b id="mobileLearn">Learn</b></button>
+  <button type="button" data-mobile-panel="explore"><span>⌁</span><b id="mobileExplore">Explore</b></button>
+  <button type="button" data-mobile-panel="construct"><span>◇</span><b id="mobileConstruct">Construct</b></button>
+  <button type="button" data-mobile-panel="listen"><span>♪</span><b id="mobileListen">Listen</b></button>
+  <button type="button" data-mobile-panel="modes"><span>◌</span><b id="mobileModes">Species &amp; Modes</b></button>
+  <button type="button" data-mobile-panel="train"><span>✓</span><b id="mobileTrain">Train &amp; Data</b></button>
+</nav>
 <nav id="tabsNav" class="tabs" aria-label="Learning modes" role="tablist">
   <button class="tab active" role="tab" aria-selected="true" data-panel="learn"><span class="tab-number">01</span>Learn</button>
   <button class="tab" role="tab" aria-selected="false" data-panel="explore"><span class="tab-number">02</span>Explore</button>
@@ -474,14 +483,7 @@
 
 
 
-<nav id="mobileNav" class="mobile-nav" aria-label="Primary navigation">
-  <button type="button" data-mobile-panel="learn"><span>◉</span><b id="mobileLearn">Learn</b></button>
-  <button type="button" data-mobile-panel="explore"><span>⌁</span><b id="mobileExplore">Explore</b></button>
-  <button type="button" data-mobile-panel="construct"><span>◇</span><b id="mobileConstruct">Construct</b></button>
-  <button type="button" data-mobile-panel="listen"><span>♪</span><b id="mobileListen">Listen</b></button>
-  <button type="button" data-mobile-panel="modes"><span>◌</span><b id="mobileModes">Species &amp; Modes</b></button>
-  <button type="button" data-mobile-panel="train"><span>✓</span><b id="mobileTrain">Train &amp; Data</b></button>
-</nav>
+
 
 <div id="mobileMoreSheet" class="app-sheet" aria-hidden="true">
  <button class="sheet-scrim" type="button" data-close-sheet aria-label="Close"></button>

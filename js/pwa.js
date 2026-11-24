@@ -22,6 +22,7 @@ function applyPwaLanguage(){
  setPwaText("settingsTitle","settingsTitle");setPwaText("settingWelcomeLabel","settingWelcome");setPwaText("settingMotionLabel","settingMotion");
  setPwaText("aboutDialogTitle","aboutTitle");setPwaText("aboutSeries","aboutSeries");setPwaText("aboutSummary","aboutSummary");setPwaText("aboutCreatorTitle","creator");setPwaText("aboutCreatorCopy","creatorCopy");setPwaText("aboutLinksTitle","links");setPwaText("closeAboutDialog","close");
  setPwaText("installHelpTitle","installTitle");setPwaText("installHelpCopy","installHelp");setPwaText("closeInstallHelp","close");setPwaText("installAppBtn","install");setPwaText("updateToastText","update");setPwaText("updateAppBtn","updateButton");
+ $("theoryToggle").textContent=({en:"String diagram",fa:"نمودار تک‌سیم",ar:"مخطط الوتر",tr:"Tel diyagramı"})[uiLanguage] || "String diagram";
  const copy=instrumentCopy[uiLanguage] || instrumentCopy.en;
  ["creatorByline","creatorProjects","fretLabel","mobilePitchPlay","rotateMessage","aboutCreatorCopy"].forEach((id,i)=>setInstrumentText(id,copy[i]));
  setInstrumentText("mobileInstrumentToggle",copy[document.body.classList.contains("fret-zoom")?7:6]);
@@ -96,6 +97,7 @@ function announceNetwork(online){const el=$("networkBanner");if(!el)return;el.te
 function registerServiceWorker(){if(!("serviceWorker" in navigator)||!/^https?:$/.test(location.protocol))return;navigator.serviceWorker.register("./service-worker.js").then(reg=>{reg.addEventListener("updatefound",()=>{const w=reg.installing;if(!w)return;w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){pendingWorker=w;$("updateToast").hidden=false}})})}).catch(console.warn);navigator.serviceWorker.addEventListener("controllerchange",()=>location.reload())}
 function setupWelcome(){const st=readState(),params=new URLSearchParams(location.search);const skip=params.get("welcome")==="0"||params.get("skipWelcome")==="1"||isEmbed();if(skip||st.showWelcome===false)hideWelcome();else showWelcome()}
 function initializePwa(){
+ $("theoryToggle").onclick=()=>{const open=$("monoPanel").classList.toggle("diagram-open");$("theoryToggle").setAttribute("aria-expanded",String(open));if(open)centerSelectedFret("auto")};
  NOTES.forEach((n,i)=>$("fretPicker").add(new Option((i+1)+" · "+n.label+" · "+n.translit,String(i))));
  $("fretPicker").addEventListener("change",()=>selectNote(Number($("fretPicker").value),true));
  $("creatorProjects").addEventListener("click",()=>{openDialog("aboutDialog");$("closeAboutDialog").focus()});
