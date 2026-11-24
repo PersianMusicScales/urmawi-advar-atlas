@@ -496,3 +496,7 @@ body:not(.view-theory) #monoPanel #monoSvg {
   #monoPanel #stageLegend { display:flex!important; }
   #monoPanel #monoSvg .small-label,#monoPanel #monoSvg .ruler-label { font-size:12px; }
 }
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  /* The fret picker carries the index; keep close neighbours distinct on the string. */
+  #monoPanel #monoSvg .small-label { display:none; }
+}
