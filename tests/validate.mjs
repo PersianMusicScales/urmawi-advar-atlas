@@ -72,11 +72,11 @@ for(const lang of langs){
   for(const lesson of FULL_I18N[lang].lessons) for(const key of ["kicker","status","title","objective","copy"]) assert.ok(lesson[key]?.trim(),`${lang}: empty lesson ${key}`);
 }
 
-const requiredIds=["viewStateLabel","sourcePrimaryHeading","sourcePrimaryParagraph","sourcePrimaryLink","sourceVerifiedHeading","sourceVerifiedItem1","sourceVerifiedItem2","sourceVerifiedItem3","sourceVerifiedItem4","sourceInterpretiveHeading","sourceInterpretiveParagraph","sourceOrientationHeading","sourceOrientationParagraph","sourceLanguageHeading","sourceLanguageParagraph","viewSwitch","viewBothBtn","viewTheoryBtn","viewInstrumentBtn","focusStageBtn","theoryHud","hudNote","hudFrequency","hudLength","hudCents","soundingSegment","stoppedSegment","selectedProjection","lengthBracket","workspaceContext"];
+const requiredIds=["viewStateLabel","sourcePrimaryHeading","sourcePrimaryParagraph","sourcePrimaryLink","sourceVerifiedHeading","sourceVerifiedItem1","sourceVerifiedItem2","sourceVerifiedItem3","sourceVerifiedItem4","sourceInterpretiveHeading","sourceInterpretiveParagraph","sourceOrientationHeading","sourceOrientationParagraph","sourceLanguageHeading","sourceLanguageParagraph","viewSwitch","viewBothBtn","viewTheoryBtn","focusStageBtn","theoryHud","hudNote","hudFrequency","hudLength","hudCents","soundingSegment","stoppedSegment","selectedProjection","lengthBracket","workspaceContext"];
 for(const id of requiredIds) assert.match(html,new RegExp(`id=["']${id}["']`),`missing DOM target ${id}`);
 assert.match(css,/body\.view-theory \.instrument-wrap\{display:none\}/,"theory view must hide the instrument");
 assert.match(css,/body\.view-theory #monoSvg\{[\s\S]*height:205px/,"theory view must enlarge/emphasize the monochord");
-assert.match(css,/body\.view-practical #instrumentSvg\{height:195px/,"instrument view must enlarge the instrument");
+assert.ok(!html.includes('id="viewInstrumentBtn"') && !html.includes('id="fullscreenBtn"'));
 assert.match(js,/requestedLanguage=new URLSearchParams\(location\.search\)\.get\("lang"\)/,"language query support missing");
 assert.match(js,/requestedView=new URLSearchParams\(location\.search\)\.get\("view"\)/,"view query support missing");
 assert.match(css,/body\.stage-focus #app\{grid-template-rows:72px 648px 0 0 0\}/,"presentation focus mode missing");
@@ -93,6 +93,6 @@ assert.equal(new Set(ids).size,ids.length,"duplicate HTML ids found");
 assert.ok(!html.includes('welcomeContinue'),"continue-session control must be removed");
 assert.ok(!html.includes('resetProgressBtn'),"reset-progress control must be removed");
 assert.ok(!html.includes('validationCompact'),"public built-in validation panel must be removed");
-assert.ok(!html.includes('id="orientationGate"'),"portrait access must remain available");
+assert.ok(html.includes('id="orientationGate"'),"portrait rotation prompt missing");
 assert.match(html,/apple-mobile-web-app-status-bar-style["'] content=["']default["']/,"safe iOS status-bar mode missing");
 console.log("All Urmawi model, four-language, mobile-landscape, safe-area, DOM-target, and view-mode validation tests passed.");

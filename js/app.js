@@ -461,9 +461,6 @@ function activatePanel(name){
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>activatePanel(b.dataset.panel)));
 
 /* Events */
-$("fullscreenBtn")?.addEventListener("click",async()=>{
-  try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}
-});
 $("baseFrequency").addEventListener("input",e=>{if(e.target.value && e.target.validity.valid)setBase(e.target.value)});
 $("baseFrequency").addEventListener("change",()=>setBase(currentBase()));
 $("stringLength").addEventListener("change",()=>{$("stringLength").value=boundedInput("stringLength",100);updateExplore()});
@@ -1266,7 +1263,8 @@ function openSourceDialog(){$("sourceDialog").classList.add("open");$("closeSour
 function closeSourceDialog(){$("sourceDialog").classList.remove("open");$("sourceBtn").focus()}
 let viewMode=0;
 function applyViewMode(mode=viewMode){
- viewMode=Math.max(0,Math.min(2,Number(mode)||0));
+ viewMode=Number(mode)===1?1:0;
+ $("monoSvg").setAttribute("viewBox",viewMode===1?"165 -8 860 146":"0 0 1244 126");
  document.body.classList.toggle("view-theory",viewMode===1);
  document.body.classList.toggle("view-practical",viewMode===2);
  const btn=$("viewModeBtn");
@@ -1278,7 +1276,7 @@ function applyViewMode(mode=viewMode){
  const label=$("viewStateLabel");
  if(label) label.textContent=viewMode===0?fullText("combinedViewLabel"):viewMode===1?fullText("theoryViewLabel"):fullText("practicalViewLabel");
 }
-function cycleView(){applyViewMode((viewMode+1)%3)}
+function cycleView(){applyViewMode((viewMode+1)%2)}
 
 const originalActivatePanel=activatePanel;
 activatePanel=function(name){
@@ -1470,7 +1468,7 @@ const priorLocalizedActivatePanel=activatePanel;
 activatePanel=function(name){priorLocalizedActivatePanel(name);if(name==="learn")setIdText("monoHint",fullText("hintLearn"));if(name==="modes")setIdText("monoHint",fullText("hintModes"))};
 
 const requestedView=new URLSearchParams(location.search).get("view");
-if(requestedView==="theory")viewMode=1;else if(requestedView==="instrument"||requestedView==="practical")viewMode=2;else if(requestedView==="both")viewMode=0;
+if(requestedView==="theory")viewMode=1;else if(requestedView==="instrument"||requestedView==="practical")viewMode=0;else if(requestedView==="both")viewMode=0;
 applyStaticLanguage();applyViewMode(viewMode);activatePanel(activePanel);
 
 /* ==========================================================================
@@ -1482,7 +1480,7 @@ const PREMIUM_I18N={
   edition:"Scholarly interactive edition",positions:"18 exact pitch points",octaveFact:"1200-cent octave",languages:"4-language interface",
   viewGroup:"Visualization view",combined:"Combined",theory:"Theory",instrument:"Instrument",focus:"Focus",exitFocus:"Exit focus",
   activePitch:"Active pitch",frequencyRatio:"Frequency ratio",soundingLength:"Sounding length",cents:"Cents",exactModel:"Exact rational model",
-  limma:"Limma",comma:"Comma",openString:"Open string",octaveArc:"octave · 2:1",presentationHint:"F: focus · 1/2/3: view · Esc: exit",
+  limma:"Limma",comma:"Comma",openString:"Open string",octaveArc:"octave · 2:1",presentationHint:"F: focus · 1/2: view · Esc: exit",
   modeLearn:"Guided curriculum",modeExplore:"Pitch explorer",modeConstruct:"Geometrical construction",modeListen:"Sound Atlas",modeModes:"Species & modes",modeTrain:"Training & exact data",
   focusTitle:"Open presentation focus mode",exitFocusTitle:"Return to the full learning Atlas",fullscreen:"Open in fullscreen"
  },
@@ -1506,7 +1504,7 @@ const PREMIUM_I18N={
   edition:"Bilimsel etkileşimli sürüm",positions:"18 kesin ses konumu",octaveFact:"1200 sentlik oktav",languages:"4 dilli arayüz",
   viewGroup:"Görselleştirme görünümü",combined:"Birleşik",theory:"Kuram",instrument:"Çalgı",focus:"Odak",exitFocus:"Odaktan çık",
   activePitch:"Etkin ses",frequencyRatio:"Frekans oranı",soundingLength:"Titreşen uzunluk",cents:"Sent",exactModel:"Kesin rasyonel model",
-  limma:"Limma",comma:"Koma",openString:"Açık tel",octaveArc:"oktav · 2:1",presentationHint:"F: odak · 1/2/3: görünüm · Esc: çıkış",
+  limma:"Limma",comma:"Koma",openString:"Açık tel",octaveArc:"oktav · 2:1",presentationHint:"F: odak · 1/2: görünüm · Esc: çıkış",
   modeLearn:"Yönlendirilmiş dersler",modeExplore:"Ses konumu gezgini",modeConstruct:"Geometrik kurulum",modeListen:"Ses Atlası",modeModes:"Cinsler ve devirler",modeTrain:"Alıştırma ve kesin veri",
   focusTitle:"Sunum odak görünümünü aç",exitFocusTitle:"Tam öğrenme atlasına dön",fullscreen:"Tam ekran"
  }
@@ -1598,12 +1596,12 @@ applyStaticLanguage=function(){premiumPriorApplyStaticLanguage();applyPremiumLan
 
 $("viewBothBtn")?.addEventListener("click",()=>setPremiumView(0));
 $("viewTheoryBtn")?.addEventListener("click",()=>setPremiumView(1));
-$("viewInstrumentBtn")?.addEventListener("click",()=>setPremiumView(2));
+
 $("focusStageBtn")?.addEventListener("click",()=>toggleStageFocus());
 window.addEventListener("keydown",e=>{
  const tag=(e.target&&e.target.tagName||"").toLowerCase();if(["input","select","textarea"].includes(tag))return;
  if(e.key.toLowerCase()==="f"){e.preventDefault();toggleStageFocus()}
- if(e.key==="1")setPremiumView(0);if(e.key==="2")setPremiumView(1);if(e.key==="3")setPremiumView(2);
+ if(e.key==="1")setPremiumView(0);if(e.key==="2")setPremiumView(1);
  if(e.key==="Escape"&&stageFocus)toggleStageFocus(false);
 });
 renderTheoryRuler();applyPremiumLanguage();syncPremiumViewButtons();updatePremiumHud();runValidationTests();

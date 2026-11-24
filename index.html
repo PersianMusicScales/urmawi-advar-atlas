@@ -61,6 +61,7 @@
   </div>
 </section>
 
+<section id="orientationGate" class="orientation-gate"><div class="orientation-card"><h2 id="orientationTitle">Turn your phone sideways</h2><p id="orientationCopy">Landscape view is required to display the complete monochord clearly.</p></div></section>
 <a id="skipLink" class="skip-link" href="#workspaceMain">Skip to learning workspace</a>
 <div id="viewport">
 <div id="app">
@@ -99,10 +100,8 @@
     <div id="viewSwitch" class="view-switch" role="group" aria-label="Visualization view">
       <button id="viewBothBtn" class="view-choice active" type="button" data-view="0" aria-pressed="true">Combined</button>
       <button id="viewTheoryBtn" class="view-choice" type="button" data-view="1" aria-pressed="false">Theory</button>
-      <button id="viewInstrumentBtn" class="view-choice" type="button" data-view="2" aria-pressed="false">Instrument</button>
     </div>
     <button id="focusStageBtn" class="icon-btn focus-btn" title="Focus presentation mode" aria-pressed="false">Focus</button>
-    <button id="fullscreenBtn" class="icon-btn fullscreen-compact" type="button" title="Open in fullscreen" aria-label="Open in fullscreen"><span aria-hidden="true">⛶</span></button>
     <button id="mobileHeaderMenuBtn" class="icon-btn mobile-header-menu" type="button" aria-label="Open menu">☰</button>
   </div>
 </header>
@@ -123,7 +122,7 @@
     <span><i class="legend-limma"></i><b id="legendLimma">Limma</b></span>
     <span><i class="legend-comma"></i><b id="legendComma">Comma</b></span>
   </div>
-  <div id="presentationHint" class="presentation-hint">F: focus · 1/2/3: view · Esc: exit</div>
+  <div id="presentationHint" class="presentation-hint">F: focus · 1/2: view · Esc: exit</div>
   <div class="mono-caption">
     <span>م — bridge (mashṭ)</span>
     <span id="monoHint">Select any fret to inspect and hear it</span>
@@ -131,7 +130,7 @@
   </div>
   <button type="button" id="theoryToggle" aria-controls="monoScrollShell mobileStageTools" aria-expanded="false">String diagram</button>
   <div id="monoScrollShell" class="mono-scroll-shell">
-  <svg id="monoSvg" preserveAspectRatio="none" viewBox="0 0 1244 126" role="img" aria-labelledby="monoTitle monoDesc">
+  <svg id="monoSvg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1244 126" role="img" aria-labelledby="monoTitle monoDesc">
     <title id="monoTitle">Al-Urmawī monochord</title>
     <desc id="monoDesc">A horizontal string from bridge to nut with seventeen pitch positions and the octave.</desc>
     <g id="theoryRulerLayer" aria-hidden="true"></g>
@@ -171,7 +170,6 @@
     <button id="mobilePitchPlay" type="button">▶ Play pitch</button>
     <button id="mobileInstrumentToggle" type="button" aria-pressed="false">Zoom fretboard</button>
   </div>
-  <aside id="rotateHint" hidden><span id="rotateMessage"></span><button type="button" id="dismissRotate">×</button></aside>
 </section>
 
 <nav id="mobileNav" class="mobile-nav" aria-label="Primary navigation">
@@ -492,7 +490,6 @@
   <div class="sheet-grid">
    <button type="button" data-more-panel="modes"><span>◌</span><b id="moreModes">Species &amp; Modes</b></button>
    <button type="button" data-more-panel="train"><span>✓</span><b id="moreTraining">Training &amp; Data</b></button>
-   <button id="moreInstrumentBtn" type="button"><span>𝄞</span><b id="moreInstrument">Instrument view</b></button>
    <button id="moreSourcesBtn" type="button"><span>⌘</span><b id="moreSources">Sources</b></button>
    <button id="moreAboutBtn" type="button"><span>i</span><b id="moreAbout">About</b></button>
    <button id="moreSettingsBtn" type="button"><span>⚙</span><b id="moreSettings">Settings</b></button>

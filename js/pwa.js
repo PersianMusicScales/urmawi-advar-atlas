@@ -24,9 +24,9 @@ function applyPwaLanguage(){
  setPwaText("installHelpTitle","installTitle");setPwaText("installHelpCopy","installHelp");setPwaText("closeInstallHelp","close");setPwaText("installAppBtn","install");setPwaText("updateToastText","update");setPwaText("updateAppBtn","updateButton");
  $("theoryToggle").textContent=({en:"String diagram",fa:"نمودار تک‌سیم",ar:"مخطط الوتر",tr:"Tel diyagramı"})[uiLanguage] || "String diagram";
  const copy=instrumentCopy[uiLanguage] || instrumentCopy.en;
- ["creatorByline","creatorProjects","fretLabel","mobilePitchPlay","rotateMessage","aboutCreatorCopy"].forEach((id,i)=>setInstrumentText(id,copy[i]));
+ ["creatorByline","creatorProjects","fretLabel","mobilePitchPlay","orientationCopy","aboutCreatorCopy"].forEach((id,i)=>setInstrumentText(id,copy[i]));
  setInstrumentText("mobileInstrumentToggle",copy[document.body.classList.contains("fret-zoom")?7:6]);
- $("dismissRotate").setAttribute("aria-label",pwaText("close"));
+ setPwaText("orientationTitle","orientationTitle"); setPwaText("orientationCopy","orientationCopy");
  const hubLang=uiLanguage==="fa"?"fa":"en";
  $("projectHub").href="https://persianmusicscales.github.io/"+hubLang+"/";
  $("projectArticle").href=$("projectHub").href+"article/";
@@ -101,12 +101,10 @@ function initializePwa(){
  NOTES.forEach((n,i)=>$("fretPicker").add(new Option((i+1)+" · "+n.label+" · "+n.translit,String(i))));
  $("fretPicker").addEventListener("change",()=>selectNote(Number($("fretPicker").value),true));
  $("creatorProjects").addEventListener("click",()=>{openDialog("aboutDialog");$("closeAboutDialog").focus()});
- $("rotateHint").hidden=!!readState().rotationHintDismissed;
- $("dismissRotate").onclick=()=>{$("rotateHint").hidden=true;writeState({rotationHintDismissed:true})};
  document.body.classList.toggle("embed-mode",isEmbed());hookStateFunctions();restoreState();applyPwaLanguage();attachLongPress();setupSwipeLessons();setupWelcome();updateMobilePitchBar();syncSettings();updateInstallButtons();registerServiceWorker();
  $("welcomeStart")?.addEventListener("click",()=>{activatePanel("learn");setLesson(0);hideWelcome();if(isPhone())$("panel-learn").scrollIntoView({block:"start"});writeState({showWelcome:true})});$("welcomeAtlas")?.addEventListener("click",()=>{activatePanel("explore");hideWelcome();window.scrollTo(0,0);writeState({showWelcome:true})});$("welcomeSources")?.addEventListener("click",()=>{hideWelcome();openSourceDialog()});$("welcomeDismiss")?.addEventListener("click",()=>{writeState({showWelcome:false});hideWelcome()});
  qsa("[data-mobile-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.mobilePanel);$("panel-"+b.dataset.mobilePanel).scrollIntoView({block:"start"})}));$("mobileHeaderMenuBtn")?.addEventListener("click",()=>openSheet("mobileMoreSheet"));qsa("[data-more-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.morePanel);closeSheets()}));qsa("[data-close-sheet]").forEach(b=>b.addEventListener("click",closeSheets));
- $("mobileInstrumentToggle")?.addEventListener("click",toggleInstrument);$("mobileZoomOut")?.addEventListener("click",()=>changeTheoryZoom(-125));$("mobileZoomIn")?.addEventListener("click",()=>changeTheoryZoom(125));$("mobilePitchPlay")?.addEventListener("click",()=>tone(selected));$("moreInstrumentBtn")?.addEventListener("click",()=>{closeSheets();if(isPhone())$("instrumentSvg").scrollIntoView({block:"center"});else applyViewMode(2)});$("moreSourcesBtn")?.addEventListener("click",()=>{closeSheets();openSourceDialog()});$("moreAboutBtn")?.addEventListener("click",()=>{closeSheets();openDialog("aboutDialog")});$("moreSettingsBtn")?.addEventListener("click",()=>{closeSheets();syncSettings();openSheet("settingsSheet")});
+ $("mobileInstrumentToggle")?.addEventListener("click",toggleInstrument);$("mobileZoomOut")?.addEventListener("click",()=>changeTheoryZoom(-125));$("mobileZoomIn")?.addEventListener("click",()=>changeTheoryZoom(125));$("mobilePitchPlay")?.addEventListener("click",()=>tone(selected));$("moreSourcesBtn")?.addEventListener("click",()=>{closeSheets();openSourceDialog()});$("moreAboutBtn")?.addEventListener("click",()=>{closeSheets();openDialog("aboutDialog")});$("moreSettingsBtn")?.addEventListener("click",()=>{closeSheets();syncSettings();openSheet("settingsSheet")});
  $("closeAboutDialog")?.addEventListener("click",()=>closeDialog("aboutDialog"));$("aboutDialog")?.addEventListener("click",e=>{if(e.target===$("aboutDialog"))closeDialog("aboutDialog")});$("closeInstallHelp")?.addEventListener("click",()=>closeDialog("installHelpDialog"));$("installHelpDialog")?.addEventListener("click",e=>{if(e.target===$("installHelpDialog"))closeDialog("installHelpDialog")});
 
  $("installAppBtn")?.addEventListener("click",requestInstall);$("moreInstallBtn")?.addEventListener("click",()=>{closeSheets();requestInstall()});

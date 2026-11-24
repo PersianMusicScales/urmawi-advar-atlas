@@ -356,3 +356,34 @@ body.view-practical .mono-panel .theory-hud { opacity:1; transform:none; }
   body:not(.stage-focus) .mono-scroll-shell { width:min(100%,72rem); align-self:center; }
   .mono-scroll-shell #monoSvg { width:100%; }
 }
+
+#orientationGate { display:none; }
+@media (orientation:portrait) and (pointer:coarse) and (max-width:700px) {
+  body > :not(#orientationGate) { display:none!important; }
+  #orientationGate { display:grid; font:500 18px/1.65 var(--reading-font); }
+  #orientationGate h2 { font:650 25px/1.45 var(--reading-font); }
+}
+#viewport #app { width:100%; max-width:none; }
+.header-actions #viewSwitch { width:auto; display:inline-flex; }
+#viewSwitch .view-choice { width:auto; padding-inline:12px; }
+body.view-theory #monoPanel #monoSvg { height:auto!important; width:100%!important; min-width:0!important; aspect-ratio:860/146; }
+body.view-theory #monoPanel #monoScrollShell { width:min(100%,92rem); height:auto; min-height:0; align-self:center; }
+#monoPanel .hud-metric { display:flex; align-items:baseline; gap:.5em; flex-wrap:wrap; }
+#monoSvg text { font-family:Vazirmatn,system-ui,sans-serif; }
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .header-actions #viewSwitch { display:flex!important; flex-shrink:0; }
+  #app .topbar { flex-wrap:wrap; height:auto!important; }
+  #viewSwitch .view-choice { padding-inline:8px; }
+  #monoPanel #theoryToggle,#monoPanel #mobileStageTools { display:none!important; }
+  body:not(.view-theory) #monoPanel #monoScrollShell { display:block!important; grid-column:1; grid-row:1; }
+  #monoPanel .instrument-wrap { grid-column:1; grid-row:2; }
+  #monoPanel .pitch-controls { grid-column:2; grid-row:1 / span 2; }
+  body.view-theory #monoPanel #monoScrollShell { grid-column:1; grid-row:1 / span 2; }
+  body.view-theory #mobileInstrumentToggle { display:none!important; }
+  #monoPanel { padding-inline:max(8px,env(safe-area-inset-left),env(safe-area-inset-right))!important; }
+}
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  body.view-theory #monoPanel #monoScrollShell { grid-column:1/-1; grid-row:1; }
+  body.view-theory #monoPanel .pitch-controls { grid-column:1/-1; grid-row:2; }
+  body.view-theory #monoPanel .pitch-controls :is(label,output) { width:auto; }
+}
