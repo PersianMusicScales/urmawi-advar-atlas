@@ -93,6 +93,6 @@ assert.equal(new Set(ids).size,ids.length,"duplicate HTML ids found");
 assert.ok(!html.includes('welcomeContinue'),"continue-session control must be removed");
 assert.ok(!html.includes('resetProgressBtn'),"reset-progress control must be removed");
 assert.ok(!html.includes('validationCompact'),"public built-in validation panel must be removed");
-assert.match(html,/id=["']orientationGate["']/,"phone orientation gate missing");
+assert.ok(!html.includes('id="orientationGate"'),"portrait access must remain available");
 assert.match(html,/apple-mobile-web-app-status-bar-style["'] content=["']default["']/,"safe iOS status-bar mode missing");
 console.log("All Urmawi model, four-language, mobile-landscape, safe-area, DOM-target, and view-mode validation tests passed.");

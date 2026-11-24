@@ -176,3 +176,18 @@ body.stage-focus #instrumentSvg, body.stage-focus.view-practical #instrumentSvg 
   .workspace { padding-top: 16px; }
   .workspace-context { top: 3px; color: #b3c1b3; font-size: 8px; }
 }
+
+/* Center the scaled desk in the actual browser viewport, including short windows. */
+@media (min-width: 1101px) {
+  #viewport { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
+}
+.lesson-main { grid-template-rows: auto auto minmax(0, 1fr); }
+.lesson-actions { border-top: 0; border-bottom: 1px solid var(--line-soft); }
+.lesson-actions .btn { min-height: 36px; height: auto; cursor: pointer; }
+.lesson-actions .btn:disabled { cursor: default; }
+@media (max-width: 1100px) {
+  .panel { scroll-margin-top: 80px; }
+  .learn-grid > .lesson-main { order: -1; }
+  .lesson-actions .btn { min-height: 44px; }
+  .welcome-screen { overflow-y: auto; align-items: safe center; }
+}

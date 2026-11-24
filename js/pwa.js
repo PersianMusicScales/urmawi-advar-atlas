@@ -13,22 +13,19 @@ const stateKey="urmawiAdvarPwaStateV4";let deferredInstallPrompt=null;let pendin
 function readState(){try{return JSON.parse(localStorage.getItem(stateKey)||"{}")||{}}catch(_){return {}}}
 function writeState(patch={}){const next={...readState(),...patch,version:ADVAR_VERSION,updatedAt:Date.now()};try{localStorage.setItem(stateKey,JSON.stringify(next))}catch(_){}return next}
 function isPhone(){return matchMedia("(max-width:700px)").matches||(matchMedia("(pointer:coarse)").matches&&Math.min(screen.width,screen.height)<=700)}
-function phonePortrait(){return isPhone()&&matchMedia("(orientation:portrait)").matches}
-function updateOrientationGate(){const gate=$("orientationGate");if(!gate)return;const show=phonePortrait()&&!document.body.classList.contains("welcome-visible")&&!isEmbed();gate.hidden=!show;document.body.classList.toggle("orientation-blocked",show)}
-async function requestLandscape(){try{if(screen.orientation?.lock)await screen.orientation.lock("landscape")}catch(_){}updateOrientationGate()}
 function isEmbed(){return new URLSearchParams(location.search).get("embed")==="1"||window.self!==window.top}
 function setPwaText(id,key){const el=$(id);if(el)el.textContent=pwaText(key)}
 function applyPwaLanguage(){
  const eyebrow=qs(".eyebrow");if(eyebrow){eyebrow.innerHTML=`<a class="family-link" href="https://persianmusicscales.github.io/${document.documentElement.lang==="fa"?"fa/":"en/"}" target="_blank" rel="noopener">${pwaText("scales")}</a><span> · ${pwaText("family").split(" · ").slice(1).join(" · ")||"Historical Theory Series"}</span>`}
- setPwaText("welcomeFamily","family");setPwaText("welcomeEyebrow","eyebrow");setPwaText("welcomeLead","lead");setPwaText("welcomeStart","start");setPwaText("welcomeAtlas","open");setPwaText("welcomeSources","sources");setPwaText("welcomeDismiss","dismissWelcome");setPwaText("orientationTitle","orientationTitle");setPwaText("orientationCopy","orientationCopy");setPwaText("orientationLockBtn","orientationButton");
+ setPwaText("welcomeFamily","family");setPwaText("welcomeEyebrow","eyebrow");setPwaText("welcomeLead","lead");setPwaText("welcomeStart","start");setPwaText("welcomeAtlas","open");setPwaText("welcomeSources","sources");setPwaText("welcomeDismiss","dismissWelcome");
  setPwaText("mobileLearn","learn");setPwaText("mobileExplore","explore");setPwaText("mobileConstruct","construct");setPwaText("mobileListen","listen");setPwaText("mobileModes","mobileModes");setPwaText("mobileTrain","mobileTrain");setPwaText("mobileMore","more");setPwaText("moreSheetTitle","more");setPwaText("moreModes","modes");setPwaText("moreTraining","training");setPwaText("moreInstrument","instrument");setPwaText("moreSources","sources");setPwaText("moreAbout","about");setPwaText("moreSettings","settings");setPwaText("moreInstall","install");setPwaText("moreScales","scales");
  setPwaText("settingsTitle","settingsTitle");setPwaText("settingWelcomeLabel","settingWelcome");setPwaText("settingMotionLabel","settingMotion");
  setPwaText("aboutDialogTitle","aboutTitle");setPwaText("aboutSeries","aboutSeries");setPwaText("aboutSummary","aboutSummary");setPwaText("aboutCreatorTitle","creator");setPwaText("aboutCreatorCopy","creatorCopy");setPwaText("aboutLinksTitle","links");setPwaText("closeAboutDialog","close");
  setPwaText("installHelpTitle","installTitle");setPwaText("installHelpCopy","installHelp");setPwaText("closeInstallHelp","close");setPwaText("installAppBtn","install");setPwaText("updateToastText","update");setPwaText("updateAppBtn","updateButton");
  const toggle=$("mobileInstrumentToggle");if(toggle)toggle.textContent=document.body.classList.contains("mobile-instrument-open")?pwaText("hideInstrument"):pwaText("showInstrument");if($("mobileZoomOut"))$("mobileZoomOut").setAttribute("aria-label",pwaText("zoomOut"));if($("mobileZoomIn"))$("mobileZoomIn").setAttribute("aria-label",pwaText("zoomIn"));if($("mobilePitchPlay"))$("mobilePitchPlay").textContent=`▶ ${pwaText("play")}`;
 }
-function showWelcome(){document.body.classList.add("welcome-visible");$("welcomeScreen")?.classList.remove("hidden");updateOrientationGate()}
-function hideWelcome(){document.body.classList.remove("welcome-visible");$("welcomeScreen")?.classList.add("hidden");updateOrientationGate()}
+function showWelcome(){document.body.classList.add("welcome-visible");$("welcomeScreen")?.classList.remove("hidden")}
+function hideWelcome(){document.body.classList.remove("welcome-visible");$("welcomeScreen")?.classList.add("hidden")}
 function openDialog(id){$(id)?.classList.add("open")}
 function closeDialog(id){$(id)?.classList.remove("open")}
 function openSheet(id){qsa(".app-sheet.open").forEach(x=>x.classList.remove("open"));const el=$(id);if(el){el.classList.add("open");el.setAttribute("aria-hidden","false")}}
@@ -50,7 +47,7 @@ function restoreState(){
 }
 function saveCurrent(){writeState({activePanel,selected,lessonIndex,constructionStep,viewMode,completedLessons:[...completedLessons],mobileTheoryWidth,scoreCorrect,scoreTotal,baseFrequency:$("baseFrequency")?.value,stringLength:$("stringLength")?.value,waveform:$("waveform")?.value,audioMode:$("audioMode")?.value,masterVolume:$("masterVolume")?.value,pluckDecay:$("pluckDecay")?.value,reduceMotion:document.body.classList.contains("reduce-motion")})}
 function hookStateFunctions(){
- const oldActivate=activatePanel;activatePanel=function(name){oldActivate(name);syncMobileNav();saveCurrent();if(isPhone()&&!suppressMobilePanelScroll)scrollTo({top:$("monoPanel")?.offsetTop||0,behavior:"smooth"})};
+ const oldActivate=activatePanel;activatePanel=function(name){oldActivate(name);syncMobileNav();saveCurrent();if(isPhone()&&!suppressMobilePanelScroll)document.getElementById("panel-"+name)?.scrollIntoView({block:"start"})};
  const oldSelect=selectNote;selectNote=function(index,play=false){oldSelect(index,play);saveCurrent();updateMobilePitchBar();setTimeout(centerSelectedFret,20)};
  const oldLesson=setLesson;setLesson=function(i){oldLesson(i);decorateLessons();saveCurrent()};
  const oldConstruction=setConstruction;setConstruction=function(i){oldConstruction(i);saveCurrent()};
@@ -78,13 +75,13 @@ function initializePwa(){
  qsa("[data-mobile-panel]").forEach(b=>b.addEventListener("click",()=>activatePanel(b.dataset.mobilePanel)));$("mobileHeaderMenuBtn")?.addEventListener("click",()=>openSheet("mobileMoreSheet"));qsa("[data-more-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.morePanel);closeSheets()}));qsa("[data-close-sheet]").forEach(b=>b.addEventListener("click",closeSheets));
  $("mobileInstrumentToggle")?.addEventListener("click",toggleInstrument);$("mobileZoomOut")?.addEventListener("click",()=>changeTheoryZoom(-125));$("mobileZoomIn")?.addEventListener("click",()=>changeTheoryZoom(125));$("mobilePitchPlay")?.addEventListener("click",()=>tone(selected));$("moreInstrumentBtn")?.addEventListener("click",()=>{closeSheets();if(isPhone())toggleInstrument();else applyViewMode(2)});$("moreSourcesBtn")?.addEventListener("click",()=>{closeSheets();openSourceDialog()});$("moreAboutBtn")?.addEventListener("click",()=>{closeSheets();openDialog("aboutDialog")});$("moreSettingsBtn")?.addEventListener("click",()=>{closeSheets();syncSettings();openSheet("settingsSheet")});
  $("closeAboutDialog")?.addEventListener("click",()=>closeDialog("aboutDialog"));$("aboutDialog")?.addEventListener("click",e=>{if(e.target===$("aboutDialog"))closeDialog("aboutDialog")});$("closeInstallHelp")?.addEventListener("click",()=>closeDialog("installHelpDialog"));$("installHelpDialog")?.addEventListener("click",e=>{if(e.target===$("installHelpDialog"))closeDialog("installHelpDialog")});
- $("orientationLockBtn")?.addEventListener("click",requestLandscape);
+
  $("installAppBtn")?.addEventListener("click",requestInstall);$("moreInstallBtn")?.addEventListener("click",()=>{closeSheets();requestInstall()});
  $("lessonDemonstrate")?.addEventListener("click",()=>markLessonComplete(lessonIndex),{capture:true});$("lessonNext")?.addEventListener("click",()=>markLessonComplete(lessonIndex),{capture:true});
  $("settingWelcome")?.addEventListener("change",e=>writeState({showWelcome:e.target.checked}));$("settingMotion")?.addEventListener("change",e=>{document.body.classList.toggle("reduce-motion",e.target.checked);saveCurrent()});
  ["baseFrequency","stringLength","waveform","audioMode","masterVolume","pluckDecay"].forEach(id=>$(id)?.addEventListener("change",saveCurrent));$("languageSelect")?.addEventListener("change",()=>setTimeout(applyPwaLanguage,0));
  $("updateAppBtn")?.addEventListener("click",()=>pendingWorker?.postMessage({type:"SKIP_WAITING"}));$("dismissUpdateBtn")?.addEventListener("click",()=>$("updateToast").hidden=true);
- window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;updateInstallButtons()});window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;updateInstallButtons();writeState({installed:true})});window.addEventListener("online",()=>announceNetwork(true));window.addEventListener("offline",()=>announceNetwork(false));window.addEventListener("resize",()=>{if(!isPhone())document.body.classList.remove("mobile-instrument-open");updateOrientationGate();setTimeout(centerSelectedFret,50)});window.addEventListener("orientationchange",()=>setTimeout(updateOrientationGate,120));screen.orientation?.addEventListener?.("change",updateOrientationGate);
- if(!navigator.onLine)announceNetwork(false);updateOrientationGate();setTimeout(()=>{suppressMobilePanelScroll=false;centerSelectedFret("auto")},180);$("appVersion").textContent=ADVAR_VERSION;
+ window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;updateInstallButtons()});window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;updateInstallButtons();writeState({installed:true})});window.addEventListener("online",()=>announceNetwork(true));window.addEventListener("offline",()=>announceNetwork(false));window.addEventListener("resize",()=>{if(!isPhone())document.body.classList.remove("mobile-instrument-open");setTimeout(centerSelectedFret,50)});
+ if(!navigator.onLine)announceNetwork(false);setTimeout(()=>{suppressMobilePanelScroll=false;centerSelectedFret("auto")},180);$("appVersion").textContent=ADVAR_VERSION;
 }
 initializePwa();

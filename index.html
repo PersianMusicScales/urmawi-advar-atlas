@@ -39,15 +39,6 @@
 <body>
 
 <div id="networkBanner" class="network-banner" role="status" aria-live="polite"></div>
-<div id="orientationGate" class="orientation-gate" hidden role="dialog" aria-modal="true" aria-labelledby="orientationTitle">
-  <div class="orientation-card">
-    <img src="assets/brand/advar-mark.svg" alt="">
-    <div class="rotate-phone" aria-hidden="true"><span></span></div>
-    <h2 id="orientationTitle">Turn your phone sideways</h2>
-    <p id="orientationCopy">Landscape view is required to display the complete monochord clearly.</p>
-    <button id="orientationLockBtn" type="button">Open in landscape</button>
-  </div>
-</div>
 <section id="welcomeScreen" class="welcome-screen" aria-labelledby="welcomeTitle">
   <div class="welcome-card">
     <div class="edition-plate" aria-hidden="true"><svg viewBox="0 0 390 400" focusable="false"><g class="plate-lines"><path class="rule" d="M52 56V336 M312 56V336"/><g><path class="rule" d="M52 98H312"/><path class="vibration" d="M52 98q130.0 -36 260 0q-130.0 36 -260 0Z"/><path class="string" d="M52 98H312"/><circle cx="312" cy="98" r="3"/><text x="337" y="102">1/1</text></g><g><path class="rule" d="M52 166H312"/><path class="vibration" d="M52 166q97.5 -36 195 0q-97.5 36 -195 0Z"/><path class="string" d="M52 166H247"/><circle cx="247" cy="166" r="3"/><text x="337" y="170">3/4</text></g><g><path class="rule" d="M52 234H312"/><path class="vibration" d="M52 234q86.66666666666667 -36 173.33333333333334 0q-86.66666666666667 36 -173.33333333333334 0Z"/><path class="string" d="M52 234H225.33333333333334"/><circle cx="225.33333333333334" cy="234" r="3"/><text x="337" y="238">2/3</text></g><g><path class="rule" d="M52 302H312"/><path class="vibration" d="M52 302q65.0 -36 130 0q-65.0 36 -130 0Z"/><path class="string" d="M52 302H182"/><circle cx="182" cy="302" r="3"/><text x="337" y="306">1/2</text></g></g></svg></div>
@@ -196,17 +187,18 @@
       </aside>
       <article class="card lesson-main">
         <div class="card-head"><span id="lessonKicker" class="card-kicker">Foundation</span><span id="lessonSourceStatus" class="lesson-status">Source + modern explanation</span></div>
+        <div class="lesson-actions">
+          <button id="lessonPrevious" class="btn">← Previous</button>
+          <button id="lessonDemonstrate" class="btn primary">▶ Play example</button>
+          <button id="lessonNext" class="btn brass">Next →</button>
+        </div>
         <div class="lesson-content">
           <h2 id="lessonTitle" class="lesson-title">String length and pitch</h2>
           <div id="lessonObjective" class="lesson-objective">Objective: understand why shorter sounding length produces higher pitch.</div>
           <div id="lessonCopy" class="lesson-copy"></div>
           <div id="lessonFormula" class="lesson-formula"></div>
         </div>
-        <div class="lesson-actions">
-          <button id="lessonPrevious" class="btn">← Previous</button>
-          <button id="lessonDemonstrate" class="btn primary">▶ Demonstrate</button>
-          <button id="lessonNext" class="btn brass">Next →</button>
-        </div>
+
       </article>
       <aside class="card source-card">
         <div class="card-head"><span id="sourceBasisTitle" class="card-title">Evidence map</span><button id="openSourcesFromLesson" class="btn">Details</button></div>
