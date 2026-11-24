@@ -81,6 +81,19 @@ body.embed-mode{padding-bottom:0}body.embed-mode .welcome-screen,body.embed-mode
 @media (prefers-reduced-motion:reduce){.welcome-screen,.sheet-panel,.sheet-scrim,.network-banner{transition:none!important}}
 .update-toast[hidden]{display:none!important}
 
+/* Keep the six learning destinations legible and easy to tap on phones. */
+.mobile-nav button{min-height:48px;touch-action:manipulation;color:rgba(239,230,207,.78)}
+.mobile-nav button b{font-size:8px;line-height:1.12;letter-spacing:.01em}
+.mobile-nav button.active{color:#f0cf78}
+.mobile-nav button:focus-visible,.icon-btn:focus-visible,.view-choice:focus-visible,
+.welcome-actions button:focus-visible,.sheet-grid button:focus-visible,.sheet-grid a:focus-visible{
+ outline:3px solid #f0cf78;outline-offset:2px;position:relative;z-index:1
+}
+@media (max-width:700px){
+ .mobile-nav button{min-height:48px}
+ .mobile-nav button b{font-size:8px}
+}
+
 body.rtl-ui .welcome-card,body.rtl-ui .sheet-panel,body.rtl-ui .about-content{direction:rtl;text-align:right}body.rtl-ui .welcome-actions,body.rtl-ui .welcome-foot{direction:rtl}body.rtl-ui .mobile-pitch-bar>div{direction:rtl}.lesson-btn.completed::after{content:"✓";margin-inline-start:auto;color:var(--green);font:700 12px var(--mono)}
 
 
