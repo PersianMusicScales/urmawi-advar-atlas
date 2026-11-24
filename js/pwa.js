@@ -9,7 +9,7 @@ const PWA_TEXT={
 };
 const pwaText=(key)=>((PWA_TEXT[typeof uiLanguage!=="undefined"?uiLanguage:"en"]||PWA_TEXT.en)[key]||PWA_TEXT.en[key]||key);
 const qs=(s,root=document)=>root.querySelector(s),qsa=(s,root=document)=>[...root.querySelectorAll(s)];
-const stateKey="urmawiAdvarPwaStateV4";let deferredInstallPrompt=null;let pendingWorker=null;let suppressMobilePanelScroll=true;let completedLessons=new Set();let mobileTheoryWidth=1050;let pitchBarTimer=null;
+const stateKey="urmawiAdvarPwaStateV4";let deferredInstallPrompt=null;let pendingWorker=null;let completedLessons=new Set();let mobileTheoryWidth=1050;
 function readState(){try{return JSON.parse(localStorage.getItem(stateKey)||"{}")||{}}catch(_){return {}}}
 function writeState(patch={}){const next={...readState(),...patch,version:ADVAR_VERSION,updatedAt:Date.now()};try{localStorage.setItem(stateKey,JSON.stringify(next))}catch(_){}return next}
 function isPhone(){return matchMedia("(max-width:700px)").matches||(matchMedia("(pointer:coarse)").matches&&Math.min(screen.width,screen.height)<=700)}
@@ -22,12 +22,21 @@ function applyPwaLanguage(){
  setPwaText("settingsTitle","settingsTitle");setPwaText("settingWelcomeLabel","settingWelcome");setPwaText("settingMotionLabel","settingMotion");
  setPwaText("aboutDialogTitle","aboutTitle");setPwaText("aboutSeries","aboutSeries");setPwaText("aboutSummary","aboutSummary");setPwaText("aboutCreatorTitle","creator");setPwaText("aboutCreatorCopy","creatorCopy");setPwaText("aboutLinksTitle","links");setPwaText("closeAboutDialog","close");
  setPwaText("installHelpTitle","installTitle");setPwaText("installHelpCopy","installHelp");setPwaText("closeInstallHelp","close");setPwaText("installAppBtn","install");setPwaText("updateToastText","update");setPwaText("updateAppBtn","updateButton");
- const toggle=$("mobileInstrumentToggle");if(toggle)toggle.textContent=document.body.classList.contains("mobile-instrument-open")?pwaText("hideInstrument"):pwaText("showInstrument");if($("mobileZoomOut"))$("mobileZoomOut").setAttribute("aria-label",pwaText("zoomOut"));if($("mobileZoomIn"))$("mobileZoomIn").setAttribute("aria-label",pwaText("zoomIn"));if($("mobilePitchPlay"))$("mobilePitchPlay").textContent=`▶ ${pwaText("play")}`;
+ const copy=instrumentCopy[uiLanguage] || instrumentCopy.en;
+ ["creatorByline","creatorProjects","fretLabel","mobilePitchPlay","rotateMessage","aboutCreatorCopy"].forEach((id,i)=>setInstrumentText(id,copy[i]));
+ setInstrumentText("mobileInstrumentToggle",copy[document.body.classList.contains("fret-zoom")?7:6]);
+ $("dismissRotate").setAttribute("aria-label",pwaText("close"));
+ const hubLang=uiLanguage==="fa"?"fa":"en";
+ $("projectHub").href="https://persianmusicscales.github.io/"+hubLang+"/";
+ $("projectArticle").href=$("projectHub").href+"article/";
+ setInstrumentText("projectHub",copy[8]);setInstrumentText("projectArticle",copy[9]);
+
 }
 function showWelcome(){document.body.classList.add("welcome-visible");$("welcomeScreen")?.classList.remove("hidden")}
 function hideWelcome(){document.body.classList.remove("welcome-visible");$("welcomeScreen")?.classList.add("hidden")}
 function openDialog(id){$(id)?.classList.add("open")}
-function closeDialog(id){$(id)?.classList.remove("open")}
+function closeDialog(id){$(id)?.classList.remove("open");if(id==="aboutDialog")$("creatorProjects").focus()}
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&$("aboutDialog")?.classList.contains("open"))closeDialog("aboutDialog")});
 function openSheet(id){qsa(".app-sheet.open").forEach(x=>x.classList.remove("open"));const el=$(id);if(el){el.classList.add("open");el.setAttribute("aria-hidden","false")}}
 function closeSheets(){qsa(".app-sheet.open").forEach(el=>{el.classList.remove("open");el.setAttribute("aria-hidden","true")})}
 function syncMobileNav(){qsa("[data-mobile-panel]").forEach(b=>b.classList.toggle("active",b.dataset.mobilePanel===activePanel));$("mobileMoreBtn")?.classList.toggle("active",["modes","train"].includes(activePanel))}
@@ -47,22 +56,39 @@ function restoreState(){
 }
 function saveCurrent(){writeState({activePanel,selected,lessonIndex,constructionStep,viewMode,completedLessons:[...completedLessons],mobileTheoryWidth,scoreCorrect,scoreTotal,baseFrequency:$("baseFrequency")?.value,stringLength:$("stringLength")?.value,waveform:$("waveform")?.value,audioMode:$("audioMode")?.value,masterVolume:$("masterVolume")?.value,pluckDecay:$("pluckDecay")?.value,reduceMotion:document.body.classList.contains("reduce-motion")})}
 function hookStateFunctions(){
- const oldActivate=activatePanel;activatePanel=function(name){oldActivate(name);syncMobileNav();saveCurrent();if(isPhone()&&!suppressMobilePanelScroll)document.getElementById("panel-"+name)?.scrollIntoView({block:"start"})};
+ const oldActivate=activatePanel;activatePanel=function(name){oldActivate(name);syncMobileNav();saveCurrent()};
  const oldSelect=selectNote;selectNote=function(index,play=false){oldSelect(index,play);saveCurrent();updateMobilePitchBar();setTimeout(centerSelectedFret,20)};
  const oldLesson=setLesson;setLesson=function(i){oldLesson(i);decorateLessons();saveCurrent()};
  const oldConstruction=setConstruction;setConstruction=function(i){oldConstruction(i);saveCurrent()};
  const oldView=applyViewMode;applyViewMode=function(mode=viewMode){oldView(mode);saveCurrent()};
  const oldLanguage=applyStaticLanguage;applyStaticLanguage=function(){oldLanguage();applyPwaLanguage()};
- const oldRender=renderMonochord;renderMonochord=function(){oldRender();attachLongPress()};const oldLessons=renderLessons;renderLessons=function(){oldLessons();decorateLessons()};const oldAnswer=answerQuiz;answerQuiz=function(button,value){oldAnswer(button,value);saveCurrent()};
+ const oldRender=renderMonochord;renderMonochord=function(){oldRender();attachLongPress();updateMobilePitchBar()};const oldLessons=renderLessons;renderLessons=function(){oldLessons();decorateLessons()};const oldAnswer=answerQuiz;answerQuiz=function(button,value){oldAnswer(button,value);saveCurrent()};
 }
 
 function decorateLessons(){qsa(".lesson-btn").forEach((b,i)=>{b.classList.toggle("completed",completedLessons.has(i));b.setAttribute("aria-label",`${i+1}. ${b.textContent.trim()}${completedLessons.has(i)?" ✓":""}`)})}
 function markLessonComplete(i){completedLessons.add(Math.max(0,Math.min(LESSONS.length-1,i)));decorateLessons();saveCurrent()}
 function changeTheoryZoom(delta){mobileTheoryWidth=Math.max(800,Math.min(1600,mobileTheoryWidth+delta));document.documentElement.style.setProperty("--mobile-theory-width",`${mobileTheoryWidth}px`);if($("mobileZoomLabel"))$("mobileZoomLabel").textContent=`${Math.round(mobileTheoryWidth/10.5)}%`;saveCurrent();setTimeout(()=>centerSelectedFret("auto"),20)}
-function updateMobilePitchBar(){if(!isPhone())return;const n=NOTES[selected],bar=$("mobilePitchBar");if(!bar)return;$("mobilePitchNote").textContent=n.label;$("mobilePitchDetails").textContent=`${n.lenD}/${n.lenN} · ${fixed(cents(n))}¢ · ${fixed(currentBase()*frequencyRatio(n),1)} Hz`;bar.hidden=false;clearTimeout(pitchBarTimer);pitchBarTimer=setTimeout(()=>bar.hidden=true,4200)}
+const instrumentCopy={
+ en:["Created by Pouya Hosseini","Projects","Fret","▶ Play pitch","Rotate your phone for a wider fretboard view.","Pouya Hosseini is a Persian musician and electrochemist. He plays setar and santur and develops interactive tools for studying musical intervals.","Zoom fretboard","Whole setar","Persian Music Scales hub","Read the article"],
+ fa:["ساختهٔ پویا حسینی","پروژه‌ها","دستان","▶ پخش صدا","برای دیدن نمای بازتر دستهٔ ساز، گوشی را افقی بگیرید.","پویا حسینی نوازندهٔ سه‌تار و سنتور و پژوهشگر الکتروشیمی است. او ابزارهای تعاملی برای بررسی فواصل موسیقایی می‌سازد.","بزرگ‌نمایی دسته","نمای کامل سه‌تار","گام‌های موسیقی ایرانی","مطالعهٔ مقاله"],
+ ar:["من إعداد بويا حسيني","المشاريع","الدستان","▶ استمع إلى النغمة","أدر الهاتف لعرض أوسع لدساتين الآلة.","بويا حسيني موسيقي إيراني وباحث في الكيمياء الكهربائية. يعزف على السيتار والسنطور ويطوّر أدوات تفاعلية لدراسة الفواصل الموسيقية.","تكبير الدساتين","عرض الآلة كاملة","بوابة الموسيقى الفارسية","اقرأ المقال"],
+ tr:["Geliştiren: Pouya Hosseini","Projeler","Perde","▶ Sesi çal","Perdeleri daha geniş görmek için telefonunuzu çevirin.","Pouya Hosseini, setar ve santur çalan İranlı bir müzisyen ve elektrokimyacıdır. Müzikal aralıkları incelemek için etkileşimli araçlar geliştirir.","Perdeleri büyüt","Tüm setarı göster","İran müziği portalı","Makaleyi oku"]
+};
+function setInstrumentText(id,text){$(id).textContent=text}
+function updateMobilePitchBar(){
+ const n=NOTES[selected];
+ $("fretPicker").value=String(selected);
+ $("pitchReading").textContent=String(n.lenD)+"/"+n.lenN+" · "+fixed(cents(n),1)+"¢ · "+fixed(currentBase()*frequencyRatio(n),1)+" Hz";
+}
 function attachLongPress(){qsa("#fretLayer .fret").forEach((el,i)=>{if(el.dataset.longpress)return;el.dataset.longpress="1";let timer=null;const clear=()=>{if(timer){clearTimeout(timer);timer=null}};el.addEventListener("pointerdown",()=>{timer=setTimeout(()=>{tone(i);navigator.vibrate?.(18)},420)},{passive:true});el.addEventListener("pointerup",clear,{passive:true});el.addEventListener("pointercancel",clear,{passive:true});el.addEventListener("pointerleave",clear,{passive:true})})}
 function setupSwipeLessons(){const el=$("panel-learn");if(!el)return;let x0=0,y0=0;el.addEventListener("pointerdown",e=>{x0=e.clientX;y0=e.clientY},{passive:true});el.addEventListener("pointerup",e=>{const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.4)setLesson(lessonIndex+(dx<0?1:-1))},{passive:true})}
-function toggleInstrument(){const on=document.body.classList.toggle("mobile-instrument-open");$("mobileInstrumentToggle")?.setAttribute("aria-expanded",String(on));applyPwaLanguage();if(on)setTimeout(()=>$("instrumentSvg")?.scrollIntoView({behavior:"smooth",block:"center"}),80)}
+function toggleInstrument(){
+ const zoom=document.body.classList.toggle("fret-zoom");
+ $("mobileInstrumentToggle").setAttribute("aria-pressed",String(zoom));
+ applyPwaLanguage();
+ const wrap=qs(".instrument-wrap");
+ wrap.scrollLeft=zoom ? instrumentXFor(NOTES[selected])/1244*wrap.scrollWidth-wrap.clientWidth/2 : 0;
+}
 function syncSettings(){const st=readState();if($("settingWelcome"))$("settingWelcome").checked=st.showWelcome!==false;if($("settingMotion"))$("settingMotion").checked=document.body.classList.contains("reduce-motion")}
 function requestInstall(){if(deferredInstallPrompt){deferredInstallPrompt.prompt();deferredInstallPrompt.userChoice.finally(()=>{deferredInstallPrompt=null;updateInstallButtons()})}else openDialog("installHelpDialog")}
 function updateInstallButtons(){const installed=matchMedia("(display-mode:standalone)").matches||navigator.standalone;const visible=!installed&&(!!deferredInstallPrompt||/iphone|ipad|ipod/i.test(navigator.userAgent));["installAppBtn","moreInstallBtn"].forEach(id=>{const el=$(id);if(el)el.hidden=!visible})}
@@ -70,10 +96,15 @@ function announceNetwork(online){const el=$("networkBanner");if(!el)return;el.te
 function registerServiceWorker(){if(!("serviceWorker" in navigator)||!/^https?:$/.test(location.protocol))return;navigator.serviceWorker.register("./service-worker.js").then(reg=>{reg.addEventListener("updatefound",()=>{const w=reg.installing;if(!w)return;w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){pendingWorker=w;$("updateToast").hidden=false}})})}).catch(console.warn);navigator.serviceWorker.addEventListener("controllerchange",()=>location.reload())}
 function setupWelcome(){const st=readState(),params=new URLSearchParams(location.search);const skip=params.get("welcome")==="0"||params.get("skipWelcome")==="1"||isEmbed();if(skip||st.showWelcome===false)hideWelcome();else showWelcome()}
 function initializePwa(){
- document.body.classList.toggle("embed-mode",isEmbed());hookStateFunctions();restoreState();applyPwaLanguage();attachLongPress();setupSwipeLessons();setupWelcome();syncSettings();updateInstallButtons();registerServiceWorker();
- $("welcomeStart")?.addEventListener("click",()=>{activatePanel("learn");setLesson(0);hideWelcome();writeState({showWelcome:true})});$("welcomeAtlas")?.addEventListener("click",()=>{activatePanel("explore");hideWelcome();writeState({showWelcome:true})});$("welcomeSources")?.addEventListener("click",()=>{hideWelcome();openSourceDialog()});$("welcomeDismiss")?.addEventListener("click",()=>{writeState({showWelcome:false});hideWelcome()});
- qsa("[data-mobile-panel]").forEach(b=>b.addEventListener("click",()=>activatePanel(b.dataset.mobilePanel)));$("mobileHeaderMenuBtn")?.addEventListener("click",()=>openSheet("mobileMoreSheet"));qsa("[data-more-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.morePanel);closeSheets()}));qsa("[data-close-sheet]").forEach(b=>b.addEventListener("click",closeSheets));
- $("mobileInstrumentToggle")?.addEventListener("click",toggleInstrument);$("mobileZoomOut")?.addEventListener("click",()=>changeTheoryZoom(-125));$("mobileZoomIn")?.addEventListener("click",()=>changeTheoryZoom(125));$("mobilePitchPlay")?.addEventListener("click",()=>tone(selected));$("moreInstrumentBtn")?.addEventListener("click",()=>{closeSheets();if(isPhone())toggleInstrument();else applyViewMode(2)});$("moreSourcesBtn")?.addEventListener("click",()=>{closeSheets();openSourceDialog()});$("moreAboutBtn")?.addEventListener("click",()=>{closeSheets();openDialog("aboutDialog")});$("moreSettingsBtn")?.addEventListener("click",()=>{closeSheets();syncSettings();openSheet("settingsSheet")});
+ NOTES.forEach((n,i)=>$("fretPicker").add(new Option((i+1)+" · "+n.label+" · "+n.translit,String(i))));
+ $("fretPicker").addEventListener("change",()=>selectNote(Number($("fretPicker").value),true));
+ $("creatorProjects").addEventListener("click",()=>{openDialog("aboutDialog");$("closeAboutDialog").focus()});
+ $("rotateHint").hidden=!!readState().rotationHintDismissed;
+ $("dismissRotate").onclick=()=>{$("rotateHint").hidden=true;writeState({rotationHintDismissed:true})};
+ document.body.classList.toggle("embed-mode",isEmbed());hookStateFunctions();restoreState();applyPwaLanguage();attachLongPress();setupSwipeLessons();setupWelcome();updateMobilePitchBar();syncSettings();updateInstallButtons();registerServiceWorker();
+ $("welcomeStart")?.addEventListener("click",()=>{activatePanel("learn");setLesson(0);hideWelcome();if(isPhone())$("panel-learn").scrollIntoView({block:"start"});writeState({showWelcome:true})});$("welcomeAtlas")?.addEventListener("click",()=>{activatePanel("explore");hideWelcome();window.scrollTo(0,0);writeState({showWelcome:true})});$("welcomeSources")?.addEventListener("click",()=>{hideWelcome();openSourceDialog()});$("welcomeDismiss")?.addEventListener("click",()=>{writeState({showWelcome:false});hideWelcome()});
+ qsa("[data-mobile-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.mobilePanel);$("panel-"+b.dataset.mobilePanel).scrollIntoView({block:"start"})}));$("mobileHeaderMenuBtn")?.addEventListener("click",()=>openSheet("mobileMoreSheet"));qsa("[data-more-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.morePanel);closeSheets()}));qsa("[data-close-sheet]").forEach(b=>b.addEventListener("click",closeSheets));
+ $("mobileInstrumentToggle")?.addEventListener("click",toggleInstrument);$("mobileZoomOut")?.addEventListener("click",()=>changeTheoryZoom(-125));$("mobileZoomIn")?.addEventListener("click",()=>changeTheoryZoom(125));$("mobilePitchPlay")?.addEventListener("click",()=>tone(selected));$("moreInstrumentBtn")?.addEventListener("click",()=>{closeSheets();if(isPhone())$("instrumentSvg").scrollIntoView({block:"center"});else applyViewMode(2)});$("moreSourcesBtn")?.addEventListener("click",()=>{closeSheets();openSourceDialog()});$("moreAboutBtn")?.addEventListener("click",()=>{closeSheets();openDialog("aboutDialog")});$("moreSettingsBtn")?.addEventListener("click",()=>{closeSheets();syncSettings();openSheet("settingsSheet")});
  $("closeAboutDialog")?.addEventListener("click",()=>closeDialog("aboutDialog"));$("aboutDialog")?.addEventListener("click",e=>{if(e.target===$("aboutDialog"))closeDialog("aboutDialog")});$("closeInstallHelp")?.addEventListener("click",()=>closeDialog("installHelpDialog"));$("installHelpDialog")?.addEventListener("click",e=>{if(e.target===$("installHelpDialog"))closeDialog("installHelpDialog")});
 
  $("installAppBtn")?.addEventListener("click",requestInstall);$("moreInstallBtn")?.addEventListener("click",()=>{closeSheets();requestInstall()});
@@ -81,7 +112,7 @@ function initializePwa(){
  $("settingWelcome")?.addEventListener("change",e=>writeState({showWelcome:e.target.checked}));$("settingMotion")?.addEventListener("change",e=>{document.body.classList.toggle("reduce-motion",e.target.checked);saveCurrent()});
  ["baseFrequency","stringLength","waveform","audioMode","masterVolume","pluckDecay"].forEach(id=>$(id)?.addEventListener("change",saveCurrent));$("languageSelect")?.addEventListener("change",()=>setTimeout(applyPwaLanguage,0));
  $("updateAppBtn")?.addEventListener("click",()=>pendingWorker?.postMessage({type:"SKIP_WAITING"}));$("dismissUpdateBtn")?.addEventListener("click",()=>$("updateToast").hidden=true);
- window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;updateInstallButtons()});window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;updateInstallButtons();writeState({installed:true})});window.addEventListener("online",()=>announceNetwork(true));window.addEventListener("offline",()=>announceNetwork(false));window.addEventListener("resize",()=>{if(!isPhone())document.body.classList.remove("mobile-instrument-open");setTimeout(centerSelectedFret,50)});
- if(!navigator.onLine)announceNetwork(false);setTimeout(()=>{suppressMobilePanelScroll=false;centerSelectedFret("auto")},180);$("appVersion").textContent=ADVAR_VERSION;
+ window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;updateInstallButtons()});window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;updateInstallButtons();writeState({installed:true})});window.addEventListener("online",()=>announceNetwork(true));window.addEventListener("offline",()=>announceNetwork(false));window.addEventListener("resize",()=>{setTimeout(centerSelectedFret,50)});
+ if(!navigator.onLine)announceNetwork(false);setTimeout(()=>{centerSelectedFret("auto")},180);$("appVersion").textContent=ADVAR_VERSION;
 }
 initializePwa();

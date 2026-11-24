@@ -191,3 +191,77 @@ body.stage-focus #instrumentSvg, body.stage-focus.view-practical #instrumentSvg 
   .lesson-actions .btn { min-height: 44px; }
   .welcome-screen { overflow-y: auto; align-items: safe center; }
 }
+
+.creator-line { font: 600 11px/1.35 var(--ui); color: var(--muted); }
+.creator-line a,.creator-line button { color: inherit; text-underline-offset: 2px; }
+.creator-line button { background: none; border: 0; padding: 0 2px; font: inherit; cursor: pointer; text-decoration: underline; }
+.pitch-controls,#rotateHint { display: none; }
+@media (max-width:700px), (pointer:coarse) and (max-height:600px) {
+  .mono-panel { display: flex !important; flex-direction: column; gap: 8px; }
+  .mono-panel .instrument-wrap { order: -4; display: block !important; width: 100%; overflow-x: auto; direction: ltr; }
+  .instrument-wrap #instrumentSvg { display: block; width: 100% !important; height: auto !important; min-width: 0; }
+  body.fret-zoom .instrument-wrap #instrumentSvg { min-width: 1040px; }
+  .mono-panel .instrument-note { position: static; display: block; max-width: none; text-align: center; font-size: 10px; }
+  .pitch-controls { order: -3; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; color: #f5e8c7; font: 600 13px/1.35 var(--ui); }
+  .pitch-controls select,.pitch-controls button { border-radius: 6px; border: 1px solid #718779; padding: 6px 10px; min-height: 44px; background: #223e37; color: #f6eddb; font: inherit; }
+  .pitch-controls select { max-width: 145px; margin-inline-start: 4px; }
+  .pitch-controls #mobilePitchPlay { background: #eac58a; color: #15332c; }
+  .pitch-controls #mobileInstrumentToggle { display: inline-block !important; width: auto; }
+  .mono-panel::before { pointer-events: none; }
+  .creator-line { font-size: 11px; }
+  .brand-copy { min-width: 0; }
+  .mobile-nav button { border: 1px solid #577264 !important; }
+  .mobile-nav button.active { background: #3d5545 !important; color: #ffdfa2 !important; }
+  .mobile-nav button b { white-space: normal; overflow: visible; font: 650 12px/1.15 var(--ui) !important; }
+}
+@media (max-width:700px) and (orientation:portrait) {
+  #rotateHint:not([hidden]) { order: -2; display: flex; align-items: center; justify-content: center; gap: 8px; color: #d5e4d9; font: 12px/1.4 var(--ui); }
+  #dismissRotate { min-width: 44px; min-height: 44px; background: transparent; border: 0; color: inherit; font-size: 20px; }
+  .mobile-nav { height: auto; grid-template-columns: repeat(3,minmax(0,1fr)); padding: 5px 6px calc(5px + var(--safe-bottom)); }
+  .mobile-nav button { display:flex; align-items:center; justify-content:center; min-height:44px; gap:5px; }
+  .workspace { padding-bottom: calc(110px + var(--safe-bottom)); }
+}
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .mono-panel { display:grid !important; grid-template-columns:minmax(0,1fr) minmax(180px,25%); align-items:center; }
+  .mono-panel > * { grid-column:1/-1; }
+  .mono-panel .instrument-wrap { grid-column:1; grid-row:1; }
+  .pitch-controls { grid-column:2; grid-row:1; }
+  .pitch-controls label,.pitch-controls output { width:100%; text-align:center; }
+  .mobile-nav { z-index:8000 !important; }
+}
+@media (prefers-color-scheme:dark) {
+  :root { color-scheme:dark; }
+  .welcome-screen { background:#102523; }
+  .welcome-card { background:#1b302d; border-color:#50685a; }
+  .welcome-card h1,.welcome-brandline,.edition-intro #welcomeLead,.welcome-links button { color:#efe8d5; }
+  .welcome-eyebrow { color:#edcb8f; }
+  .welcome-secondary { color:#eee4c9; }
+}
+@media (prefers-color-scheme:light) {
+  :root { color-scheme:light; --desk:#f4efdf; --panel:#fffaf0; --edge:#b2b5a4; --paper:#20392f; --muted:#435e52; --gold:#80551c; }
+  html,body,#viewport { background:#e5e2d5; }
+  #app,.workspace { background:var(--desk); }
+  .topbar,.tabs,.card-head { background:#e4e6d8; }
+  .title-ar,.title-en,.creator-line,.tab,.tab.active,.card-kicker,.workspace-context,.family-link { color:#234637; }
+  .topbar .subtitle,.topbar .eyebrow,.brand-facts span { color:#4a6052; }
+  .tab.active { background:#cfdac9; }
+  .workspace .card { color:#233e33; background:var(--panel); }
+  .workspace :is(h2,h3,p,strong,label,small,td,th,.lesson-copy,.lesson-objective,.step-copy,.pattern-copy,.caution-box,.source-row span,.card-title,.lesson-status,.lesson-formula,.concept-copy) { color:#294535; }
+  .workspace :is(.lesson-btn,.step-tile,.species-btn,.quiz-option,.source-row,.formula-box,.tone-box,.data-card th,.lesson-formula) { background:#ececdd; color:#254736; }
+  .workspace :is(.lesson-btn.active,.species-btn.active,.step-tile.current,.selected-row,.data-card tbody tr:hover) { background:#d3dfc9; }
+  .workspace :is(.btn,select,input,.pitch-table-note) { color:#203d31; background-color:#e2e8da; }
+  .workspace .btn { background-image:none; border-color:#91a28f; }
+  .workspace .btn.primary { background:#265642; color:white; }
+  .workspace .lesson-btn *,.workspace .step-tile *,.workspace .species-btn * { color:inherit; }
+  .mono-panel,.dialog-backdrop,.app-sheet,.mobile-nav { --paper:#f4ead4; --panel:#1b302d; --muted:#bec9bd; --gold:#ecc27f; color-scheme:dark; }
+}
+@media (prefers-color-scheme:light) {
+  .workspace {
+    --parchment:#203d31; --parchment-dim:#495d51; --teal:#246657;
+    --brass-bright:#75501b; --brass:#845c23; --atlas-gold:#77531d;
+    --atlas-teal:#286353; --line:#a3ae9d; --line-soft:#c8cdbc;
+  }
+  .workspace .interval-badge.comma,.workspace .quiz-option.wrong { color:#913e3b; }
+  .workspace .quiz-option.correct { color:#215b41; }
+  .workspace .field select,.workspace .field input,.workspace .audio-mini select { background:#fffaf0; color:#203d31; }
+}

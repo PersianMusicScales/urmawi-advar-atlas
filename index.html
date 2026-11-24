@@ -7,7 +7,9 @@
 <meta name="description" content="A multilingual atlas for exploring Ṣafī al-Dīn al-Urmawī’s exact fret divisions, intervals, listening models, and modal theory.">
 <title>Al-Urmawī Advar Atlas · Persian Music Scales</title>
 
-<meta name="theme-color" content="#121a2a">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e5">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#102523">
 <meta name="application-name" content="Advar Atlas">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -72,6 +74,7 @@
         <span class="title-ar" lang="ar">في أقسام الدساتين</span>
         <span class="title-en">On the Divisions of the Frets</span>
       </div>
+      <div class="creator-line"><a id="creatorByline" href="https://drpouyahosseini.github.io/">Created by Pouya Hosseini</a> · <button type="button" id="creatorProjects">Projects</button></div>
       <div class="brand-meta">
         <div class="subtitle">Ṣafī al-Dīn al-Urmawī · geometry, exact ratios, listening, construction, and training</div>
         <div class="brand-facts" aria-label="Project highlights">
@@ -150,7 +153,7 @@
   </svg>
   </div>
   <div id="mobileStageTools" class="mobile-stage-tools" aria-label="Theory zoom"><button id="mobileZoomOut" type="button" aria-label="Zoom out">−</button><span id="mobileZoomLabel">100%</span><button id="mobileZoomIn" type="button" aria-label="Zoom in">+</button></div>
-  <button id="mobileInstrumentToggle" class="mobile-instrument-toggle" type="button" aria-expanded="false">Show illustrative instrument</button>
+
   <div class="instrument-wrap">
     <svg id="instrumentSvg" viewBox="0 0 1244 232" role="img" aria-label="Practical instrument schematic">
       <!-- The image is registered at its bridge (193) and nut (998) in ruler units. -->
@@ -161,6 +164,13 @@
     <div class="instrument-caption"></div>
     <div id="instrumentDisclosure" class="instrument-note">Modern setar illustration · fret positions follow the Atlas model</div>
   </div>
+  <div class="pitch-controls">
+    <label><span id="fretLabel">Fret</span><select id="fretPicker"></select></label>
+    <output id="pitchReading" dir="ltr" aria-live="polite"></output>
+    <button id="mobilePitchPlay" type="button">▶ Play pitch</button>
+    <button id="mobileInstrumentToggle" type="button" aria-pressed="false">Zoom fretboard</button>
+  </div>
+  <aside id="rotateHint" hidden><span id="rotateMessage"></span><button type="button" id="dismissRotate">×</button></aside>
 </section>
 
 <nav id="tabsNav" class="tabs" aria-label="Learning modes" role="tablist">
@@ -463,7 +473,7 @@
 
 
 
-<div id="mobilePitchBar" class="mobile-pitch-bar" hidden aria-live="polite"><div><b id="mobilePitchNote">ا</b><span id="mobilePitchDetails">1/1 · 0.000¢ · 220 Hz</span></div><button id="mobilePitchPlay" type="button">▶ Play</button></div>
+
 <nav id="mobileNav" class="mobile-nav" aria-label="Primary navigation">
   <button type="button" data-mobile-panel="learn"><span>◉</span><b id="mobileLearn">Learn</b></button>
   <button type="button" data-mobile-panel="explore"><span>⌁</span><b id="mobileExplore">Explore</b></button>
@@ -507,7 +517,7 @@
   <div class="dialog-content about-content">
    <div class="about-hero"><img src="assets/brand/advar-mark.svg" alt=""><div><p id="aboutSeries">Persian Music Scales · Historical Theory Series</p><h3>Al-Urmawī Advar Atlas</h3><p id="aboutSummary">A multilingual digital-humanities application for exploring exact string divisions, interval structures, listening models, and modal categories.</p></div></div>
    <section class="dialog-section"><h3 id="aboutCreatorTitle">Creator and developer</h3><p><strong><a href="https://drpouyahosseini.github.io/">Dr. Pouya Hosseini</a></strong></p><p id="aboutCreatorCopy">Researcher, independent developer, and creator of Persian Music Scales.</p></section>
-   <section class="dialog-section"><h3 id="aboutLinksTitle">Project links</h3><div class="about-links"><a href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener">Persian Music Scales App</a><a href="https://github.com/PersianMusicScales/urmawi-advar-atlas" target="_blank" rel="noopener">GitHub repository</a><a href="https://www.youtube.com/@pouya-hosseini" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/drpouyahosseini" target="_blank" rel="noopener">LinkedIn</a><a href="https://orcid.org/0000-0003-4492-0004" target="_blank" rel="noopener">ORCID</a></div></section>
+   <section class="dialog-section"><h3 id="aboutLinksTitle">Project links</h3><div class="about-links"><a id="projectHub" href="https://persianmusicscales.github.io/en/">Persian Music Scales hub</a><a id="projectArticle" href="https://persianmusicscales.github.io/en/article/">Read the article</a><a href="https://worldmusicscalesatlas.github.io/">World Music Scales Atlas</a><a href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener">Persian Music Scales App</a><a href="https://github.com/PersianMusicScales/urmawi-advar-atlas" target="_blank" rel="noopener">GitHub repository</a><a href="https://www.youtube.com/@pouya-hosseini" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/drpouyahosseini" target="_blank" rel="noopener">LinkedIn</a><a href="https://orcid.org/0000-0003-4492-0004" target="_blank" rel="noopener">ORCID</a></div></section>
    <p class="version-line">Version <span id="appVersion">4.4.0</span> · PWA Edition</p>
   </div>
  </div>
