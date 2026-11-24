@@ -324,13 +324,13 @@ function renderGuideVisual(s,n){
 }
 function toggleConstructionAuto(){
   if(constructionTimer){
-    clearInterval(constructionTimer);constructionTimer=null;$("autoConstruction").textContent="▶ Auto";return;
+    clearInterval(constructionTimer);constructionTimer=null;$("autoConstruction").textContent="▸ Auto";return;
   }
   if(constructionStep===CONSTRUCTION.length-1)setConstruction(0);
   $("autoConstruction").textContent="■ Stop";
   constructionTimer=setInterval(()=>{
     if(constructionStep>=CONSTRUCTION.length-1){
-      clearInterval(constructionTimer);constructionTimer=null;$("autoConstruction").textContent="▶ Auto";return;
+      clearInterval(constructionTimer);constructionTimer=null;$("autoConstruction").textContent="▸ Auto";return;
     }
     setConstruction(constructionStep+1);
     tone(noteIndex[CONSTRUCTION[constructionStep].note],0,.45,.10);
@@ -406,7 +406,7 @@ function newTheoryQuestion(){
 function newEarQuestion(){
   const i=randomIndex();quizCurrent={earIndex:i,answer:NOTES[i].label,prompt:"Hear the open string, then identify the second tone’s Abjad position.",options:optionIndices(i).map(j=>NOTES[j].label),explain:`The tone was ${NOTES[i].label}: ${fixed(cents(NOTES[i]))} cents above the open string.`};
   renderQuestion();
-  const play=document.createElement("button");play.className="btn primary";play.textContent="▶ Play mystery tone";play.style.marginBottom="8px";
+  const play=document.createElement("button");play.className="btn primary";play.textContent="▸ Play mystery tone";play.style.marginBottom="8px";
   const playPair=()=>{stopAllAudio();tone(0,0,.4);tone(i,.58,.58)};
   play.addEventListener("click",playPair);$("quizOptions").before(play);quizCurrent.playButton=play;
   playPair();
@@ -531,14 +531,14 @@ const UI = {
     stringLength:"String length", frequencyRatio:"Frequency ratio", cents:"Cents",
     frequency:"Frequency", fromBridge:"From bridge", fromNut:"From nut",
     previousStep:"Previous step", pitchOrder:"Pitch order",
-    playSelected:"▶ Selected", playOpen:"▶ Open tone",
+    playSelected:"▸ Selected", playOpen:"▸ Open tone",
     geometryKicker:"Geometry → acoustics", governing:"The governing relationship",
     governingP1:"The whole sounding string is normalized to 1. If the remaining sounding length is ℓ, the ideal frequency ratio is its reciprocal.",
     governingP2:"The Atlas draws 18 markers: the open-string unison, 16 other pitches below the octave, and the octave repetition. These are 17 distinct pitch classes in this model, not one obligatory performance scale.",
     openFrequency:"Open frequency", stringLengthCm:"String length (cm)", waveform:"Waveform",
     monochordLabels:"Monochord labels", sine:"Sine", triangle:"Triangle", sawtooth:"Sawtooth",
     abjad:"Abjad", index:"Index", centsOption:"Cents",
-    openToSelected:"▶ Open → selected", soundTogether:"▶ Sound together",
+    openToSelected:"▸ Open → selected", soundTogether:"▸ Sound together",
     adjacentInterval:"Adjacent interval", exactStep:"Exact step",
     referencePoint:"Reference point",
     referenceText:"The open string is the reference from which all other positions are calculated.",
@@ -547,7 +547,7 @@ const UI = {
     adjacentText:"This adjacent frequency step is {cents} cents. Its exact ratio follows from the reciprocal string lengths.",
     sourceGuided:"Source-guided construction", modernWording:"Modern wording",
     constructionCaution:"The ratios are exact. The explanatory English is a cautious pedagogical paraphrase of the supplied diagrams and instructions.",
-    hear:"▶ Hear", geometricOperation:"Geometrical operation", auto:"▶ Auto", stop:"■ Stop",
+    hear:"▸ Hear", geometricOperation:"Geometrical operation", auto:"▸ Auto", stop:"■ Stop",
     length:"Length", completeSequence:"Complete sequence", clickAnyStep:"Click any step",
     divideGuide:"Divide the complete length into {divisions} equal part(s); the marked sounding length is {active}/{divisions}.",
     derivedGuide:"Derived from {from} by multiplying its sounding length by {multiplier}.",
@@ -555,11 +555,11 @@ const UI = {
     soundLab:"Sound Atlas", webAudio:"Web Audio", openPitch:"Open pitch",
     toneA:"Tone A", toneB:"Tone B",
     soundCaution:"For theoretical comparison, a sine wave makes beating and interval size easier to hear. The sound is a modern synthesis, not a reconstruction of a medieval instrument timbre.",
-    playOpenShort:"▶ Open", playA:"▶ Tone A", playB:"▶ Tone B", fullAscent:"▶ Full ascent",
-    compareTwo:"Compare two positions", playSequence:"▶ A then B", together:"▶ Together", swap:"⇄ Swap",
+    playOpenShort:"▸ Open", playA:"▸ Tone A", playB:"▸ Tone B", fullAscent:"▸ Full ascent",
+    compareTwo:"Compare two positions", playSequence:"▸ A then B", together:"▸ Together", swap:"⇄ Swap",
     octavePattern:"Octave step pattern",
     patternCopy:"Every adjacent step is either a limma or a Pythagorean comma. The unequal sequence demonstrates that this is not 17-tone equal temperament.",
-    hearLimma:"▶ Hear limma", hearComma:"▶ Hear comma",
+    hearLimma:"▸ Hear limma", hearComma:"▸ Hear comma",
     interactiveTraining:"Interactive training", theoryRatios:"Theory & ratios", earTraining:"Ear training",
     loading:"Loading question…", choose:"Choose one answer.", score:"Score: {correct} / {total}",
     scoreTop:"{correct} correct / {total}", newQuestion:"New question",
@@ -577,7 +577,7 @@ const UI = {
     qStep:"What is the adjacent step from {from} to {to}?",
     qCents:"Approximately how high is {label} above the open string?",
     qEar:"Hear the open string, then identify the second tone’s Abjad position.",
-    playMystery:"▶ Play mystery tone",
+    playMystery:"▸ Play mystery tone",
     correct:"Correct.", notYet:"Not yet.",
     wholeTone:"Whole tone", perfectFourth:"Perfect fourth",
     explainLength:"{label} has string length {length} and frequency ratio {frequency}.",
@@ -603,14 +603,14 @@ const UI = {
     stringLength:"طول سیم", frequencyRatio:"نسبت بسامد", cents:"سِنت",
     frequency:"بسامد", fromBridge:"فاصله از خرک", fromNut:"فاصله از شیطانک",
     previousStep:"فاصلهٔ قبلی", pitchOrder:"ترتیب صوتی",
-    playSelected:"▶ صدای انتخاب‌شده", playOpen:"▶ سیمِ باز",
+    playSelected:"▸ صدای انتخاب‌شده", playOpen:"▸ سیمِ باز",
     geometryKicker:"هندسه ← آکوستیک", governing:"رابطهٔ بنیادی",
     governingP1:"طول کامل بخش مرتعش سیم برابر ۱ در نظر گرفته می‌شود. اگر طول باقی‌مانده ℓ باشد، نسبت بسامد ایده‌آل معکوس آن است.",
     governingP2:"اطلس ۱۸ نشان را ترسیم می‌کند: سیمِ باز، ۱۶ جایگاه صوتی دیگر پیش از اکتاو و تکرار اکتاو. بنابراین در این مدل ۱۷ جایگاه متمایز داریم، نه یک گام اجرایی الزامی.",
     openFrequency:"بسامد سیمِ باز", stringLengthCm:"طول سیم (سانتی‌متر)", waveform:"شکل موج",
     monochordLabels:"برچسب‌های تک‌سیم", sine:"سینوسی", triangle:"مثلثی", sawtooth:"دندانه‌اره‌ای",
     abjad:"حروف ابجد", index:"شماره", centsOption:"سِنت",
-    openToSelected:"▶ سیمِ باز ← انتخاب", soundTogether:"▶ هم‌زمان",
+    openToSelected:"▸ سیمِ باز ← انتخاب", soundTogether:"▸ هم‌زمان",
     adjacentInterval:"فاصلهٔ مجاور", exactStep:"فاصلهٔ دقیق",
     referencePoint:"نقطهٔ مرجع",
     referenceText:"سیمِ باز مرجعی است که همهٔ جایگاه‌های دیگر نسبت به آن محاسبه می‌شوند.",
@@ -619,7 +619,7 @@ const UI = {
     adjacentText:"این فاصلهٔ بسامدیِ مجاور برابر {cents} سنت است و نسبت دقیق آن از معکوس طول‌های سیم به دست می‌آید.",
     sourceGuided:"ساخت بر پایهٔ منبع", modernWording:"بیان آموزشی امروزی",
     constructionCaution:"نسبت‌ها دقیق‌اند. توضیح فارسی، بازنویسی آموزشی و محتاطانهٔ نمودارها و دستورهای ارائه‌شده است.",
-    hear:"▶ بشنوید", geometricOperation:"عمل هندسی", auto:"▶ خودکار", stop:"■ توقف",
+    hear:"▸ بشنوید", geometricOperation:"عمل هندسی", auto:"▸ خودکار", stop:"■ توقف",
     length:"طول", completeSequence:"توالی کامل", clickAnyStep:"یک مرحله را انتخاب کنید",
     divideGuide:"طول کامل را به {divisions} بخش مساوی تقسیم کنید؛ طول مرتعشِ علامت‌گذاری‌شده {active}/{divisions} است.",
     derivedGuide:"از {from} با ضرب طول مرتعش آن در {multiplier} ساخته می‌شود.",
@@ -627,11 +627,11 @@ const UI = {
     soundLab:"اطلس صدا", webAudio:"صدای مرورگر", openPitch:"بسامد پایه",
     toneA:"صدای الف", toneB:"صدای ب",
     soundCaution:"برای مقایسهٔ نظری، موج سینوسی ضربان و اندازهٔ فاصله را روشن‌تر می‌کند. این صدا سنتز امروزی است و بازسازی رنگ صوتی ساز قرون وسطایی نیست.",
-    playOpenShort:"▶ سیمِ باز", playA:"▶ صدای الف", playB:"▶ صدای ب", fullAscent:"▶ صعود کامل",
-    compareTwo:"مقایسهٔ دو جایگاه", playSequence:"▶ الف سپس ب", together:"▶ هم‌زمان", swap:"⇄ جابه‌جایی",
+    playOpenShort:"▸ سیمِ باز", playA:"▸ صدای الف", playB:"▸ صدای ب", fullAscent:"▸ صعود کامل",
+    compareTwo:"مقایسهٔ دو جایگاه", playSequence:"▸ الف سپس ب", together:"▸ هم‌زمان", swap:"⇄ جابه‌جایی",
     octavePattern:"الگوی فواصل اکتاو",
     patternCopy:"هر فاصلهٔ مجاور یا لیما است یا کمای فیثاغورثی. نابرابری این توالی نشان می‌دهد که این سامانه تقسیم مساوی اکتاو به ۱۷ بخش نیست.",
-    hearLimma:"▶ شنیدن لیما", hearComma:"▶ شنیدن کما",
+    hearLimma:"▸ شنیدن لیما", hearComma:"▸ شنیدن کما",
     interactiveTraining:"تمرین تعاملی", theoryRatios:"نظریه و نسبت‌ها", earTraining:"تربیت شنوایی",
     loading:"در حال آماده‌سازی پرسش…", choose:"یک پاسخ را انتخاب کنید.", score:"امتیاز: {correct} از {total}",
     scoreTop:"{correct} درست از {total}", newQuestion:"پرسش تازه",
@@ -649,7 +649,7 @@ const UI = {
     qStep:"فاصلهٔ مجاور از {from} تا {to} چیست؟",
     qCents:"{label} تقریباً چند سنت بالاتر از سیمِ باز است؟",
     qEar:"سیمِ باز و سپس نغمهٔ دوم را بشنوید و جایگاه ابجدِ نغمهٔ دوم را مشخص کنید.",
-    playMystery:"▶ پخش صدای ناشناس",
+    playMystery:"▸ پخش صدای ناشناس",
     correct:"درست است.", notYet:"درست نیست.",
     wholeTone:"پردهٔ کامل", perfectFourth:"چهارم درست",
     explainLength:"طول سیمِ {label} برابر {length} و نسبت بسامد آن {frequency} است.",
@@ -675,14 +675,14 @@ const UI = {
     stringLength:"طول الوتر", frequencyRatio:"نسبة التردد", cents:"سِنت",
     frequency:"التردد", fromBridge:"من المشط", fromNut:"من الأنف",
     previousStep:"الخطوة السابقة", pitchOrder:"الترتيب النغمي",
-    playSelected:"▶ النغمة المختارة", playOpen:"▶ الوتر المطلق",
+    playSelected:"▸ النغمة المختارة", playOpen:"▸ الوتر المطلق",
     geometryKicker:"الهندسة ← الصوتيات", governing:"العلاقة الأساسية",
     governingP1:"يُطبَّع طول الوتر المصوِّت الكامل إلى ١. فإذا كان الطول المتبقي ℓ، كانت نسبة التردد المثالية مقلوب هذا الطول.",
     governingP2:"يرسم الأطلس ١٨ علامة: الوتر المطلق و١٦ موضعًا آخر تحت الأوكتاف ثم تكرار الأوكتاف. فهذه ١٧ درجة مميزة في النموذج، لا سلّم أداء إلزاميًا واحدًا.",
     openFrequency:"تردد الوتر المطلق", stringLengthCm:"طول الوتر (سم)", waveform:"شكل الموجة",
     monochordLabels:"تسميات المونوكورد", sine:"جيبية", triangle:"مثلثية", sawtooth:"سنّ منشار",
     abjad:"حروف أبجد", index:"الرقم", centsOption:"السنت",
-    openToSelected:"▶ المطلق ثم المختار", soundTogether:"▶ معًا",
+    openToSelected:"▸ المطلق ثم المختار", soundTogether:"▸ معًا",
     adjacentInterval:"الفاصل المجاور", exactStep:"النسبة الدقيقة",
     referencePoint:"نقطة المرجع",
     referenceText:"الوتر المطلق هو المرجع الذي تُحسب منه جميع المواضع الأخرى.",
@@ -691,7 +691,7 @@ const UI = {
     adjacentText:"يساوي هذا الفاصل الترددي المجاور {cents} سنت، وتنتج نسبته الدقيقة من مقلوب أطوال الوتر.",
     sourceGuided:"بناء مستند إلى المصدر", modernWording:"صياغة تعليمية حديثة",
     constructionCaution:"النِّسَب دقيقة. أمّا الشرح العربي فهو إعادة صياغة تعليمية حذرة للرسوم والتعليمات المعروضة.",
-    hear:"▶ استمع", geometricOperation:"العملية الهندسية", auto:"▶ تلقائي", stop:"■ إيقاف",
+    hear:"▸ استمع", geometricOperation:"العملية الهندسية", auto:"▸ تلقائي", stop:"■ إيقاف",
     length:"الطول", completeSequence:"التسلسل الكامل", clickAnyStep:"اختر أي خطوة",
     divideGuide:"قسّم الطول الكامل إلى {divisions} أقسام متساوية؛ والطول المصوِّت المحدد هو {active}/{divisions}.",
     derivedGuide:"مشتق من {from} بضرب طوله المصوِّت في {multiplier}.",
@@ -699,11 +699,11 @@ const UI = {
     soundLab:"أطلس الصوت", webAudio:"صوت المتصفح", openPitch:"التردد الأساس",
     toneA:"النغمة أ", toneB:"النغمة ب",
     soundCaution:"للمقارنة النظرية تجعل الموجة الجيبية الخفقان وحجم الفاصل أوضح. هذا توليد صوتي حديث، وليس إعادة بناء لطابع آلة من العصور الوسطى.",
-    playOpenShort:"▶ المطلق", playA:"▶ النغمة أ", playB:"▶ النغمة ب", fullAscent:"▶ الصعود الكامل",
-    compareTwo:"مقارنة موضعين", playSequence:"▶ أ ثم ب", together:"▶ معًا", swap:"⇄ تبديل",
+    playOpenShort:"▸ المطلق", playA:"▸ النغمة أ", playB:"▸ النغمة ب", fullAscent:"▸ الصعود الكامل",
+    compareTwo:"مقارنة موضعين", playSequence:"▸ أ ثم ب", together:"▸ معًا", swap:"⇄ تبديل",
     octavePattern:"نمط خطوات الأوكتاف",
     patternCopy:"كل خطوة مجاورة إما ليما وإما فاصلة فيثاغورية. ويبيّن عدم تساوي التسلسل أن النظام ليس تقسيمًا متساويًا للأوكتاف إلى سبعة عشر جزءًا.",
-    hearLimma:"▶ سماع الليما", hearComma:"▶ سماع الفاصلة",
+    hearLimma:"▸ سماع الليما", hearComma:"▸ سماع الفاصلة",
     interactiveTraining:"تدريب تفاعلي", theoryRatios:"النظرية والنِّسَب", earTraining:"التدريب السمعي",
     loading:"جارٍ إعداد السؤال…", choose:"اختر إجابة واحدة.", score:"النتيجة: {correct} / {total}",
     scoreTop:"{correct} صحيحة من {total}", newQuestion:"سؤال جديد",
@@ -721,7 +721,7 @@ const UI = {
     qStep:"ما الخطوة المجاورة من {from} إلى {to}؟",
     qCents:"كم سنتًا تقريبًا تعلو {label} الوتر المطلق؟",
     qEar:"استمع إلى الوتر المطلق ثم حدّد الموضع الأبجدي للنغمة الثانية.",
-    playMystery:"▶ تشغيل النغمة المجهولة",
+    playMystery:"▸ تشغيل النغمة المجهولة",
     correct:"صحيح.", notYet:"ليست صحيحة.",
     wholeTone:"طنيني كامل", perfectFourth:"رابعة تامة",
     explainLength:"طول وتر {label} هو {length} ونسبة تردده {frequency}.",
@@ -747,14 +747,14 @@ const UI = {
     stringLength:"Tel uzunluğu", frequencyRatio:"Frekans oranı", cents:"Sent",
     frequency:"Frekans", fromBridge:"Köprüden", fromNut:"Üst eşikten",
     previousStep:"Önceki aralık", pitchOrder:"Ses sırası",
-    playSelected:"▶ Seçili ses", playOpen:"▶ Açık tel",
+    playSelected:"▸ Seçili ses", playOpen:"▸ Açık tel",
     geometryKicker:"Geometri → akustik", governing:"Temel ilişki",
     governingP1:"Titreşen telin tam uzunluğu 1 olarak normalize edilir. Kalan uzunluk ℓ ise ideal frekans oranı bu uzunluğun tersidir.",
     governingP2:"Atlas 18 işaret gösterir: açık tel, oktavın altındaki diğer 16 konum ve oktav tekrarı. Böylece modelde 17 ayrı perde vardır; tek zorunlu icra dizisi değildir.",
     openFrequency:"Açık tel frekansı", stringLengthCm:"Tel uzunluğu (cm)", waveform:"Dalga biçimi",
     monochordLabels:"Monokord etiketleri", sine:"Sinüs", triangle:"Üçgen", sawtooth:"Testere dişi",
     abjad:"Ebced", index:"Numara", centsOption:"Sent",
-    openToSelected:"▶ Açık → seçili", soundTogether:"▶ Birlikte",
+    openToSelected:"▸ Açık → seçili", soundTogether:"▸ Birlikte",
     adjacentInterval:"Komşu aralık", exactStep:"Kesin adım",
     referencePoint:"Referans noktası",
     referenceText:"Açık tel, diğer bütün konumların hesaplandığı referanstır.",
@@ -763,7 +763,7 @@ const UI = {
     adjacentText:"Bu komşu frekans adımı {cents} senttir. Kesin oranı tel uzunluklarının terslerinden elde edilir.",
     sourceGuided:"Kaynak temelli kurulum", modernWording:"Modern öğretim dili",
     constructionCaution:"Oranlar kesindir. Türkçe açıklamalar, verilen çizim ve talimatların dikkatli bir öğretimsel yeniden ifadesidir.",
-    hear:"▶ Dinle", geometricOperation:"Geometrik işlem", auto:"▶ Otomatik", stop:"■ Durdur",
+    hear:"▸ Dinle", geometricOperation:"Geometrik işlem", auto:"▸ Otomatik", stop:"■ Durdur",
     length:"Uzunluk", completeSequence:"Tam sıra", clickAnyStep:"Bir adımı seçin",
     divideGuide:"Tam uzunluğu {divisions} eşit parçaya bölün; işaretlenen titreşen uzunluk {active}/{divisions} olur.",
     derivedGuide:"{from} konumunun titreşen uzunluğu {multiplier} ile çarpılarak elde edilir.",
@@ -771,11 +771,11 @@ const UI = {
     soundLab:"Ses Atlası", webAudio:"Tarayıcı sesi", openPitch:"Temel frekans",
     toneA:"A sesi", toneB:"B sesi",
     soundCaution:"Kuramsal karşılaştırmada sinüs dalgası, vuruşları ve aralık büyüklüğünü daha açık duyurur. Bu modern bir sentezdir; Orta Çağ çalgı tınısının rekonstrüksiyonu değildir.",
-    playOpenShort:"▶ Açık tel", playA:"▶ A sesi", playB:"▶ B sesi", fullAscent:"▶ Tam çıkış",
-    compareTwo:"İki konumu karşılaştır", playSequence:"▶ A, sonra B", together:"▶ Birlikte", swap:"⇄ Değiştir",
+    playOpenShort:"▸ Açık tel", playA:"▸ A sesi", playB:"▸ B sesi", fullAscent:"▸ Tam çıkış",
+    compareTwo:"İki konumu karşılaştır", playSequence:"▸ A, sonra B", together:"▸ Birlikte", swap:"⇄ Değiştir",
     octavePattern:"Oktav adım örüntüsü",
     patternCopy:"Her komşu adım ya limma ya da Pisagor komasıdır. Eşit olmayan bu sıra, sistemin 17 eşit bölümlü bir oktav olmadığını gösterir.",
-    hearLimma:"▶ Limma dinle", hearComma:"▶ Koma dinle",
+    hearLimma:"▸ Limma dinle", hearComma:"▸ Koma dinle",
     interactiveTraining:"Etkileşimli alıştırma", theoryRatios:"Kuram ve oranlar", earTraining:"Kulak eğitimi",
     loading:"Soru hazırlanıyor…", choose:"Bir cevap seçin.", score:"Puan: {correct} / {total}",
     scoreTop:"{total} soruda {correct} doğru", newQuestion:"Yeni soru",
@@ -793,7 +793,7 @@ const UI = {
     qStep:"{from} ile {to} arasındaki komşu adım nedir?",
     qCents:"{label}, açık telin yaklaşık kaç sent üzerindedir?",
     qEar:"Önce açık teli dinleyin, ardından ikinci sesin ebced konumunu belirleyin.",
-    playMystery:"▶ Gizemli sesi çal",
+    playMystery:"▸ Gizemli sesi çal",
     correct:"Doğru.", notYet:"Henüz değil.",
     wholeTone:"Tam ton", perfectFourth:"Tam dörtlü",
     explainLength:"{label} için tel uzunluğu {length}, frekans oranı {frequency} olur.",
@@ -1184,10 +1184,10 @@ applyLanguage(initialChoice);
    accessibility and exact-model integrity checks.
    ========================================================================== */
 const EXT_UI={
- en:{learn:"Learn",explore:"Explore",construct:"Construct",listen:"Listen",modes:"Species & Modes",train:"Train & Data",sources:"Sources",both:"View: both",theory:"View: theory",practical:"View: instrument",instrumentDisclosure:"Modern setar illustration · fret positions follow the Atlas model",guided:"Guided curriculum",evidence:"Evidence map",details:"Details",audioModel:"Audio model",pure:"Pure oscillator",pluck:"Plucked-string simulation",volume:"Volume",decay:"Pluck decay",stopAudio:"■ Stop audio",species:"Tetrachord species",lab:"Species Atlas",fromSpecies:"From species to adwār",hear:"▶ Hear",openSource:"Open source notes",validation:"Mathematical validation",testsPassed:"{n}/{total} tests passed",dialogTitle:"Sources, verification, and editorial policy",close:"Close"},
- fa:{learn:"آموزش",explore:"کاوش",construct:"ساخت",listen:"شنیدن",modes:"اجناس و ادوار",train:"تمرین و داده",sources:"منابع",both:"نما: ترکیبی",theory:"نما: نظری",practical:"نما: ساز",instrumentDisclosure:"تصویر سه‌تار امروزی · جای پرده‌ها بر پایهٔ مدل اطلس است",guided:"مسیر آموزشی",evidence:"نقشهٔ شواهد",details:"جزئیات",audioModel:"مدل صوتی",pure:"نوسان‌ساز خالص",pluck:"شبیه‌سازی سیم زخمه‌ای",volume:"بلندی صدا",decay:"میرایی زخمه",stopAudio:"■ توقف صدا",species:"اجناسِ چهارگان",lab:"اطلس جنس",fromSpecies:"از جنس تا ادوار",hear:"▶ بشنوید",openSource:"یادداشت‌های منبع",validation:"اعتبارسنجی ریاضی",testsPassed:"{n} از {total} آزمون موفق",dialogTitle:"منابع، اعتبارسنجی و سیاست ویرایشی",close:"بستن"},
- ar:{learn:"التعلّم",explore:"الاستكشاف",construct:"البناء",listen:"الاستماع",modes:"الأجناس والأدوار",train:"التدريب والبيانات",sources:"المصادر",both:"العرض: مشترك",theory:"العرض: نظري",practical:"العرض: الآلة",instrumentDisclosure:"رسم لآلة السيتار المعاصرة · مواضع الدساتين وفق نموذج الأطلس",guided:"منهج موجّه",evidence:"خريطة الأدلة",details:"تفاصيل",audioModel:"نموذج الصوت",pure:"مذبذب نقي",pluck:"محاكاة وتر منقور",volume:"شدة الصوت",decay:"اضمحلال النقر",stopAudio:"■ إيقاف الصوت",species:"أجناس الأرباع",lab:"أطلس الأجناس",fromSpecies:"من الجنس إلى الأدوار",hear:"▶ استمع",openSource:"ملاحظات المصدر",validation:"التحقق الرياضي",testsPassed:"نجح {n} من {total}",dialogTitle:"المصادر والتحقق والسياسة التحريرية",close:"إغلاق"},
- tr:{learn:"Öğren",explore:"Keşfet",construct:"Kur",listen:"Dinle",modes:"Cinsler ve Devirler",train:"Alıştırma ve Veri",sources:"Kaynaklar",both:"Görünüm: birlikte",theory:"Görünüm: kuram",practical:"Görünüm: çalgı",instrumentDisclosure:"Modern setar çizimi · perde konumları Atlas modeline göredir",guided:"Yönlendirilmiş müfredat",evidence:"Kanıt haritası",details:"Ayrıntılar",audioModel:"Ses modeli",pure:"Saf osilatör",pluck:"Telli çalgı benzetimi",volume:"Ses düzeyi",decay:"Tını sönümü",stopAudio:"■ Sesi durdur",species:"Dörtlü cinsleri",lab:"Cins Atlası",fromSpecies:"Cinsten devirlere",hear:"▶ Dinle",openSource:"Kaynak notları",validation:"Matematiksel doğrulama",testsPassed:"{total} testten {n} geçti",dialogTitle:"Kaynaklar, doğrulama ve editoryal politika",close:"Kapat"}
+ en:{learn:"Learn",explore:"Explore",construct:"Construct",listen:"Listen",modes:"Species & Modes",train:"Train & Data",sources:"Sources",both:"View: both",theory:"View: theory",practical:"View: instrument",instrumentDisclosure:"Modern setar illustration · fret positions follow the Atlas model",guided:"Guided curriculum",evidence:"Evidence map",details:"Details",audioModel:"Audio model",pure:"Pure oscillator",pluck:"Plucked-string simulation",volume:"Volume",decay:"Pluck decay",stopAudio:"■ Stop audio",species:"Tetrachord species",lab:"Species Atlas",fromSpecies:"From species to adwār",hear:"▸ Hear",openSource:"Open source notes",validation:"Mathematical validation",testsPassed:"{n}/{total} tests passed",dialogTitle:"Sources, verification, and editorial policy",close:"Close"},
+ fa:{learn:"آموزش",explore:"کاوش",construct:"ساخت",listen:"شنیدن",modes:"اجناس و ادوار",train:"تمرین و داده",sources:"منابع",both:"نما: ترکیبی",theory:"نما: نظری",practical:"نما: ساز",instrumentDisclosure:"تصویر سه‌تار امروزی · جای پرده‌ها بر پایهٔ مدل اطلس است",guided:"مسیر آموزشی",evidence:"نقشهٔ شواهد",details:"جزئیات",audioModel:"مدل صوتی",pure:"نوسان‌ساز خالص",pluck:"شبیه‌سازی سیم زخمه‌ای",volume:"بلندی صدا",decay:"میرایی زخمه",stopAudio:"■ توقف صدا",species:"اجناسِ چهارگان",lab:"اطلس جنس",fromSpecies:"از جنس تا ادوار",hear:"▸ بشنوید",openSource:"یادداشت‌های منبع",validation:"اعتبارسنجی ریاضی",testsPassed:"{n} از {total} آزمون موفق",dialogTitle:"منابع، اعتبارسنجی و سیاست ویرایشی",close:"بستن"},
+ ar:{learn:"التعلّم",explore:"الاستكشاف",construct:"البناء",listen:"الاستماع",modes:"الأجناس والأدوار",train:"التدريب والبيانات",sources:"المصادر",both:"العرض: مشترك",theory:"العرض: نظري",practical:"العرض: الآلة",instrumentDisclosure:"رسم لآلة السيتار المعاصرة · مواضع الدساتين وفق نموذج الأطلس",guided:"منهج موجّه",evidence:"خريطة الأدلة",details:"تفاصيل",audioModel:"نموذج الصوت",pure:"مذبذب نقي",pluck:"محاكاة وتر منقور",volume:"شدة الصوت",decay:"اضمحلال النقر",stopAudio:"■ إيقاف الصوت",species:"أجناس الأرباع",lab:"أطلس الأجناس",fromSpecies:"من الجنس إلى الأدوار",hear:"▸ استمع",openSource:"ملاحظات المصدر",validation:"التحقق الرياضي",testsPassed:"نجح {n} من {total}",dialogTitle:"المصادر والتحقق والسياسة التحريرية",close:"إغلاق"},
+ tr:{learn:"Öğren",explore:"Keşfet",construct:"Kur",listen:"Dinle",modes:"Cinsler ve Devirler",train:"Alıştırma ve Veri",sources:"Kaynaklar",both:"Görünüm: birlikte",theory:"Görünüm: kuram",practical:"Görünüm: çalgı",instrumentDisclosure:"Modern setar çizimi · perde konumları Atlas modeline göredir",guided:"Yönlendirilmiş müfredat",evidence:"Kanıt haritası",details:"Ayrıntılar",audioModel:"Ses modeli",pure:"Saf osilatör",pluck:"Telli çalgı benzetimi",volume:"Ses düzeyi",decay:"Tını sönümü",stopAudio:"■ Sesi durdur",species:"Dörtlü cinsleri",lab:"Cins Atlası",fromSpecies:"Cinsten devirlere",hear:"▸ Dinle",openSource:"Kaynak notları",validation:"Matematiksel doğrulama",testsPassed:"{total} testten {n} geçti",dialogTitle:"Kaynaklar, doğrulama ve editoryal politika",close:"Kapat"}
 };
 function et(key,vars={}){let s=(EXT_UI[uiLanguage]||EXT_UI.en)[key]||EXT_UI.en[key]||key;Object.entries(vars).forEach(([k,v])=>s=s.replaceAll(`{${k}}`,v));return s}
 
@@ -1308,7 +1308,7 @@ renderLessons();renderSpecies();runValidationTests();applyStaticLanguage();activ
 const FULL_I18N={
  en:{
   ui:{
-   skip:"Skip to learning workspace",tabsLabel:"Learning modes",monoPanelAria:"Persistent interactive monochord",monoTitle:"Al-Urmawī theoretical monochord",monoDesc:"A horizontal theoretical string with seventeen distinct pitch positions plus the repeated octave endpoint.",instrumentAria:"Illustrative four-string long-neck instrument mapping",sourceTitle:"Open sources and editorial policy",viewTitle:"Cycle through combined, theoretical, and instrument views",contrastTitle:"Toggle high contrast",textTitle:"Toggle larger text",combinedViewLabel:"Combined theoretical + practical view",theoryViewLabel:"Theoretical monochord — enlarged",practicalViewLabel:"Illustrative instrument view",learnPanelAria:"Guided lessons",modesPanelAria:"Tetrachord species and modal applications",previous:"← Previous",demonstrate:"▶ Play example",next:"Next →",objective:"Objective",primaryManuscript:"Primary manuscript",exactModel:"Exact analytical model",editorialDistinction:"Editorial distinction",exactFourth:"Exact fourth",interpretiveLayer:"Interpretive layer",historicalCategories:"Historical categories",isfahanExample:"Iṣfahān example",testsNotRun:"Tests have not run.",product:"Product",categoricalModel:"Categorical model",mujannabCategory:"mujannab category",baqiyyah:"baqiyyah",exactJNotFixed:"exact J sizes are deliberately not fixed here",hintLearn:"Follow the guided lesson, then use the same positions in Explore.",hintModes:"Interval species are mapped onto the same parent lattice.",pass:"PASS",fail:"FAIL",found:"found {n}",sourceLink:"Qatar Digital Library · British Library Or 136",coverage:"Four-language content coverage is complete",viewCoverage:"Theory, combined, and instrument views are available"},
+   skip:"Skip to learning workspace",tabsLabel:"Learning modes",monoPanelAria:"Persistent interactive monochord",monoTitle:"Al-Urmawī theoretical monochord",monoDesc:"A horizontal theoretical string with seventeen distinct pitch positions plus the repeated octave endpoint.",instrumentAria:"Illustrative four-string long-neck instrument mapping",sourceTitle:"Open sources and editorial policy",viewTitle:"Cycle through combined, theoretical, and instrument views",contrastTitle:"Toggle high contrast",textTitle:"Toggle larger text",combinedViewLabel:"Combined theoretical + practical view",theoryViewLabel:"Theoretical monochord — enlarged",practicalViewLabel:"Illustrative instrument view",learnPanelAria:"Guided lessons",modesPanelAria:"Tetrachord species and modal applications",previous:"← Previous",demonstrate:"▸ Play example",next:"Next →",objective:"Objective",primaryManuscript:"Primary manuscript",exactModel:"Exact analytical model",editorialDistinction:"Editorial distinction",exactFourth:"Exact fourth",interpretiveLayer:"Interpretive layer",historicalCategories:"Historical categories",isfahanExample:"Iṣfahān example",testsNotRun:"Tests have not run.",product:"Product",categoricalModel:"Categorical model",mujannabCategory:"mujannab category",baqiyyah:"baqiyyah",exactJNotFixed:"exact J sizes are deliberately not fixed here",hintLearn:"Follow the guided lesson, then use the same positions in Explore.",hintModes:"Interval species are mapped onto the same parent lattice.",pass:"PASS",fail:"FAIL",found:"found {n}",sourceLink:"Qatar Digital Library · British Library Or 136",coverage:"Four-language content coverage is complete",viewCoverage:"Theory, combined, and instrument views are available"},
   lessons:[
    {kicker:"Foundation",status:"Source concept + modern acoustics",title:"String length and pitch",objective:"Understand the reciprocal relation between sounding length and ideal frequency.",copy:"Al-Urmawī begins from the properties of notes and fret division. In this Atlas the whole sounding string is normalized to 1. Stopping the string leaves a shorter sounding segment; under the ideal monochord model, frequency changes as the reciprocal of that remaining length. The model assumes constant string tension and mass per unit length."},
    {kicker:"Primary consonances",status:"Exact ratios",title:"Octave, fifth, and fourth",objective:"Construct the principal consonances geometrically and hear them.",copy:"Halving the string gives the octave. Retaining two of three equal parts gives the fifth. Retaining three of four equal parts gives the fourth. These are the clearest bridge between geometry and sound."},
@@ -1329,7 +1329,7 @@ const FULL_I18N={
   tests:["18 written points","Open string is 1/1","Octave endpoint is 1/2 length and 2/1 frequency","Pitch order strictly ascends","Every fraction is reduced","Reciprocal length/frequency identity","Adjacent pattern has 12 limmas and 5 commas","Twelve limmas plus five commas close the octave","T–T–B equals the perfect fourth","Monochord and instrument bridge/nut coordinates align","Four-language content structure is complete"]
  },
  fa:{
-  ui:{skip:"رفتن به فضای آموزشی",tabsLabel:"حالت‌های آموزشی",monoPanelAria:"تک‌سیم تعاملیِ نظری",monoTitle:"تک‌سیم نظریِ ارموی",monoDesc:"سیمی نظری و افقی با هفده جایگاهِ صوتیِ متمایز به‌همراه تکرارِ نقطهٔ اکتاو.",instrumentAria:"نگاشت تصویریِ یک ساز دسته‌بلند چهار سیم",sourceTitle:"گشودن منابع و سیاست ویرایشی",viewTitle:"گردش میان نمای ترکیبی، نظری و ساز",contrastTitle:"روشن یا خاموش کردن کنتراست بالا",textTitle:"روشن یا خاموش کردن متن درشت",combinedViewLabel:"نمای ترکیبیِ نظری و عملی",theoryViewLabel:"تک‌سیم نظری — بزرگ‌نمایی‌شده",practicalViewLabel:"نمای تصویریِ ساز",learnPanelAria:"درس‌های هدایت‌شده",modesPanelAria:"اجناس چهارگان و کاربردهای مقامی",previous:"← قبلی",demonstrate:"▶ شنیدن نمونه",next:"بعدی →",objective:"هدف",primaryManuscript:"نسخهٔ خطی اصلی",exactModel:"مدل تحلیلیِ دقیق",editorialDistinction:"تمایز ویرایشی",exactFourth:"چهارمِ دقیق",interpretiveLayer:"لایهٔ تفسیری",historicalCategories:"رده‌های تاریخی",isfahanExample:"نمونهٔ اصفهان",testsNotRun:"آزمون‌ها هنوز اجرا نشده‌اند.",product:"حاصل‌ضرب",categoricalModel:"مدل رده‌ای",mujannabCategory:"ردهٔ مجنّب",baqiyyah:"بقیّه",exactJNotFixed:"اندازهٔ دقیقِ J در اینجا عمداً ثابت نشده است",hintLearn:"درس هدایت‌شده را دنبال کنید و سپس همان جایگاه‌ها را در بخش کاوش بررسی کنید.",hintModes:"اجناس فاصله‌ای بر همان شبکهٔ مادر نگاشت می‌شوند.",pass:"موفق",fail:"ناموفق",found:"{n} مورد یافت شد",sourceLink:"کتابخانهٔ دیجیتال قطر · نسخهٔ Or 136 کتابخانهٔ بریتانیا",coverage:"پوشش محتواییِ چهار زبان کامل است",viewCoverage:"نماهای نظری، ترکیبی و ساز در دسترس‌اند"},
+  ui:{skip:"رفتن به فضای آموزشی",tabsLabel:"حالت‌های آموزشی",monoPanelAria:"تک‌سیم تعاملیِ نظری",monoTitle:"تک‌سیم نظریِ ارموی",monoDesc:"سیمی نظری و افقی با هفده جایگاهِ صوتیِ متمایز به‌همراه تکرارِ نقطهٔ اکتاو.",instrumentAria:"نگاشت تصویریِ یک ساز دسته‌بلند چهار سیم",sourceTitle:"گشودن منابع و سیاست ویرایشی",viewTitle:"گردش میان نمای ترکیبی، نظری و ساز",contrastTitle:"روشن یا خاموش کردن کنتراست بالا",textTitle:"روشن یا خاموش کردن متن درشت",combinedViewLabel:"نمای ترکیبیِ نظری و عملی",theoryViewLabel:"تک‌سیم نظری — بزرگ‌نمایی‌شده",practicalViewLabel:"نمای تصویریِ ساز",learnPanelAria:"درس‌های هدایت‌شده",modesPanelAria:"اجناس چهارگان و کاربردهای مقامی",previous:"← قبلی",demonstrate:"▸ شنیدن نمونه",next:"بعدی →",objective:"هدف",primaryManuscript:"نسخهٔ خطی اصلی",exactModel:"مدل تحلیلیِ دقیق",editorialDistinction:"تمایز ویرایشی",exactFourth:"چهارمِ دقیق",interpretiveLayer:"لایهٔ تفسیری",historicalCategories:"رده‌های تاریخی",isfahanExample:"نمونهٔ اصفهان",testsNotRun:"آزمون‌ها هنوز اجرا نشده‌اند.",product:"حاصل‌ضرب",categoricalModel:"مدل رده‌ای",mujannabCategory:"ردهٔ مجنّب",baqiyyah:"بقیّه",exactJNotFixed:"اندازهٔ دقیقِ J در اینجا عمداً ثابت نشده است",hintLearn:"درس هدایت‌شده را دنبال کنید و سپس همان جایگاه‌ها را در بخش کاوش بررسی کنید.",hintModes:"اجناس فاصله‌ای بر همان شبکهٔ مادر نگاشت می‌شوند.",pass:"موفق",fail:"ناموفق",found:"{n} مورد یافت شد",sourceLink:"کتابخانهٔ دیجیتال قطر · نسخهٔ Or 136 کتابخانهٔ بریتانیا",coverage:"پوشش محتواییِ چهار زبان کامل است",viewCoverage:"نماهای نظری، ترکیبی و ساز در دسترس‌اند"},
   lessons:[
    {kicker:"بنیاد",status:"مفهوم منبع + آکوستیک جدید",title:"طول سیم و زیرایی",objective:"رابطهٔ معکوس میان طول مرتعش و بسامد ایده‌آل را درک کنید.",copy:"ارموی بحث را از ویژگی‌های نغمه‌ها و تقسیم دستان‌ها آغاز می‌کند. در این محیط، طول کامل بخش مرتعش برابر ۱ در نظر گرفته می‌شود. با گرفتن سیم، بخش مرتعش کوتاه‌تر می‌شود و در مدل ایده‌آل تک‌سیم، بسامد با معکوس طول باقی‌مانده تغییر می‌کند. در این مدل، کشش سیم و جرمِ واحد طول آن ثابت‌اند."},
    {kicker:"هم‌آوایی‌های اصلی",status:"نسبت‌های دقیق",title:"اکتاو، پنجم و چهارم",objective:"هم‌آوایی‌های اصلی را هندسی بسازید و بشنوید.",copy:"نصف‌کردن طول سیم اکتاو را می‌سازد. نگه‌داشتن دو بخش از سه بخش مساوی پنجم درست را می‌دهد و نگه‌داشتن سه بخش از چهار بخش مساوی چهارم درست را. این نسبت‌ها روشن‌ترین پیوند میان هندسه و صدا هستند."},
@@ -1350,7 +1350,7 @@ const FULL_I18N={
   tests:["هجده نقطهٔ نوشته‌شده","سیم باز برابر ۱/۱ است","پایان اکتاو طول ۱/۲ و نسبت بسامد ۲/۱ دارد","ترتیب زیرایی کاملاً صعودی است","همهٔ کسرها ساده شده‌اند","همانیِ معکوس طول و بسامد برقرار است","الگوی مجاور ۱۲ لیما و ۵ کما دارد","دوازده لیما و پنج کما اکتاو را کامل می‌کنند","T–T–B برابر چهارم درست است","مختصات خرک و شیطانک در تک‌سیم و ساز هم‌راستا هستند","ساختار محتوای چهار زبان کامل است"]
  },
  ar:{
-  ui:{skip:"الانتقال إلى مساحة التعلّم",tabsLabel:"أنماط التعلّم",monoPanelAria:"مونوكورد نظري تفاعلي دائم",monoTitle:"المونوكورد النظري للأرموي",monoDesc:"وتر نظري أفقي يضم سبعة عشر موضعًا نغميًا مميزًا ونقطة تكرار الأوكتاف.",instrumentAria:"تمثيل توضيحي لآلة طويلة العنق ذات أربعة أوتار",sourceTitle:"فتح المصادر والسياسة التحريرية",viewTitle:"التنقل بين العرض المشترك والنظري وعرض الآلة",contrastTitle:"تفعيل أو تعطيل التباين العالي",textTitle:"تفعيل أو تعطيل تكبير النص",combinedViewLabel:"عرض نظري وعملي مشترك",theoryViewLabel:"المونوكورد النظري — عرض مكبّر",practicalViewLabel:"عرض الآلة التوضيحي",learnPanelAria:"دروس موجّهة",modesPanelAria:"أجناس الأرباع والتطبيقات المقامية",previous:"← السابق",demonstrate:"▶ استمع إلى المثال",next:"التالي →",objective:"الهدف",primaryManuscript:"المخطوط الأساسي",exactModel:"النموذج التحليلي الدقيق",editorialDistinction:"التمييز التحريري",exactFourth:"رابعة دقيقة",interpretiveLayer:"طبقة تفسيرية",historicalCategories:"الفئات التاريخية",isfahanExample:"مثال إصفهان",testsNotRun:"لم تُجرَ الاختبارات بعد.",product:"حاصل الضرب",categoricalModel:"نموذج فئوي",mujannabCategory:"فئة المجنّب",baqiyyah:"البقية",exactJNotFixed:"أحجام J الدقيقة متروكة عمدًا بلا تثبيت هنا",hintLearn:"اتبع الدرس الموجّه ثم افحص المواضع نفسها في قسم الاستكشاف.",hintModes:"تُسقط أجناس الأبعاد على شبكة المواضع الأم نفسها.",pass:"نجاح",fail:"فشل",found:"عُثر على {n}",sourceLink:"مكتبة قطر الرقمية · المخطوط Or 136 في المكتبة البريطانية",coverage:"اكتمل توفر المحتوى باللغات الأربع",viewCoverage:"العروض النظري والمشترك وعرض الآلة متاحة"},
+  ui:{skip:"الانتقال إلى مساحة التعلّم",tabsLabel:"أنماط التعلّم",monoPanelAria:"مونوكورد نظري تفاعلي دائم",monoTitle:"المونوكورد النظري للأرموي",monoDesc:"وتر نظري أفقي يضم سبعة عشر موضعًا نغميًا مميزًا ونقطة تكرار الأوكتاف.",instrumentAria:"تمثيل توضيحي لآلة طويلة العنق ذات أربعة أوتار",sourceTitle:"فتح المصادر والسياسة التحريرية",viewTitle:"التنقل بين العرض المشترك والنظري وعرض الآلة",contrastTitle:"تفعيل أو تعطيل التباين العالي",textTitle:"تفعيل أو تعطيل تكبير النص",combinedViewLabel:"عرض نظري وعملي مشترك",theoryViewLabel:"المونوكورد النظري — عرض مكبّر",practicalViewLabel:"عرض الآلة التوضيحي",learnPanelAria:"دروس موجّهة",modesPanelAria:"أجناس الأرباع والتطبيقات المقامية",previous:"← السابق",demonstrate:"▸ استمع إلى المثال",next:"التالي →",objective:"الهدف",primaryManuscript:"المخطوط الأساسي",exactModel:"النموذج التحليلي الدقيق",editorialDistinction:"التمييز التحريري",exactFourth:"رابعة دقيقة",interpretiveLayer:"طبقة تفسيرية",historicalCategories:"الفئات التاريخية",isfahanExample:"مثال إصفهان",testsNotRun:"لم تُجرَ الاختبارات بعد.",product:"حاصل الضرب",categoricalModel:"نموذج فئوي",mujannabCategory:"فئة المجنّب",baqiyyah:"البقية",exactJNotFixed:"أحجام J الدقيقة متروكة عمدًا بلا تثبيت هنا",hintLearn:"اتبع الدرس الموجّه ثم افحص المواضع نفسها في قسم الاستكشاف.",hintModes:"تُسقط أجناس الأبعاد على شبكة المواضع الأم نفسها.",pass:"نجاح",fail:"فشل",found:"عُثر على {n}",sourceLink:"مكتبة قطر الرقمية · المخطوط Or 136 في المكتبة البريطانية",coverage:"اكتمل توفر المحتوى باللغات الأربع",viewCoverage:"العروض النظري والمشترك وعرض الآلة متاحة"},
   lessons:[
    {kicker:"الأساس",status:"مفهوم من المصدر + صوتيات حديثة",title:"طول الوتر وارتفاع النغمة",objective:"فهم العلاقة العكسية بين طول الجزء المصوّت والتردد المثالي.",copy:"يبدأ الأرموي من خواص النغم وتقسيم الدساتين. في هذا الأطلس يُطبّع طول الوتر المصوّت الكامل إلى ١. وعند إيقاف الوتر يبقى جزء أقصر مصوّت، وفي نموذج المونوكورد المثالي يتغير التردد بحسب مقلوب ذلك الطول. يفترض النموذج ثبات شدّ الوتر وكتلته لكل وحدة طول."},
    {kicker:"التآلفات الأساسية",status:"نِسَب دقيقة",title:"الأوكتاف والخامسة والرابعة",objective:"بناء التآلفات الأساسية هندسيًا وسماعها.",copy:"تنصيف الوتر يعطي الأوكتاف، والاحتفاظ بقسمين من ثلاثة أقسام متساوية يعطي الخامسة التامة، والاحتفاظ بثلاثة أقسام من أربعة يعطي الرابعة التامة. وهذه أوضح صلة بين الهندسة والصوت."},
@@ -1371,7 +1371,7 @@ const FULL_I18N={
   tests:["ثماني عشرة نقطة مكتوبة","الوتر المطلق يساوي ١/١","نهاية الأوكتاف طولها ١/٢ ونسبة ترددها ٢/١","ترتيب النغم صاعد تمامًا","جميع الكسور مختزلة","هوية مقلوب الطول والتردد صحيحة","النمط المجاور يضم ١٢ ليما و٥ فواصل","اثنتا عشرة ليما وخمس فواصل تغلق الأوكتاف","T–T–B يساوي الرابعة التامة","إحداثيا المشط والأنف متطابقان في المونوكورد والآلة","بنية المحتوى باللغات الأربع مكتملة"]
  },
  tr:{
-  ui:{skip:"Öğrenme alanına geç",tabsLabel:"Öğrenme modları",monoPanelAria:"Kalıcı etkileşimli kuramsal monokord",monoTitle:"Urmevî’nin kuramsal monokordu",monoDesc:"On yedi ayrı perde konumunu ve tekrarlanan oktav sınırını gösteren yatay kuramsal tel.",instrumentAria:"Dört telli uzun saplı çalgının açıklayıcı eşlemesi",sourceTitle:"Kaynakları ve editoryal politikayı aç",viewTitle:"Birleşik, kuramsal ve çalgı görünümleri arasında geçiş yap",contrastTitle:"Yüksek karşıtlığı aç veya kapat",textTitle:"Büyük metni aç veya kapat",combinedViewLabel:"Birleşik kuramsal + uygulamalı görünüm",theoryViewLabel:"Kuramsal monokord — büyütülmüş",practicalViewLabel:"Açıklayıcı çalgı görünümü",learnPanelAria:"Yönlendirilmiş dersler",modesPanelAria:"Dörtlü cinsleri ve makam uygulamaları",previous:"← Önceki",demonstrate:"▶ Örneği dinle",next:"Sonraki →",objective:"Amaç",primaryManuscript:"Birincil yazma",exactModel:"Kesin analitik model",editorialDistinction:"Editoryal ayrım",exactFourth:"Kesin dörtlü",interpretiveLayer:"Yorum katmanı",historicalCategories:"Tarihî kategoriler",isfahanExample:"İsfahan örneği",testsNotRun:"Testler henüz çalıştırılmadı.",product:"Çarpım",categoricalModel:"Kategorik model",mujannabCategory:"mücenneb kategorisi",baqiyyah:"bakiyye",exactJNotFixed:"J büyüklükleri burada bilinçli olarak tek değere sabitlenmemiştir",hintLearn:"Yönlendirilmiş dersi izleyin, ardından aynı konumları Keşfet bölümünde inceleyin.",hintModes:"Aralık cinsleri aynı ana ses örgüsüne eşlenir.",pass:"GEÇTİ",fail:"KALDI",found:"{n} bulundu",sourceLink:"Katar Dijital Kütüphanesi · British Library Or 136",coverage:"Dört dilde içerik kapsamı tamamlandı",viewCoverage:"Kuramsal, birleşik ve çalgı görünümleri kullanılabilir"},
+  ui:{skip:"Öğrenme alanına geç",tabsLabel:"Öğrenme modları",monoPanelAria:"Kalıcı etkileşimli kuramsal monokord",monoTitle:"Urmevî’nin kuramsal monokordu",monoDesc:"On yedi ayrı perde konumunu ve tekrarlanan oktav sınırını gösteren yatay kuramsal tel.",instrumentAria:"Dört telli uzun saplı çalgının açıklayıcı eşlemesi",sourceTitle:"Kaynakları ve editoryal politikayı aç",viewTitle:"Birleşik, kuramsal ve çalgı görünümleri arasında geçiş yap",contrastTitle:"Yüksek karşıtlığı aç veya kapat",textTitle:"Büyük metni aç veya kapat",combinedViewLabel:"Birleşik kuramsal + uygulamalı görünüm",theoryViewLabel:"Kuramsal monokord — büyütülmüş",practicalViewLabel:"Açıklayıcı çalgı görünümü",learnPanelAria:"Yönlendirilmiş dersler",modesPanelAria:"Dörtlü cinsleri ve makam uygulamaları",previous:"← Önceki",demonstrate:"▸ Örneği dinle",next:"Sonraki →",objective:"Amaç",primaryManuscript:"Birincil yazma",exactModel:"Kesin analitik model",editorialDistinction:"Editoryal ayrım",exactFourth:"Kesin dörtlü",interpretiveLayer:"Yorum katmanı",historicalCategories:"Tarihî kategoriler",isfahanExample:"İsfahan örneği",testsNotRun:"Testler henüz çalıştırılmadı.",product:"Çarpım",categoricalModel:"Kategorik model",mujannabCategory:"mücenneb kategorisi",baqiyyah:"bakiyye",exactJNotFixed:"J büyüklükleri burada bilinçli olarak tek değere sabitlenmemiştir",hintLearn:"Yönlendirilmiş dersi izleyin, ardından aynı konumları Keşfet bölümünde inceleyin.",hintModes:"Aralık cinsleri aynı ana ses örgüsüne eşlenir.",pass:"GEÇTİ",fail:"KALDI",found:"{n} bulundu",sourceLink:"Katar Dijital Kütüphanesi · British Library Or 136",coverage:"Dört dilde içerik kapsamı tamamlandı",viewCoverage:"Kuramsal, birleşik ve çalgı görünümleri kullanılabilir"},
   lessons:[
    {kicker:"Temel",status:"Kaynak kavramı + modern akustik",title:"Tel uzunluğu ve ses yüksekliği",objective:"Titreşen uzunluk ile ideal frekans arasındaki ters ilişkiyi anlayın.",copy:"Urmevî, seslerin özelliklerinden ve perdelerin bölünmesinden hareket eder. Bu Atlas’ta titreşen tam tel 1 olarak normalize edilir. Tele basıldığında daha kısa bir bölüm titreşir; ideal monokord modelinde frekans, kalan uzunluğun tersiyle değişir. Modelde tel gerilimi ve birim uzunluk başına kütle sabittir."},
    {kicker:"Temel uyumlar",status:"Kesin oranlar",title:"Oktav, beşli ve dörtlü",objective:"Temel uyumları geometrik olarak kurun ve dinleyin.",copy:"Teli ikiye bölmek oktavı verir. Üç eşit parçanın ikisini korumak tam beşliyi, dört eşit parçanın üçünü korumak tam dörtlüyü verir. Bunlar geometri ile ses arasındaki en açık köprüdür."},

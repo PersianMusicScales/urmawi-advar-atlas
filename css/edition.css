@@ -387,3 +387,79 @@ body.view-theory #monoPanel #monoScrollShell { width:min(100%,92rem); height:aut
   body.view-theory #monoPanel .pitch-controls { grid-column:1/-1; grid-row:2; }
   body.view-theory #monoPanel .pitch-controls :is(label,output) { width:auto; }
 }
+
+/* Shared control, annotation and measurement styles across the six workspaces. */
+.workspace {
+  --surface-inset:#223a34; --text-main:#f1eee2; --text-secondary:#c0cec4;
+  --rule:#52685b; --limma-ink:#a5e3d4; --limma-bg:#244a40;
+  --comma-ink:#ffc1b7; --comma-bg:#533633;
+  font-family:var(--reading-font);
+}
+@media(prefers-color-scheme:light) {
+  .workspace {
+    --surface-inset:#f0f1e8; --text-main:#213d32; --text-secondary:#465d50;
+    --rule:#b1bcac; --limma-ink:#185442; --limma-bg:#dfede4;
+    --comma-ink:#823e31; --comma-bg:#f4e4df;
+  }
+}
+#app button,.welcome-screen button,.app-sheet button { font-variant-emoji:text; }
+.workspace .card { border:1px solid var(--rule); border-radius:12px; }
+.workspace .card-head { min-height:52px; padding:8px 16px; border-bottom:1px solid var(--rule); align-items:center; }
+.workspace :is(.card-kicker,.step-count,.interval-badge,.lesson-status,.tile-num,.species-code,.score,.audio-mini label,.range-line label) {
+  font:600 13px/1.45 var(--reading-font); letter-spacing:normal; text-transform:none; color:var(--text-secondary);
+}
+.workspace :is(.step-heading,.note-name,.concept-copy h3) { font:650 20px/1.4 var(--reading-font); color:var(--text-main); }
+.workspace :is(.builder-copy,.interval-text,.pattern-copy) { font:400 16px/1.65 var(--reading-font); color:var(--text-main); }
+.workspace :is(.formula-box,.step-equation,.species-result,.pattern-equation,.tone-hz,.summary-v,.range-value,.interval-block span) {
+  font:600 15px/1.55 var(--reading-font); font-variant-numeric:tabular-nums; color:var(--text-main);
+}
+.workspace :is(.lesson-actions,.note-audio,.explore-footer,.step-controls,.sound-buttons,.compare-actions,.pattern-actions,.interval-actions,.quiz-footer) { gap:8px; padding:10px 14px; }
+.workspace .btn,.workspace .quiz-mode { padding:7px 10px; min-height:44px; border-radius:7px; font:600 15px/1.45 var(--reading-font); }
+.workspace .btn:disabled { opacity:.55; }
+.workspace :is(.field,.audio-mini) { gap:5px; }
+.workspace :is(.field select,.field input,.audio-mini select) { min-height:44px; height:auto; padding:6px 9px; border-radius:6px; min-width:0; }
+.workspace .lesson-btn { grid-template-columns:28px 1fr auto; text-align:start; align-items:center; padding:8px 10px; }
+.workspace .lesson-btn.completed::after { grid-column:3; grid-row:1; margin:0; }
+.workspace :is(.lesson-items,.species-list,.step-grid) { gap:6px; padding:10px; }
+.workspace .species-btn { display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:start; padding:8px 12px; }
+.workspace .species-code { flex:none; direction:ltr; }
+.workspace .guide-visual { padding:140px 16px 14px; }
+.workspace .guide-note { position:static; color:var(--text-secondary); font:500 14px/1.5 var(--reading-font); }
+.workspace .guide-division { background:var(--rule); }
+.workspace .guide-summary,.workspace .summary-box { border-color:var(--rule); }
+.workspace .summary-box,.workspace .interval-block { border-radius:6px; background:var(--surface-inset); }
+.workspace .step-grid { grid-template-columns:repeat(auto-fit,minmax(min(125px,100%),1fr)); grid-template-rows:none; }
+.workspace .step-tile { min-height:44px; grid-template-columns:auto auto 1fr; gap:6px; }
+.workspace .tile-name { font:500 13px/1.4 var(--reading-font); }
+.workspace .sound-buttons { grid-template-columns:repeat(auto-fit,minmax(min(100px,100%),1fr)); }
+.workspace .interval-chain { grid-template-columns:repeat(auto-fit,minmax(min(102px,100%),1fr)); }
+.workspace .interval-block { padding:10px 6px; }
+.workspace .interval-block span { font-size:13px; }
+.workspace .step-chip { width:auto; min-width:27px; height:26px; border-radius:5px; font:650 13px/1 var(--reading-font); }
+.workspace .step-chip.L { background:var(--limma-bg); color:var(--limma-ink); }
+.workspace .step-chip.C { background:var(--comma-bg); color:var(--comma-ink); }
+.workspace :is(.data-val,.summary-v,.tone-hz,td) { font-variant-numeric:tabular-nums; }
+#app .stage-legend span { padding:5px 8px; gap:6px; font:600 12px/1.35 var(--reading-font); color:#f1ebdc; background:#172d28; border-color:#61766a; }
+#app .stage-legend i { width:15px; height:5px; }
+#monoPanel .hud-metric span,#monoPanel .hud-primary small { color:#c2d1c6; }
+#app .stage-legend { position:static; order:5; align-self:end; margin:4px 8px; transform:none; }
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  #app .stage-legend { display:flex; grid-column:1; justify-self:center; }
+  #app .stage-legend span { font-size:12px; }
+}
+.scholar-dialog .dialog-content,.sheet-panel { font-family:var(--reading-font); }
+.scholar-dialog .dialog-content :is(p,li),.sheet-panel .sheet-grid b { font:500 15px/1.6 var(--reading-font); }
+.workspace .tile-name { white-space:normal; overflow-wrap:anywhere; text-align:start; }
+.workspace .table-wrap table { table-layout:auto; min-width:46rem; height:auto; }
+.workspace .table-wrap :is(th,td) { white-space:nowrap; padding:7px 10px; }
+.workspace .table-wrap { max-width:100%; }
+#monoPanel { --limma-mark:#74b3a4; --comma-mark:#d48d86; }
+#monoSvg .interval-limma:not(.current) { fill:var(--limma-mark); }
+#monoSvg .interval-comma:not(.current) { fill:var(--comma-mark); }
+#app .stage-legend i.legend-limma { background:var(--limma-mark); }
+#app .stage-legend i.legend-comma { background:var(--comma-mark); }
+#app .mobile-nav button:not(.active) { color:#dbe4dc!important; }
+@media(prefers-color-scheme:dark) {
+  .workspace :is(.btn:not(.primary):not(.danger),.field select,.field input:not([type=range]),.audio-mini select) { background:#243d35; color:var(--text-main); border-color:var(--rule); }
+  .workspace .btn.danger { background:var(--comma-bg); color:var(--comma-ink); }
+}
