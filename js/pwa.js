@@ -30,7 +30,7 @@ function applyPwaLanguage(){
  const copy=instrumentCopy[uiLanguage] || instrumentCopy.en;
  ["creatorByline","creatorProjects","fretLabel","mobilePitchPlay","orientationCopy","aboutCreatorCopy"].forEach((id,i)=>setInstrumentText(id,copy[i]));
  setInstrumentText("mobileInstrumentToggle",copy[document.body.classList.contains("fret-zoom")?7:6]);
- setPwaText("orientationTitle","orientationTitle"); setPwaText("orientationCopy","orientationCopy");
+ setPwaText("orientationTitle","orientationTitle"); setPwaText("orientationCopy","orientationCopy");syncMobileStepNav();
  const hubLang=uiLanguage==="fa"?"fa":"en";
  $("projectHub").href="https://persianmusicscales.github.io/"+hubLang+"/";
  $("projectArticle").href=$("projectHub").href+"article/";
@@ -44,7 +44,44 @@ function closeDialog(id){$(id)?.classList.remove("open");if(id==="aboutDialog")$
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&$("aboutDialog")?.classList.contains("open"))closeDialog("aboutDialog")});
 function openSheet(id){qsa(".app-sheet.open").forEach(x=>{x.classList.remove("open");x.setAttribute("aria-hidden","true")});const el=$(id);if(el){el.classList.add("open");el.setAttribute("aria-hidden","false")}}
 function closeSheets(){qsa(".app-sheet.open").forEach(el=>{el.classList.remove("open");el.setAttribute("aria-hidden","true")})}
-function syncMobileNav(){qsa("[data-mobile-panel]").forEach(b=>b.classList.toggle("active",b.dataset.mobilePanel===activePanel));$("mobileMoreBtn")?.classList.toggle("active",["modes","train"].includes(activePanel))}
+/* Persistent mobile controls delegate to the original lesson and construction buttons.
+   This preserves lesson completion, playback and all existing model state. */
+function mobileStepSources(){
+ if(activePanel==="learn")return {prev:"lessonPrevious",play:"lessonDemonstrate",next:"lessonNext",count:"lessonProgressText",title:"lessonTitle",target:".lesson-main"};
+ if(activePanel==="construct")return {prev:"constructionPrev",play:"constructionPlay",next:"constructionNext",count:"constructionCount",title:"constructionHeading",target:".step-info"};
+ return null;
+}
+function syncMobileStepNav(){
+ const nav=$("mobileStepNav");if(!nav)return;const sources=mobileStepSources();
+ nav.hidden=!sources;document.body.classList.toggle("has-mobile-step-nav",!!sources);
+ if(!sources)return;
+ const lang=["en","fa","ar","tr"].includes(uiLanguage)?uiLanguage:"en";
+ const labels={en:["Lesson navigation","Go to current content"],fa:["پیمایش درس","رفتن به محتوای فعلی"],ar:["التنقل بين الدروس","الانتقال إلى المحتوى الحالي"],tr:["Ders gezinme","Geçerli içeriğe git"]}[lang];
+ nav.setAttribute("aria-label",labels[0]);
+ for(const [id,key] of [["mobileStepPrev","prev"],["mobileStepPlay","play"],["mobileStepNext","next"]]){
+  const button=$(id),source=$(sources[key]);if(!button||!source)continue;
+  const label=source.textContent.trim();if(button.textContent!==label)button.textContent=label;
+  if(button.disabled!==source.disabled)button.disabled=source.disabled;
+ }
+ const count=$(sources.count).textContent.trim(),title=$(sources.title).textContent.trim();
+ if($("mobileStepCount").textContent!==count)$("mobileStepCount").textContent=count;
+ if($("mobileStepTitle").textContent!==title)$("mobileStepTitle").textContent=title;
+ $("mobileStepPosition").setAttribute("aria-label",labels[1]+": "+count+" — "+title);
+ $("mobileStepPosition").title=title;
+}
+function setupMobileStepNav(){
+ const nav=$("mobileStepNav");if(!nav)return;
+ for(const [id,key] of [["mobileStepPrev","prev"],["mobileStepPlay","play"],["mobileStepNext","next"]]){
+  $(id).addEventListener("click",()=>{const sources=mobileStepSources();if(!sources)return;const source=$(sources[key]);if(source&&!source.disabled)source.click();syncMobileStepNav();});
+ }
+ $("mobileStepPosition").addEventListener("click",()=>{const sources=mobileStepSources();if(sources)qs(sources.target)?.scrollIntoView({block:"start",behavior:"auto"});});
+ const observer=new MutationObserver(syncMobileStepNav);
+ for(const id of ["lessonPrevious","lessonDemonstrate","lessonNext","lessonProgressText","lessonTitle","constructionPrev","constructionPlay","constructionNext","constructionCount","constructionHeading"]){
+  const node=$(id);if(node)observer.observe(node,{attributes:true,attributeFilter:["disabled"],childList:true,subtree:true,characterData:true});
+ }
+ syncMobileStepNav();
+}
+function syncMobileNav(){qsa("[data-mobile-panel]").forEach(b=>b.classList.toggle("active",b.dataset.mobilePanel===activePanel));$("mobileMoreBtn")?.classList.toggle("active",["modes","train"].includes(activePanel));syncMobileStepNav()}
 function centerSelectedFret(behavior="smooth"){
  if(!isPhone())return;const shell=$("monoScrollShell");if(!shell)return;const target=xFor(NOTES[selected])*(mobileTheoryWidth/1244)-shell.clientWidth/2;shell.scrollTo({left:Math.max(0,target),behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":behavior})
 }
@@ -105,7 +142,7 @@ function initializePwa(){
  NOTES.forEach((n,i)=>$("fretPicker").add(new Option((i+1)+" · "+n.label+" · "+n.translit,String(i))));
  $("fretPicker").addEventListener("change",()=>selectNote(Number($("fretPicker").value),true));
  $("creatorProjects").addEventListener("click",()=>{openDialog("aboutDialog");$("closeAboutDialog").focus()});
- document.body.classList.toggle("embed-mode",isEmbed());hookStateFunctions();restoreState();applyPwaLanguage();attachLongPress();setupSwipeLessons();setupWelcome();updateMobilePitchBar();syncSettings();updateInstallButtons();registerServiceWorker();
+ document.body.classList.toggle("embed-mode",isEmbed());hookStateFunctions();restoreState();applyPwaLanguage();attachLongPress();setupSwipeLessons();setupMobileStepNav();setupWelcome();updateMobilePitchBar();syncSettings();updateInstallButtons();registerServiceWorker();
  $("welcomeStart")?.addEventListener("click",()=>{activatePanel("learn");setLesson(0);hideWelcome();if(isPhone())$("panel-learn").scrollIntoView({block:"start"});writeState({showWelcome:true})});$("welcomeAtlas")?.addEventListener("click",()=>{activatePanel("explore");hideWelcome();window.scrollTo(0,0);writeState({showWelcome:true})});$("welcomeSources")?.addEventListener("click",()=>{hideWelcome();openSourceDialog()});$("welcomeDismiss")?.addEventListener("click",()=>{writeState({showWelcome:false});hideWelcome()});
  qsa("[data-mobile-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.mobilePanel);$("panel-"+b.dataset.mobilePanel).scrollIntoView({block:"start"})}));$("mobileHeaderMenuBtn")?.addEventListener("click",()=>openSheet("mobileMoreSheet"));qsa("[data-more-panel]").forEach(b=>b.addEventListener("click",()=>{activatePanel(b.dataset.morePanel);closeSheets()}));qsa("[data-close-sheet]").forEach(b=>b.addEventListener("click",closeSheets));
  $("mobileInstrumentToggle")?.addEventListener("click",toggleInstrument);$("mobileZoomOut")?.addEventListener("click",()=>changeTheoryZoom(-125));$("mobileZoomIn")?.addEventListener("click",()=>changeTheoryZoom(125));$("mobilePitchPlay")?.addEventListener("click",()=>tone(selected));$("moreSourcesBtn")?.addEventListener("click",()=>{closeSheets();openSourceDialog()});$("moreAboutBtn")?.addEventListener("click",()=>{closeSheets();openDialog("aboutDialog")});$("moreSettingsBtn")?.addEventListener("click",()=>{closeSheets();syncSettings();openSheet("settingsSheet")});

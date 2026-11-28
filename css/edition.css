@@ -525,3 +525,39 @@ body:not(.view-theory) #monoPanel #monoSvg {
 #atlasHomeLogo:hover { border-color:var(--gold); }
 #atlasHomeLogo:focus-visible { outline:3px solid var(--gold); outline-offset:3px; }
 #atlasHomeLogo img { border-radius:9px; }
+
+/* Always reachable Previous / Play / Next controls in landscape phone workspaces.
+   Primary section navigation remains sticky at the top; only the active step
+   navigator is fixed at the bottom, with document clearance for the last card. */
+#mobileStepNav { display:none; }
+#mobileStepNav[hidden] { display:none!important; }
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+ body:not(.embed-mode):not(.welcome-visible) #mobileStepNav:not([hidden]) {
+  position:fixed; z-index:75; inset-inline:0; bottom:0;
+  display:grid; grid-template-columns:minmax(76px,auto) minmax(0,1fr) minmax(76px,auto) minmax(76px,auto);
+  align-items:center; gap:5px;
+  padding:4px max(8px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
+  background:#142825; border-top:1px solid #718a7a;
+  box-shadow:0 -4px 14px #0003; color:#f6ebd0;
+ }
+ #mobileStepNav button {
+  min-height:44px; min-width:0; padding:4px 10px; border:1px solid #708a7e; border-radius:7px;
+  background:#223e35; color:#f6ebd0; font:600 13px/1.2 var(--reading-font);
+  touch-action:manipulation; white-space:normal;
+ }
+ #mobileStepNav .step-nav-next { background:#e9c47d; color:#17251e; border-color:#e9c47d; }
+ #mobileStepNav .step-nav-play { background:#31564a; }
+ #mobileStepNav .step-nav-position { display:flex; flex-direction:column; justify-content:center; align-items:center; padding-inline:5px; background:transparent; border-color:transparent; }
+ #mobileStepNav .step-nav-position span { max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+ #mobileStepCount { font-size:12px; color:#d5c6a5; font-variant-numeric:tabular-nums; }
+ #mobileStepTitle { font-size:13px; }
+ #mobileStepNav button:disabled { opacity:.45; cursor:default; }
+ #mobileStepNav button:focus-visible { outline:2px solid #f7d797; outline-offset:1px; }
+ body.has-mobile-step-nav:not(.embed-mode) #app .workspace { padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important; }
+ body.has-mobile-step-nav:not(.embed-mode) .lesson-main,body.has-mobile-step-nav:not(.embed-mode) .step-info { scroll-margin-top:78px; }
+ body.has-mobile-step-nav:not(.embed-mode) { scroll-padding-bottom:calc(60px + env(safe-area-inset-bottom,0px)); }
+}
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) and (max-width:570px) {
+ #mobileStepNav button { font-size:12px; padding-inline:5px; }
+ body:not(.embed-mode):not(.welcome-visible) #mobileStepNav:not([hidden]) { grid-template-columns:minmax(60px,auto) minmax(0,1fr) minmax(60px,auto) minmax(60px,auto); }
+}
