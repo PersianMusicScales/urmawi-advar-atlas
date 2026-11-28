@@ -16,6 +16,8 @@ function isPhone(){return matchMedia("(max-width:700px)").matches||(matchMedia("
 function isEmbed(){return new URLSearchParams(location.search).get("embed")==="1"||window.self!==window.top}
 function setPwaText(id,key){const el=$(id);if(el)el.textContent=pwaText(key)}
 function applyPwaLanguage(){
+ const logo=$("atlasHomeLogo");if(logo){const lang=["en","fa","ar","tr"].includes(uiLanguage)?uiLanguage:"en";const labels={en:"Al-Urmawī Advar Atlas home",fa:"صفحهٔ اصلی اطلس ادوار ارموی",ar:"الصفحة الرئيسية لأطلس الأدوار",tr:"Urmevî Advar Atlası ana sayfası"};logo.href="./?lang="+lang+"&panel=learn&welcome=0";logo.setAttribute("aria-label",labels[lang]);}
+
  const referenceLabels={en:"Scholarly reference and pitch data",fa:"مرجع پژوهشی و داده‌های نغمه‌ها",ar:"المرجع العلمي وبيانات النغمات",tr:"Bilimsel kaynak ve perde verileri"}; const referenceLang=referenceLabels[uiLanguage]?uiLanguage:"en";
  qsa("[data-reference-link]").forEach(a=>{a.href="reference/"+referenceLang+"/";a.textContent=referenceLabels[referenceLang];a.hreflang=referenceLang;});
  const eyebrow=qs(".eyebrow");if(eyebrow){eyebrow.innerHTML=`<a class="family-link" href="https://persianmusicscales.github.io/${document.documentElement.lang==="fa"?"fa/":"en/"}" target="_blank" rel="noopener">${pwaText("scales")}</a><span> · ${pwaText("family").split(" · ").slice(1).join(" · ")||"Historical Theory Series"}</span>`}
