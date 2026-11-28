@@ -2,8 +2,8 @@
   "name": "urmawi-advar-atlas",
   "version": "4.4.0",
   "private": true,
-  "description": "Official PWA edition of the Al-Urmaw\u012b Advar Atlas",
+  "description": "Official PWA edition of the Al-Urmawī Advar Atlas",
   "scripts": {
-    "test": "node tests/validate.mjs && node tests/pwa-check.mjs"
+    "test": "node tests/validate.mjs && node tests/pwa-check.mjs && node --check js/accessibility.js && node --check js/pwa.js && node --check service-worker.js && node tests/seo-check.mjs"
   }
 }
