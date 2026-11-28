@@ -257,5 +257,11 @@
       },
       "cents": 1200
     }
-  ]
+  ],
+  "version": "1.0.0",
+  "datePublished": "2026-11-28",
+  "rights": "Copyright © 2026 Dr. Pouya Hosseini. All rights reserved. See the project license for reuse terms.",
+  "license": "https://github.com/PersianMusicScales/urmawi-advar-atlas/blob/main/LICENSE",
+  "citation": "Hosseini, Pouya (2026). Al-Urmawī Advar Atlas: exact pitch lattice, version 1.0.0.",
+  "primarySource": "https://www.qdl.qa/en/archive/81055/vdc_100085098732.0x000001"
 }

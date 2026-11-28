@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you cite this software, please use the following metadata."
+title: "Al-Urmawī Advar Atlas"
+authors:
+  - family-names: Hosseini
+    given-names: Pouya
+    orcid: "https://orcid.org/0000-0003-4492-0004"
+version: "4.4.0"
+url: "https://persianmusicscales.github.io/urmawi-advar-atlas/"
+repository-code: "https://github.com/PersianMusicScales/urmawi-advar-atlas"
+abstract: "A multilingual interactive scholarly atlas of exact fret divisions, interval ratios, listening models and historical modal categories in Kitāb al-Adwār."
+keywords:
+  - Safi al-Din al-Urmawi
+  - historical music theory
+  - microtonality
+  - monochord
+  - Kitab al-Adwar

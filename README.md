@@ -263,3 +263,7 @@ Researcher, independent developer, and creator of the Persian Music Scales proje
 Copyright © 2026 Dr. Pouya Hosseini. All rights reserved.
 
 See [`LICENSE`](LICENSE) for the terms governing use, reproduction, modification, and distribution.
+
+## Search, scholarly resources and quality checks
+
+The four language-specific reference pages contain complete static pitch tables, editorial policy and reciprocal hreflang links. Six detailed English learning topics are linked from them. The versioned JSON dataset and CITATION.cff preserve the existing mathematical model and proprietary license. Run `npm test` to validate the application and scholarly routes. The root domain's generated robots.txt and Google/Bing index status must be checked after deployment. See [sitemap](https://persianmusicscales.github.io/urmawi-advar-atlas/sitemap.xml).
