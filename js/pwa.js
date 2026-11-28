@@ -16,6 +16,8 @@ function isPhone(){return matchMedia("(max-width:700px)").matches||(matchMedia("
 function isEmbed(){return new URLSearchParams(location.search).get("embed")==="1"||window.self!==window.top}
 function setPwaText(id,key){const el=$(id);if(el)el.textContent=pwaText(key)}
 function applyPwaLanguage(){
+ const referenceLabels={en:"Scholarly reference and pitch data",fa:"مرجع پژوهشی و داده‌های نغمه‌ها",ar:"المرجع العلمي وبيانات النغمات",tr:"Bilimsel kaynak ve perde verileri"}; const referenceLang=referenceLabels[uiLanguage]?uiLanguage:"en";
+ qsa("[data-reference-link]").forEach(a=>{a.href="reference/"+referenceLang+"/";a.textContent=referenceLabels[referenceLang];a.hreflang=referenceLang;});
  const eyebrow=qs(".eyebrow");if(eyebrow){eyebrow.innerHTML=`<a class="family-link" href="https://persianmusicscales.github.io/${document.documentElement.lang==="fa"?"fa/":"en/"}" target="_blank" rel="noopener">${pwaText("scales")}</a><span> · ${pwaText("family").split(" · ").slice(1).join(" · ")||"Historical Theory Series"}</span>`}
  setPwaText("welcomeFamily","family");setPwaText("welcomeEyebrow","eyebrow");setPwaText("welcomeLead","lead");setPwaText("welcomeStart","start");setPwaText("welcomeAtlas","open");setPwaText("welcomeSources","sources");setPwaText("welcomeDismiss","dismissWelcome");
  setPwaText("mobileLearn","learn");setPwaText("mobileExplore","explore");setPwaText("mobileConstruct","construct");setPwaText("mobileListen","listen");setPwaText("mobileModes","mobileModes");setPwaText("mobileTrain","mobileTrain");setPwaText("mobileMore","more");setPwaText("moreSheetTitle","more");setPwaText("moreModes","modes");setPwaText("moreTraining","training");setPwaText("moreInstrument","instrument");setPwaText("moreSources","sources");setPwaText("moreAbout","about");setPwaText("moreSettings","settings");setPwaText("moreInstall","install");setPwaText("moreScales","scales");
@@ -38,7 +40,7 @@ function hideWelcome(){document.body.classList.remove("welcome-visible");$("welc
 function openDialog(id){$(id)?.classList.add("open")}
 function closeDialog(id){$(id)?.classList.remove("open");if(id==="aboutDialog")$("creatorProjects").focus()}
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&$("aboutDialog")?.classList.contains("open"))closeDialog("aboutDialog")});
-function openSheet(id){qsa(".app-sheet.open").forEach(x=>x.classList.remove("open"));const el=$(id);if(el){el.classList.add("open");el.setAttribute("aria-hidden","false")}}
+function openSheet(id){qsa(".app-sheet.open").forEach(x=>{x.classList.remove("open");x.setAttribute("aria-hidden","true")});const el=$(id);if(el){el.classList.add("open");el.setAttribute("aria-hidden","false")}}
 function closeSheets(){qsa(".app-sheet.open").forEach(el=>{el.classList.remove("open");el.setAttribute("aria-hidden","true")})}
 function syncMobileNav(){qsa("[data-mobile-panel]").forEach(b=>b.classList.toggle("active",b.dataset.mobilePanel===activePanel));$("mobileMoreBtn")?.classList.toggle("active",["modes","train"].includes(activePanel))}
 function centerSelectedFret(behavior="smooth"){
