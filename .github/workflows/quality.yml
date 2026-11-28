@@ -17,11 +17,24 @@ jobs:
         run: |
           python3 -m http.server 8080 >/tmp/advar-server.log 2>&1 &
           sleep 3
-      - name: Lighthouse CI
+      - name: Lighthouse CI (desktop)
         uses: treosh/lighthouse-ci-action@v12
         with:
           urls: |
+            http://127.0.0.1:8080/
             http://127.0.0.1:8080/?welcome=0
             http://127.0.0.1:8080/?welcome=0&panel=learn
+            http://127.0.0.1:8080/reference/en/
           configPath: ./lighthouserc.json
           uploadArtifacts: true
+          artifactName: lighthouse-desktop
+      - name: Lighthouse CI (mobile)
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://127.0.0.1:8080/
+            http://127.0.0.1:8080/reference/en/
+            http://127.0.0.1:8080/reference/fa/
+          configPath: ./lighthouserc.mobile.json
+          uploadArtifacts: true
+          artifactName: lighthouse-mobile
