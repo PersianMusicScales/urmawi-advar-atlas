@@ -1,4 +1,6 @@
-# Final validation — version 4.3.0
+# Historical validation record — version 4.3.0
+
+> Archived test record for v4.3.0, not a statement of current application behavior. For current checks, run `npm test` and consult the latest GitHub Actions results.
 
 ## Runtime interaction checks
 

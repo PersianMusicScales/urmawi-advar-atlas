@@ -1,37 +1,17 @@
-# Deployment guide — version 4.3.0
+# Deployment guide — current repository
 
-## Replace the complete repository contents
+The `main` branch is the production source. GitHub Pages deploys automatically when changes are pushed to main, after `npm test` passes. It can also be deployed manually using the **Deploy Advar Atlas to GitHub Pages** workflow in Actions. In Settings → Pages, select GitHub Actions as the source.
 
-This release changes HTML, JavaScript, CSS, the service worker, translations, and PWA metadata together. Do not upload only `index.html`.
+## Local validation
 
-1. Download and extract the complete v4.3.0 archive.
-2. Open the extracted `urmawi-advar-atlas-pwa` folder.
-3. Upload **all files and folders inside it** to the root of `PersianMusicScales/urmawi-advar-atlas`.
-4. Commit with a message such as `Release Advar Atlas PWA v4.3.0`.
-5. In **Settings → Pages**, use **GitHub Actions** as the source.
-6. Wait for the deployment workflow to complete.
+From the repository root, run `npm test` using Node.js 22, then `python3 -m http.server 8080` and open http://localhost:8080/. Check the current application, reference pages and mobile landscape controls. The Quality and Lighthouse workflow runs desktop and mobile checks on pull requests.
 
-The repository root must contain `index.html`, `manifest.webmanifest`, `service-worker.js`, `css/`, `js/`, and `assets/` directly.
+## After deployment
 
-## Activate the new PWA files
-
-The release uses cache `advar-atlas-4.3.0`. After deployment:
-
-1. Open the live application.
-2. Perform one hard refresh (`Ctrl + Shift + R` on Windows).
-3. When testing an installed PWA, close and reopen it.
-4. If an older broken service worker remains, clear site data once and reload.
+Open https://persianmusicscales.github.io/urmawi-advar-atlas/ and check the application and sitemap. If an installed PWA offers an update, accept it. A hard refresh or clearing site data is a last resort if stale assets remain. The service worker uses a versioned cache.
 
 ## Google Sites
 
-Embed:
+Embed URL: https://persianmusicscales.github.io/urmawi-advar-atlas/?embed=1
 
-```text
-https://persianmusicscales.github.io/urmawi-advar-atlas/?embed=1
-```
-
-Embed mode removes the opening screen, installation controls, mobile navigation, and unnecessary outer chrome.
-
-## Release tag
-
-After confirming the live application, create tag `v4.3.0`.
+Keep the application, assets, reference pages, topics, manifest, and service worker together. Never overwrite the production repository with an older release archive. Create release tags only after validating the corresponding release.

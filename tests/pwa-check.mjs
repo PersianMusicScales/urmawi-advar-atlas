@@ -16,3 +16,10 @@ elements.get("mobileStepNext").click();assert.equal(elements.get("lessonNext").c
 context.activePanel="construct";context.uiLanguage="fa";vm.runInContext("syncMobileStepNav()",context);assert.equal(elements.get("mobileStepNext").disabled,true);assert.equal(elements.get("mobileStepPrev").disabled,false);elements.get("mobileStepPrev").click();assert.equal(elements.get("constructionPrev").clicks,1);elements.get("mobileStepPosition").click();assert.equal(scrolled,".step-info");assert.equal(elements.get("mobileStepNav").attrs["aria-label"],"پیمایش درس");
 context.activePanel="listen";vm.runInContext("syncMobileStepNav()",context);assert.equal(elements.get("mobileStepNav").hidden,true);assert.equal(classes.get("has-mobile-step-nav"),false);
 console.log("Mobile step navigation state, boundaries, actions and mode switching passed.");
+
+// Reject references to absent installation icons or social preview assets.
+for(const icon of [...manifest.icons,...(manifest.shortcuts||[]).flatMap(s=>s.icons||[])])assert.ok(fs.existsSync(path.join(root,icon.src)), "Missing manifest icon: "+icon.src);
+for(const file of ["index.html",...["en","fa","ar","tr"].map(l=>"reference/"+l+"/index.html"),...["history","pitch-system","monochord","listening","species-modes","training-data"].map(t=>"topics/"+t+"/index.html")]){
+ const doc=fs.readFileSync(path.join(root,file),"utf8");for(const m of doc.matchAll(/assets\/(?:socials?|icons)\/[a-zA-Z0-9._-]+\.(?:png|svg)/g))assert.ok(fs.existsSync(path.join(root,m[0])), "Missing referenced asset in "+file+": "+m[0]);
+}
+console.log("Manifest and social-preview asset references passed.");
