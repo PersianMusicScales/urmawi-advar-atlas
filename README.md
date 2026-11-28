@@ -267,3 +267,10 @@ See [`LICENSE`](LICENSE) for the terms governing use, reproduction, modification
 ## Search, scholarly resources and quality checks
 
 The four language-specific reference pages contain complete static pitch tables, editorial policy and reciprocal hreflang links. Six detailed English learning topics are linked from them. The versioned JSON dataset and CITATION.cff preserve the existing mathematical model and proprietary license. Run `npm test` to validate the application and scholarly routes. The root domain's generated robots.txt and Google/Bing index status must be checked after deployment. See [sitemap](https://persianmusicscales.github.io/urmawi-advar-atlas/sitemap.xml).
+
+## Related projects
+
+- [Dr. Pouya Hosseini — official website](https://drpouyahosseini.github.io/)
+- [Persian Music Scales — educational hub](https://persianmusicscales.github.io/)
+- [Persian Music Scales App](https://persianmusicscales.github.io/Persian-Music-Scales-App/)
+- [World Music Scales Atlas](https://worldmusicscalesatlas.github.io/)
