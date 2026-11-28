@@ -28,7 +28,7 @@
  const observer=new MutationObserver(refresh);dialogs.forEach(d=>observer.observe(d,{attributes:true,attributeFilter:["class","aria-hidden"]}));
  document.addEventListener("keydown",e=>{
   if(!current)return;
-  if(e.key==="Escape"){e.preventDefault();e.stopImmediatePropagation();const close=current.querySelector('.dialog-head button,[data-close-sheet]:not(.sheet-scrim)');close?.click();return;}
+  if(e.key==="Escape"){e.preventDefault();e.stopImmediatePropagation();if(typeof stopAllAudio==="function")stopAllAudio();const close=current.querySelector('.dialog-head button,[data-close-sheet]:not(.sheet-scrim)');close?.click();return;}
   if(e.key!=="Tab")return;
   const list=focusable(current);if(!list.length){e.preventDefault();return;}
   const index=list.indexOf(document.activeElement);
