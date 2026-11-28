@@ -268,6 +268,14 @@
   <button type="button" data-mobile-panel="modes"><span>◌</span><b id="mobileModes">Species &amp; Modes</b></button>
   <button type="button" data-mobile-panel="train"><span>✓</span><b id="mobileTrain">Train &amp; Data</b></button>
 </nav>
+<nav id="mobileStepNav" class="mobile-step-nav" aria-label="Lesson navigation" hidden>
+  <button id="mobileStepPrev" type="button" class="step-nav-button">Previous</button>
+  <button id="mobileStepPosition" type="button" class="step-nav-position" aria-label="Go to current lesson">
+    <span id="mobileStepCount" dir="ltr"></span><span id="mobileStepTitle"></span>
+  </button>
+  <button id="mobileStepPlay" type="button" class="step-nav-button step-nav-play">Play example</button>
+  <button id="mobileStepNext" type="button" class="step-nav-button step-nav-next">Next</button>
+</nav>
 <nav id="tabsNav" class="tabs" aria-label="Learning modes" role="tablist">
   <button id="tab-learn" class="tab active" role="tab" aria-controls="panel-learn" aria-selected="true" tabindex="0" data-panel="learn"><span class="tab-number">01</span>Learn</button>
   <button id="tab-explore" class="tab" role="tab" aria-controls="panel-explore" aria-selected="false" tabindex="-1" data-panel="explore"><span class="tab-number">02</span>Explore</button>
