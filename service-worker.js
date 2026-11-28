@@ -1,5 +1,5 @@
 "use strict";
-const VERSION="4.4.0";const CACHE=`advar-atlas-${VERSION}-quality-reference2`;
+const VERSION="4.4.0";const CACHE=`advar-atlas-${VERSION}-official-logo1`;
 const CORE=["./","./index.html","./offline.html","./manifest.webmanifest","./assets/instruments/setar.webp","./css/edition.css","./assets/fonts/vazirmatn-arabic-wght-normal.woff2","./css/app.css","./css/pwa-responsive.css","./js/app.js","./js/pwa.js","./assets/brand/advar-mark.svg","./assets/icons/favicon.svg","./assets/icons/icon-192x192.png","./assets/icons/icon-512x512.png","./js/accessibility.js","./reference/reference.css","./data/pitch-lattice.json","./reference/en/","./reference/fa/","./reference/ar/","./reference/tr/","./topics/history/","./topics/pitch-system/","./topics/monochord/","./topics/listening/","./topics/species-modes/","./topics/training-data/"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE))));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("advar-atlas-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
