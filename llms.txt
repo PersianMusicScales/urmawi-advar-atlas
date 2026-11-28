@@ -10,3 +10,11 @@
 - [Exact pitch data](https://persianmusicscales.github.io/urmawi-advar-atlas/data/pitch-lattice.json)
 - [Primary manuscript](https://www.qdl.qa/en/archive/81055/vdc_100085098732.0x000001)
 - [Creator](https://drpouyahosseini.github.io/)
+
+## Detailed learning topics
+- [Ṣafī al-Dīn al-Urmawī and Kitāb al-Adwār](https://persianmusicscales.github.io/urmawi-advar-atlas/topics/history/): Historical context, manuscript sources and editorial interpretation of the Book of Cycles.
+- [The 17-tone pitch lattice and exact interval ratios](https://persianmusicscales.github.io/urmawi-advar-atlas/topics/pitch-system/): Unequal limmas and Pythagorean commas, rational pitch relationships and cent values.
+- [Monochord geometry and mathematical construction](https://persianmusicscales.github.io/urmawi-advar-atlas/topics/monochord/): How exact string divisions produce frequencies, fourths, fifths and octaves.
+- [Listening to historical intervals and microtonal pitch](https://persianmusicscales.github.io/urmawi-advar-atlas/topics/listening/): Frequency calculations and comparative listening using modern pure tones and plucked-string models.
+- [Tetrachord species and historical modal categories](https://persianmusicscales.github.io/urmawi-advar-atlas/topics/species-modes/): How interval categories and fourth-based species relate to the parent pitch lattice.
+- [Interval training, exact pitch data and reproducibility](https://persianmusicscales.github.io/urmawi-advar-atlas/topics/training-data/): Practice rational intervals and access versioned mathematical data with academic citation.
