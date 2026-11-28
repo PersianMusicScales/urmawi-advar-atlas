@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="google-site-verification" content="bar9iVDKejX30uUGMR7PgldOZCrXmeHWHFh6p5Cgv7w" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="A multilingual atlas for exploring Ṣafī al-Dīn al-Urmawī’s exact fret divisions, intervals, listening models, and modal theory.">
-<title>Al-Urmawī Advar Atlas · Persian Music Scales</title>
+<meta name="description" content="Explore Safi al-Din al-Urmawi’s 17-tone pitch system, Kitāb al-Adwār, exact monochord ratios and historical modal theory in a multilingual interactive atlas.">
+<title>Al-Urmawī Advar Atlas | Medieval Persian Music Theory</title>
 
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e5">
@@ -23,12 +23,12 @@
 <link rel="canonical" href="https://persianmusicscales.github.io/urmawi-advar-atlas/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Persian Music Scales">
-<meta property="og:title" content="Al-Urmawī Advar Atlas">
+<meta property="og:title" content="Al-Urmawī Advar Atlas | Medieval Persian Music Theory">
 <meta property="og:description" content="Interactive four-language atlas for exact fret divisions, ratios, listening, construction, and modal theory.">
 <meta property="og:url" content="https://persianmusicscales.github.io/urmawi-advar-atlas/">
 <meta property="og:image" content="https://persianmusicscales.github.io/urmawi-advar-atlas/assets/social/advar-atlas-social.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Al-Urmawī Advar Atlas">
+<meta name="twitter:title" content="Al-Urmawī Advar Atlas | Medieval Persian Music Theory">
 <meta name="twitter:description" content="A multilingual historical-music-theory PWA by Persian Music Scales.">
 <meta name="twitter:image" content="https://persianmusicscales.github.io/urmawi-advar-atlas/assets/social/advar-atlas-social.png">
 <script type="application/ld+json">
@@ -44,7 +44,9 @@
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Persian Music Scales"
+    "name": "Persian Music Scales",
+    "@id": "https://persianmusicscales.github.io/#organization",
+    "url": "https://persianmusicscales.github.io/"
   },
   "inLanguage": [
     "en",
@@ -55,7 +57,12 @@
   "softwareVersion": "4.4.0",
   "isAccessibleForFree": true,
   "@id": "https://persianmusicscales.github.io/urmawi-advar-atlas/#app",
-  "alternateName": "Al-Urmawī Advar Atlas",
+  "alternateName": [
+    "Al-Urmawī Advar Atlas",
+    "Al-Urmawi Advar Atlas",
+    "اطلس ادوار صفی‌الدین ارموی",
+    "Kitāb al-Adwār Atlas"
+  ],
   "creator": {
     "@type": "Person",
     "@id": "https://drpouyahosseini.github.io/#pouya",
@@ -64,12 +71,50 @@
     "url": "https://drpouyahosseini.github.io/"
   },
   "image": "https://persianmusicscales.github.io/urmawi-advar-atlas/assets/social/advar-atlas-social.png",
-  "description": "A multilingual atlas for exploring historical fret divisions, intervals, listening models and modal theory.",
+  "description": "A scholarly reference to Safi al-Din al-Urmawi’s 17-tone pitch lattice, monochord ratios, historical modal theory and sources.",
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "EUR"
-  }
+  },
+  "subjectOf": [
+    {
+      "@type": "WebPage",
+      "url": "https://persianmusicscales.github.io/urmawi-advar-atlas/reference/en/",
+      "name": "Al-Urmawī Advar Atlas: 17-tone system and Kitāb al-Adwār",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "url": "https://persianmusicscales.github.io/urmawi-advar-atlas/reference/fa/",
+      "name": "اطلس ادوار صفی‌الدین ارموی: نظام ۱۷ نغمه‌ای و کتاب الادوار",
+      "inLanguage": "fa"
+    },
+    {
+      "@type": "WebPage",
+      "url": "https://persianmusicscales.github.io/urmawi-advar-atlas/reference/ar/",
+      "name": "أطلس أدوار صفي الدين الأرموي: نظام النغمات السبع عشرة",
+      "inLanguage": "ar"
+    },
+    {
+      "@type": "WebPage",
+      "url": "https://persianmusicscales.github.io/urmawi-advar-atlas/reference/tr/",
+      "name": "Safiyyüddin Urmevî Advar Atlası: 17 sesli sistem ve Kitâbü’l-Edvâr",
+      "inLanguage": "tr"
+    }
+  ],
+  "citation": [
+    "https://www.qdl.qa/en/archive/81055/vdc_100085098732.0x000001",
+    "https://www.mtosmt.org/issues/mto.25.31.2/mto.25.31.2.poorhaydari.php"
+  ],
+  "featureList": [
+    "Exact 17-tone lattice",
+    "Monochord geometry",
+    "Guided lessons",
+    "Interval listening",
+    "Tetrachord species and modes",
+    "Four-language interface"
+  ]
 }
 </script>
 <link rel="stylesheet" href="css/app.css">
@@ -81,6 +126,7 @@
 </head>
 <body>
 
+<noscript><p>JavaScript is required for the interactive atlas. <a href="reference/en/">Read the scholarly reference and exact pitch data without JavaScript.</a></p></noscript>
 <div id="networkBanner" class="network-banner" role="status" aria-live="polite"></div>
 <section id="welcomeScreen" class="welcome-screen" aria-labelledby="welcomeTitle">
   <div class="welcome-card">
@@ -95,6 +141,7 @@
       <button id="welcomeAtlas" class="welcome-secondary" type="button">Open Atlas</button>
     </div>
     <div class="welcome-links">
+      <a href="reference/en/" style="color:inherit;text-decoration:underline">Scholarly reference · EN / FA / AR / TR</a>
       <button id="welcomeSources" type="button">About the sources</button>
       <button id="welcomeDismiss" type="button">Do not show this opening next time</button>
     </div>
@@ -557,7 +604,7 @@
   <div class="dialog-content about-content">
    <div class="about-hero"><img src="assets/brand/advar-mark.svg" alt=""><div><p id="aboutSeries">Persian Music Scales · Historical Theory Series</p><h3>Al-Urmawī Advar Atlas</h3><p id="aboutSummary">A multilingual digital-humanities application for exploring exact string divisions, interval structures, listening models, and modal categories.</p></div></div>
    <section class="dialog-section"><h3 id="aboutCreatorTitle">Creator and developer</h3><p><strong><a href="https://drpouyahosseini.github.io/">Dr. Pouya Hosseini</a></strong></p><p id="aboutCreatorCopy">Researcher, independent developer, and creator of Persian Music Scales.</p></section>
-   <section class="dialog-section"><h3 id="aboutLinksTitle">Project links</h3><div class="about-links"><a id="projectHub" href="https://persianmusicscales.github.io/en/">Persian Music Scales hub</a><a id="projectArticle" href="https://persianmusicscales.github.io/en/article/">Read the article</a><a href="https://worldmusicscalesatlas.github.io/">World Music Scales Atlas</a><a href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener">Persian Music Scales App</a><a href="https://github.com/PersianMusicScales/urmawi-advar-atlas" target="_blank" rel="noopener">GitHub repository</a><a href="https://www.youtube.com/@pouya-hosseini" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/drpouyahosseini" target="_blank" rel="noopener">LinkedIn</a><a href="https://orcid.org/0000-0003-4492-0004" target="_blank" rel="noopener">ORCID</a></div></section>
+   <section class="dialog-section"><h3 id="aboutLinksTitle">Project links</h3><div class="about-links"><a href="reference/en/">Scholarly reference and exact pitch data</a><a id="projectHub" href="https://persianmusicscales.github.io/en/">Persian Music Scales hub</a><a id="projectArticle" href="https://persianmusicscales.github.io/en/article/">Read the article</a><a href="https://worldmusicscalesatlas.github.io/">World Music Scales Atlas</a><a href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" target="_blank" rel="noopener">Persian Music Scales App</a><a href="https://github.com/PersianMusicScales/urmawi-advar-atlas" target="_blank" rel="noopener">GitHub repository</a><a href="https://www.youtube.com/@pouya-hosseini" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/drpouyahosseini" target="_blank" rel="noopener">LinkedIn</a><a href="https://orcid.org/0000-0003-4492-0004" target="_blank" rel="noopener">ORCID</a></div></section>
    <p class="version-line">Version <span id="appVersion">4.4.0</span> · PWA Edition</p>
   </div>
  </div>
@@ -573,7 +620,7 @@
   <div class="scholar-dialog">
     <div class="dialog-head"><h2 id="sourceDialogTitle">Sources, verification, and editorial policy</h2><button id="closeSourceDialog" class="btn">Close</button></div>
     <div class="dialog-content">
-      <section class="dialog-section"><h3 id="sourcePrimaryHeading">Primary manuscript location</h3><p id="sourcePrimaryParagraph">The project anchors fret division in <em>Kitāb al-Adwār</em>, Section Two, ff. 3v–5r, and interval ratios in Section Three, ff. 5r–8r. Modal combinations are treated in Section Six, ff. 11r–18r; lute tuning and derivation occur in Section Eight, ff. 18v–19v.</p><p><a id="sourcePrimaryLink" href="https://www.qdl.qa/en/archive/81055/vdc_100085098732.0x000001" target="_blank" rel="noopener">Qatar Digital Library, British Library Or 136</a></p></section>
+      <section class="dialog-section"><p><a href="reference/en/">Read the scholarly reference, exact pitch table and citations</a></p><h3 id="sourcePrimaryHeading">Primary manuscript location</h3><p id="sourcePrimaryParagraph">The project anchors fret division in <em>Kitāb al-Adwār</em>, Section Two, ff. 3v–5r, and interval ratios in Section Three, ff. 5r–8r. Modal combinations are treated in Section Six, ff. 11r–18r; lute tuning and derivation occur in Section Eight, ff. 18v–19v.</p><p><a id="sourcePrimaryLink" href="https://www.qdl.qa/en/archive/81055/vdc_100085098732.0x000001" target="_blank" rel="noopener">Qatar Digital Library, British Library Or 136</a></p></section>
       <section class="dialog-section"><h3 id="sourceVerifiedHeading">What is verified here</h3><ul><li id="sourceVerifiedItem1">All stored fractions reduce correctly and their reciprocals generate the displayed frequency ratios.</li><li id="sourceVerifiedItem2">The 18 displayed points ascend from 1/1 to 2/1.</li><li id="sourceVerifiedItem3">The adjacent pattern contains twelve limmas and five Pythagorean commas and multiplies to the octave.</li><li id="sourceVerifiedItem4">The common T–T–B tetrachord identity equals 4/3 exactly.</li></ul></section>
       <section class="dialog-section"><h3 id="sourceInterpretiveHeading">What remains interpretive</h3><p id="sourceInterpretiveParagraph">The click-by-click construction sequence, modern prose, synthesized sound, and four-string instrument drawing are pedagogical interpretations. They are not a diplomatic transcription, a claim about one unique historical performance tuning, or a reconstruction of a specific surviving instrument.</p></section>
       <section class="dialog-section"><h3 id="sourceOrientationHeading">Scholarly orientation</h3><p id="sourceOrientationParagraph">The conventional 3-limit reading is retained as a transparent analytical model. Owen Wright’s work remains a major modern framework for the Systematist tradition. Recent scholarship also stresses that categorical interval names and practical intonation should not be treated as universally fixed cent values.</p><p><a href="https://www.mtosmt.org/issues/mto.25.31.2/mto.25.31.2.poorhaydari.php" target="_blank" rel="noopener">Poorhaydari (2025) · <i>Maqām Iṣfahān</i>, §§1.3–1.5</a></p></section>
