@@ -519,3 +519,9 @@ body:not(.view-theory) #monoPanel #monoSvg {
  #monoPanel .hud-metric { min-width:0; }
 }
 @media (forced-colors:active) { .tab.active,.mobile-nav button.active { outline:2px solid Highlight; } }
+
+/* Official application icon and accessible home link. */
+#atlasHomeLogo { cursor:pointer; text-decoration:none; }
+#atlasHomeLogo:hover { border-color:var(--gold); }
+#atlasHomeLogo:focus-visible { outline:3px solid var(--gold); outline-offset:3px; }
+#atlasHomeLogo img { border-radius:9px; }
