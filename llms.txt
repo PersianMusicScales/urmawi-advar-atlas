@@ -1,6 +1,6 @@
 # Al-Urmawī Advar Atlas
 
-> Interactive scholarly atlas by Dr. Pouya Hosseini of Safi al-Din al-Urmawi’s historical fret divisions and exact rational interval model. It distinguishes mathematical verification from pedagogical and performance interpretation.
+> Interactive scholarly atlas by Pouya Hosseini of Safi al-Din al-Urmawi’s historical fret divisions and exact rational interval model. It distinguishes mathematical verification from pedagogical and performance interpretation.
 
 - [Interactive atlas](https://persianmusicscales.github.io/urmawi-advar-atlas/)
 - [Reference (en)](https://persianmusicscales.github.io/urmawi-advar-atlas/reference/en/)

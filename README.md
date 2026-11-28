@@ -4,7 +4,7 @@
 
 The Atlas presents the monochord and its fret divisions as a connected system of mathematical, visual, and aural relationships. It includes exact pitch data, geometrical construction, listening tools, tetrachord species, modal categories, and training activities.
 
-The project forms part of the **Persian Music Scales · Historical Theory Series** and was conceived, researched, designed, and developed by **Dr. Pouya Hosseini**.
+The project forms part of the **Persian Music Scales · Historical Theory Series** and was conceived, researched, designed, and developed by **Pouya Hosseini**.
 
 ## Live application
 
@@ -255,12 +255,12 @@ Suggested citation:
 
 ## Creator
 
-**Dr. Pouya Hosseini**  
+**Pouya Hosseini**  
 Researcher, independent developer, and creator of the Persian Music Scales project.
 
 ## Copyright and license
 
-Copyright © 2026 Dr. Pouya Hosseini. All rights reserved.
+Copyright © 2026 Pouya Hosseini. All rights reserved.
 
 See [`LICENSE`](LICENSE) for the terms governing use, reproduction, modification, and distribution.
 
@@ -270,7 +270,7 @@ The four language-specific reference pages contain complete static pitch tables,
 
 ## Related projects
 
-- [Dr. Pouya Hosseini — official website](https://drpouyahosseini.github.io/)
+- [Pouya Hosseini — official website](https://drpouyahosseini.github.io/)
 - [Persian Music Scales — educational hub](https://persianmusicscales.github.io/)
 - [Persian Music Scales App](https://persianmusicscales.github.io/Persian-Music-Scales-App/)
 - [World Music Scales Atlas](https://worldmusicscalesatlas.github.io/)
