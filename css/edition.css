@@ -500,3 +500,22 @@ body:not(.view-theory) #monoPanel #monoSvg {
   /* The fret picker carries the index; keep close neighbours distinct on the string. */
   #monoPanel #monoSvg .small-label { display:none; }
 }
+
+/* Accessible scholarly navigation and small-screen legibility. */
+.welcome-links [data-reference-link],.orientation-reference { display:inline-block; padding:8px 0; color:inherit; font:600 14px/1.5 var(--reading-font); text-decoration:underline; text-underline-offset:3px; }
+.orientation-card nav a,.orientation-reference { color:#f1db9e; }
+.orientation-card nav { font-size:14px; line-height:1.9; }
+#orientationGate .orientation-card { max-height:90dvh; overflow:auto; }
+[data-reference-link]:focus-visible,.orientation-card a:focus-visible { outline:3px solid currentColor; outline-offset:3px; }
+.sheet-reference { min-height:44px; display:flex; align-items:center; justify-content:center; text-align:center; }
+.statusbar [data-reference-link] { color:inherit; margin-inline-start:auto; }
+#monoPanel .hud-primary small,#monoPanel .hud-metric span { font-size:12px; line-height:1.35; }
+#monoPanel .hud-metric b,#monoPanel .hud-primary b { font-size:14px; }
+#app .workspace-context { font-size:12px; line-height:1.4; }
+@media (max-width:1100px) { #app .language-select { font-size:14px!important; min-width:90px; } }
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+ #app .mobile-nav button b { font:600 12px/1.2 var(--reading-font)!important; }
+ #app .mobile-nav button { min-height:44px; }
+ #monoPanel .hud-metric { min-width:0; }
+}
+@media (forced-colors:active) { .tab.active,.mobile-nav button.active { outline:2px solid Highlight; } }
