@@ -1,0 +1,261 @@
+{
+  "name": "Al-Urmawī Advar Atlas — exact pitch lattice",
+  "creator": "Dr. Pouya Hosseini",
+  "source": "https://persianmusicscales.github.io/urmawi-advar-atlas/",
+  "model": "3-limit mathematical model; 17 unequal intervals, 18 points including octave",
+  "centDefinition": "1200 × log2(frequency ratio)",
+  "notes": [
+    {
+      "index": 0,
+      "label": "ا",
+      "transliteration": "alif",
+      "stringLength": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "frequencyRatio": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "cents": 0
+    },
+    {
+      "index": 1,
+      "label": "ب",
+      "transliteration": "bāʾ",
+      "stringLength": {
+        "numerator": 243,
+        "denominator": 256
+      },
+      "frequencyRatio": {
+        "numerator": 256,
+        "denominator": 243
+      },
+      "cents": 90.224996
+    },
+    {
+      "index": 2,
+      "label": "ج",
+      "transliteration": "jīm",
+      "stringLength": {
+        "numerator": 59049,
+        "denominator": 65536
+      },
+      "frequencyRatio": {
+        "numerator": 65536,
+        "denominator": 59049
+      },
+      "cents": 180.449991
+    },
+    {
+      "index": 3,
+      "label": "د",
+      "transliteration": "dāl",
+      "stringLength": {
+        "numerator": 8,
+        "denominator": 9
+      },
+      "frequencyRatio": {
+        "numerator": 9,
+        "denominator": 8
+      },
+      "cents": 203.910002
+    },
+    {
+      "index": 4,
+      "label": "هـ",
+      "transliteration": "hāʾ",
+      "stringLength": {
+        "numerator": 27,
+        "denominator": 32
+      },
+      "frequencyRatio": {
+        "numerator": 32,
+        "denominator": 27
+      },
+      "cents": 294.134997
+    },
+    {
+      "index": 5,
+      "label": "و",
+      "transliteration": "wāw",
+      "stringLength": {
+        "numerator": 6561,
+        "denominator": 8192
+      },
+      "frequencyRatio": {
+        "numerator": 8192,
+        "denominator": 6561
+      },
+      "cents": 384.359993
+    },
+    {
+      "index": 6,
+      "label": "ز",
+      "transliteration": "zāy",
+      "stringLength": {
+        "numerator": 64,
+        "denominator": 81
+      },
+      "frequencyRatio": {
+        "numerator": 81,
+        "denominator": 64
+      },
+      "cents": 407.820003
+    },
+    {
+      "index": 7,
+      "label": "ح",
+      "transliteration": "ḥāʾ",
+      "stringLength": {
+        "numerator": 3,
+        "denominator": 4
+      },
+      "frequencyRatio": {
+        "numerator": 4,
+        "denominator": 3
+      },
+      "cents": 498.044999
+    },
+    {
+      "index": 8,
+      "label": "ط",
+      "transliteration": "ṭāʾ",
+      "stringLength": {
+        "numerator": 729,
+        "denominator": 1024
+      },
+      "frequencyRatio": {
+        "numerator": 1024,
+        "denominator": 729
+      },
+      "cents": 588.269995
+    },
+    {
+      "index": 9,
+      "label": "ي",
+      "transliteration": "yāʾ",
+      "stringLength": {
+        "numerator": 177147,
+        "denominator": 262144
+      },
+      "frequencyRatio": {
+        "numerator": 262144,
+        "denominator": 177147
+      },
+      "cents": 678.49499
+    },
+    {
+      "index": 10,
+      "label": "يا",
+      "transliteration": "yā-alif",
+      "stringLength": {
+        "numerator": 2,
+        "denominator": 3
+      },
+      "frequencyRatio": {
+        "numerator": 3,
+        "denominator": 2
+      },
+      "cents": 701.955001
+    },
+    {
+      "index": 11,
+      "label": "يب",
+      "transliteration": "yā-bāʾ",
+      "stringLength": {
+        "numerator": 81,
+        "denominator": 128
+      },
+      "frequencyRatio": {
+        "numerator": 128,
+        "denominator": 81
+      },
+      "cents": 792.179997
+    },
+    {
+      "index": 12,
+      "label": "يج",
+      "transliteration": "yā-jīm",
+      "stringLength": {
+        "numerator": 19683,
+        "denominator": 32768
+      },
+      "frequencyRatio": {
+        "numerator": 32768,
+        "denominator": 19683
+      },
+      "cents": 882.404992
+    },
+    {
+      "index": 13,
+      "label": "يد",
+      "transliteration": "yā-dāl",
+      "stringLength": {
+        "numerator": 16,
+        "denominator": 27
+      },
+      "frequencyRatio": {
+        "numerator": 27,
+        "denominator": 16
+      },
+      "cents": 905.865003
+    },
+    {
+      "index": 14,
+      "label": "يه",
+      "transliteration": "yā-hāʾ",
+      "stringLength": {
+        "numerator": 9,
+        "denominator": 16
+      },
+      "frequencyRatio": {
+        "numerator": 16,
+        "denominator": 9
+      },
+      "cents": 996.089998
+    },
+    {
+      "index": 15,
+      "label": "يو",
+      "transliteration": "yā-wāw",
+      "stringLength": {
+        "numerator": 2187,
+        "denominator": 4096
+      },
+      "frequencyRatio": {
+        "numerator": 4096,
+        "denominator": 2187
+      },
+      "cents": 1086.314994
+    },
+    {
+      "index": 16,
+      "label": "يز",
+      "transliteration": "yā-zāy",
+      "stringLength": {
+        "numerator": 531441,
+        "denominator": 1048576
+      },
+      "frequencyRatio": {
+        "numerator": 1048576,
+        "denominator": 531441
+      },
+      "cents": 1176.53999
+    },
+    {
+      "index": 17,
+      "label": "يح",
+      "transliteration": "yā-ḥāʾ",
+      "stringLength": {
+        "numerator": 1,
+        "denominator": 2
+      },
+      "frequencyRatio": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "cents": 1200
+    }
+  ]
+}
