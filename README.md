@@ -52,7 +52,7 @@ PWA functionality includes:
 - install support
 - update notifications
 - online and offline status handling
-- application icons and maskable icons
+- application icons
 - standalone display mode
 - versioned service-worker caching
 
